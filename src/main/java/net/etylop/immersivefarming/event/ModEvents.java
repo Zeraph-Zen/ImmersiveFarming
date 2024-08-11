@@ -6,7 +6,6 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.GrassBlock;
 import net.minecraftforge.event.entity.player.BonemealEvent;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.event.world.BlockEvent.FarmlandTrampleEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -20,15 +19,12 @@ public class ModEvents {
                 return;
             }
             event.setCanceled(true);
-
         }
 
         @SubscribeEvent
-        public static void onTrampleFarmland(FarmlandTrampleEvent event) {
+        public static void onTrampleFarmland(BlockEvent.FarmlandTrampleEvent event) {
             event.setCanceled(true);
         }
-
-
 
         @SubscribeEvent
         public static void onCropGrowth(BlockEvent.CropGrowEvent.Pre event) {
