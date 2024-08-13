@@ -1,6 +1,7 @@
 {
-  "parent": "block/cube_all",
+  "parent": "minecraft:block/template_farmland",
   "textures": {
-    "all": "immersivefarming:block/soil"
+    "dirt": "minecraft:block/dirt",
+    "top": "minecraft:block/farmland"
   }
 }
