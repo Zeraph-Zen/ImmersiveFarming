@@ -1,7 +1,11 @@
 package net.etylop.immersivefarming.block;
 
 import net.etylop.immersivefarming.ImmersiveFarming;
+import net.etylop.immersivefarming.item.ModCreativeTab;
+import net.etylop.immersivefarming.item.ModItems;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -19,11 +23,18 @@ public class ModBlocks {
     public static final RegistryObject<Block> SOIL = registerBlock(
             "soil",
             () -> new Soil(BlockBehaviour.Properties.copy(Blocks.FARMLAND)),
-            CreativeModeTab.TAB_MISC);
+            ModCreativeTab.MOD_TAB);
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block, CreativeModeTab tab) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
+        registerBlockItem(name, toReturn, tab);
         return toReturn;
+    }
+
+    private static <T extends Block> RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block,
+                                                                            CreativeModeTab tab) {
+        return ModItems.ITEMS.register(name, () -> new BlockItem(block.get(),
+                new Item.Properties().tab(tab)));
     }
 
     public static void register(IEventBus eventBus) {

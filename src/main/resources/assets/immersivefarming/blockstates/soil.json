@@ -1,25 +1,25 @@
 {
   "variants": {
     "till=0": {
-      "model": "immersivefarming:block/soil"
+      "model": "immersivefarming:block/soil0"
     },
     "till=1": {
-      "model": "immersivefarming:block/soil"
+      "model": "immersivefarming:block/soil0"
     },
     "till=2": {
-      "model": "immersivefarming:block/soil"
+      "model": "immersivefarming:block/soil0"
     },
     "till=3": {
-      "model": "immersivefarming:block/soil"
+      "model": "immersivefarming:block/soil0"
     },
     "till=4": {
-      "model": "immersivefarming:block/soil"
+      "model": "immersivefarming:block/soil0"
     },
     "till=5": {
-      "model": "immersivefarming:block/soil"
+      "model": "immersivefarming:block/soil0"
     },
     "till=6": {
-      "model": "immersivefarming:block/soil"
+      "model": "immersivefarming:block/soil0"
     },
     "till=7,moisture=0": {
       "model": "immersivefarming:block/soil"
