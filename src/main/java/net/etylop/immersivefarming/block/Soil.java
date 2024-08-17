@@ -112,4 +112,9 @@ public class Soil extends FarmBlock {
         res += Math.abs(pos1.getZ()-pos2.getZ());
         return res;
     }
+
+    @Override
+    public boolean isFertile(BlockState state, BlockGetter level, BlockPos pos) {
+        return super.isFertile(state, level, pos);
+    }
 }
