@@ -7,7 +7,10 @@ import net.etylop.immersivefarming.utils.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -18,6 +21,7 @@ import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.entity.player.BonemealEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -36,15 +40,18 @@ public class ModEvents {
         private static final Map<ChunkPos, List<BlockPos>> chunkCrops = new HashMap<>();
         private static final Map<BlockPos, Long> cropDate = new HashMap<>();
 
+        //TODO : search for hoe use event
         @SubscribeEvent
         public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
             Block target = event.getWorld().getBlockState(event.getPos()).getBlock();
             if (Registry.BLOCK.getHolderOrThrow(Registry.BLOCK.getResourceKey(target).get()).is(ModTags.Blocks.TILLABLE_BLOCK) &&
                 !event.getWorld().isClientSide() &&
                 event.getPlayer().getMainHandItem().getItem() instanceof HoeItem) {
-                event.getPlayer().sendMessage(new TextComponent("grass"),event.getPlayer().getUUID());
+
                 event.getWorld().setBlock(event.getPos(), ModBlocks.SOIL.get().defaultBlockState(), 3);
-            }
+                event.getPlayer().getMainHandItem().hurtAndBreak(1, event.getPlayer(), (val) -> {
+                    val.broadcastBreakEvent(event.getPlayer().getUsedItemHand());
+                });            }
         }
 
         @SubscribeEvent

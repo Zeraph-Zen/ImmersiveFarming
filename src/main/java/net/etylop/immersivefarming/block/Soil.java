@@ -6,11 +6,14 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -22,6 +25,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.common.Tags;
 
 import java.util.Random;
 
@@ -46,6 +50,27 @@ public class Soil extends FarmBlock {
         return false;
     }
 
+    private static final int getHoeSpeed(Item item) {
+        if (!(item instanceof HoeItem)) return 0;
+        TagKey<Block> tag = ((HoeItem) item).getTier().getTag();
+        if (tag == Tags.Blocks.NEEDS_WOOD_TOOL || tag == Tags.Blocks.NEEDS_GOLD_TOOL) {
+            return 1;
+        }
+        else if (tag == BlockTags.NEEDS_STONE_TOOL) {
+            return 1 + (Math.random()>0.5 ? 1 : 0);
+        }
+        else if (tag == BlockTags.NEEDS_IRON_TOOL) {
+            return 2;
+        }
+        else if (tag == BlockTags.NEEDS_DIAMOND_TOOL) {
+            return 2 + (Math.random()>0.5 ? 1 : 0);
+        }
+        else if (tag == Tags.Blocks.NEEDS_NETHERITE_TOOL) {
+            return 3;
+        }
+        return 1;
+    }
+
     @Override
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         if (pHand == InteractionHand.MAIN_HAND &&
@@ -54,8 +79,12 @@ public class Soil extends FarmBlock {
                 pState.getValue(TILL) < TILL_MAX) {
             pLevel.playSound(pPlayer, pPos, SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
             if (!pLevel.isClientSide()) {
-                int newTill = Math.min(TILL_MAX,pState.getValue(TILL)+1);
+                int speed = getHoeSpeed(pPlayer.getMainHandItem().getItem());
+                int newTill = Math.min(TILL_MAX,pState.getValue(TILL)+speed);
                 pLevel.setBlock(pPos, pState.setValue(TILL, newTill), 3);
+                pPlayer.getMainHandItem().hurtAndBreak(1, pPlayer, (val) -> {
+                    val.broadcastBreakEvent(pPlayer.getUsedItemHand());
+                });
             }
             return InteractionResult.SUCCESS;
         }
