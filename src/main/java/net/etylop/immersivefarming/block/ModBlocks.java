@@ -1,5 +1,6 @@
 package net.etylop.immersivefarming.block;
 
+import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPumpBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import net.etylop.immersivefarming.ImmersiveFarming;
@@ -55,10 +56,9 @@ public class ModBlocks {
     }
 
     private static <T extends Block> RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block) {
-        return ModItems.ITEMS.register(name, () -> new BlockItem(block.get(),
+        return ModItems.ITEMS.register(name, () -> new BlockItemIE(block.get(),
                 new Item.Properties().tab(ModCreativeTab.MOD_TAB)));
     }
-
     public static void register(IEventBus eventBus) {
         BLOCKS.register(eventBus);
     }

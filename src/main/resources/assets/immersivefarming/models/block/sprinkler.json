@@ -1,10 +1,10 @@
 {
   "parent": "minecraft:block/block",
   "textures": {
-    "particle": "immersivefarming:block/fluid_pump_top"
+    "particle": "immersivefarming:block/sprinkler_top"
   },
   "loader": "forge:obj",
-  "model": "immersivefarming:models/block/metal_device/fluid_pump.obj",
+  "model": "immersivefarming:models/block/sprinkler.obj",
   "detectCullableFaces": false,
   "flip-v": true
 }
