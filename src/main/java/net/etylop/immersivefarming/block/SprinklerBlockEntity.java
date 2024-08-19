@@ -2,19 +2,26 @@ package net.etylop.immersivefarming.block;
 
 import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPumpBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
+import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -33,7 +40,8 @@ import javax.annotation.Nonnull;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IFluidPipe, IEClientTickableBE, IEBlockInterfaces.IBlockBounds, IEBlockInterfaces.IHasDummyBlocks {
+public class SprinklerBlockEntity extends IEBaseBlockEntity
+        implements IEServerTickableBE, IFluidPipe, IEClientTickableBE, IBlockBounds, IHasDummyBlocks {
 
     public FluidTank tank = new FluidTank(FluidAttributes.BUCKET_VOLUME);
     public Map<Direction, IEEnums.IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
@@ -43,19 +51,15 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
     }
 
     @Override
-    public void readCustomNBT(CompoundTag nbt, boolean descPacket)
-    {
+    public void readCustomNBT(CompoundTag nbt, boolean descPacket) {
     }
 
     @Override
-    public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
-    {
+    public void writeCustomNBT(CompoundTag nbt, boolean descPacket) {
     }
 
-
     @Override
-    public void tickServer()
-    {
+    public void tickServer() {
         if(tank.getFluidAmount() < tank.getCapacity())
         {
             // int i = inputFluid(tank.getFluid(), IFluidHandler.FluidAction.EXECUTE);
@@ -93,7 +97,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
     public void breakDummies(BlockPos pos, BlockState state)
     {
         for(int i = 0; i <= 1; i++)
-            if(Utils.isBlockAt(level, getBlockPos().offset(0, isDummy()?-1: 0, 0).offset(0, i, 0), IEBlocks.MetalDevices.FLUID_PUMP.get()))
+            if(Utils.isBlockAt(level, getBlockPos().offset(0, isDummy()?-1: 0, 0).offset(0, i, 0), ModBlocks.SPRINKLER.get()))
                 level.removeBlock(getBlockPos().offset(0, isDummy()?-1: 0, 0).offset(0, i, 0), false);
     }
 
@@ -115,8 +119,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
         return te instanceof SprinklerBlockEntity sprinkler ? sprinkler : null;
     }
 
-    static class SidedFluidHandler implements IFluidHandler
-    {
+    static class SidedFluidHandler implements IFluidHandler {
         SprinklerBlockEntity sprinkler;
         Direction facing;
 

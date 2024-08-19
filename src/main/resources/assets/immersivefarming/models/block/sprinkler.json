@@ -1,10 +1,10 @@
 {
   "parent": "minecraft:block/block",
   "textures": {
-    "particle": "immersiveengineering:block/metal_device/fluid_pump_top"
+    "particle": "immersivefarming:block/fluid_pump_top"
   },
   "loader": "forge:obj",
-  "model": "immersiveengineering:models/block/metal_device/fluid_pump.obj",
+  "model": "immersivefarming:models/block/metal_device/fluid_pump.obj",
   "detectCullableFaces": false,
   "flip-v": true
 }
