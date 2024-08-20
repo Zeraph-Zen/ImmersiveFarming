@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.fml.common.Mod;
 
 import java.util.Random;
 
@@ -122,7 +123,7 @@ public class Soil extends FarmBlock {
             }
         }
         for (BlockPos blockpos : BlockPos.betweenClosed(pPos.offset(-6, 1, -6), pPos.offset(6, 4, 6))) {
-            if (pLevel.getBlockState(blockpos).getBlock() == Blocks.IRON_BLOCK) {
+            if (pLevel.getBlockState(blockpos).getBlock() instanceof SprinklerBlock && pLevel.getBlockState(blockpos).getValue(SprinklerBlockEntity.ACTIVE)) {
                 return true;
             }
         }

@@ -1,5 +1,6 @@
 package net.etylop.immersivefarming.block;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
@@ -9,27 +10,22 @@ import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.FluidPumpBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
-import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.register.IEBlocks;
-import blusunrize.immersiveengineering.common.util.ChatUtils;
-import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.etylop.immersivefarming.particle.RegisterParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -43,17 +39,17 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IFluidPipe,
         IEClientTickableBE, IBlockBounds, IHasDummyBlocks, IConfigurableSides, IBlockOverlayText {
@@ -74,13 +70,10 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
 
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
-    private boolean checkingArea = false;
-    private final List<BlockPos> openList = new ArrayList<>();
-    private final List<BlockPos> closedList = new ArrayList<>();
-    private final List<BlockPos> checked = new ArrayList<>();
     private final Map<Direction, CapabilityReference<IFluidHandler>> neighborFluids = CapabilityReference.forAllNeighbors(
             this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
     );
+    private final int waterConsumption = 10;
 
 
     public SprinklerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -108,28 +101,15 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
         nbt.put("tank", tank.writeToNBT(new CompoundTag()));
     }
 
-    public void prepareAreaCheck()
-    {
-        openList.clear();
-        closedList.clear();
-        checked.clear();
-        for(Direction f : Direction.values())
-            if(sideConfig.get(f)== IEEnums.IOSideConfig.INPUT)
-            {
-                openList.add(getBlockPos().relative(f));
-                checkingArea = true;
-            }
-    }
-
     @Override
     public void tickServer() {
         //System.out.println(tank.getFluid().getAmount());
         if (isDummy())
             return;
 
-        if (!isRSPowered() && this.tank.getFluidAmount() >= 10  && getLevelNonnull().getGameTime()%20==0)
+        if (getLevelNonnull().getGameTime()%20==0 && !isRSPowered() && this.tank.getFluidAmount() >= waterConsumption)
         {
-            tank.drain(10, IFluidHandler.FluidAction.EXECUTE);
+            tank.drain(waterConsumption, IFluidHandler.FluidAction.EXECUTE);
             getBlockState().setValue(ACTIVE, true);
         }
         else
@@ -143,6 +123,19 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
         }
 
         inputFluid(IFluidHandler.FluidAction.EXECUTE);
+    }
+
+    @Override
+    public void tickClient()
+    {
+        if (isDummy())
+            return;
+
+        if (getLevelNonnull().getGameTime()%20==0 && !isRSPowered() && this.tank.getFluidAmount() >= waterConsumption)
+        {
+            spawnParticles();
+            // TODO add sound
+        }
     }
 
     public int outputFluid(FluidStack fs, IFluidHandler.FluidAction action)
@@ -357,12 +350,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
         }
     }
 
-    @Override
-    public void tickClient()
-    {
-        // TODO add sound
-        //ImmersiveEngineering.proxy.handleTileSound(IESounds.refinery, this, shouldRenderAsActive(), .25f, 1);
-    }
+
 
     @Override
     public IEEnums.IOSideConfig getSideConfig(Direction side)
@@ -382,6 +370,17 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
             return true;
         }
         return false;
+    }
+
+    protected void spawnParticles() {
+        BlockPos pos = getBlockPos().above();
+        for(int i = 0; i < 100; i++) {
+            double velocity = 1 + 0.5*Math.random();
+            getLevelNonnull().addParticle(RegisterParticles.SPRINKLER_PARTICLES.get(),
+                    pos.getX() + 0.5d, pos.getY() + 1d, pos.getZ() + 0.5d,
+                    Math.cos(i)*velocity, 0.7*velocity, Math.sin(i)*velocity);
+            ImmersiveEngineering.proxy.handleTileSound(SoundEvents.GRASS_FALL, this, getBlockState().getValue(ACTIVE), .25f, 1);
+        }
     }
 
 }
