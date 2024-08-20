@@ -28,7 +28,7 @@ public class ModBlockEntities {
     }
 
     public static final MultiblockBEType<SprinklerBlockEntity> SPRINKLER = makeMultiblock(
-            "sprinkler", SprinklerBlockEntity::new, IEBlocks.MetalDevices.FLUID_PUMP
+            "sprinkler", SprinklerBlockEntity::new, ModBlocks.SPRINKLER
     );
 
 

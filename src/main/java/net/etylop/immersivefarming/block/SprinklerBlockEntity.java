@@ -4,47 +4,59 @@ import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
+import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
+import blusunrize.immersiveengineering.client.utils.TextUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
+import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPumpBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
+import blusunrize.immersiveengineering.common.config.IEClientConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
+import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IFluidPipe,
-        IEClientTickableBE, IBlockBounds, IHasDummyBlocks, IConfigurableSides {
+        IEClientTickableBE, IBlockBounds, IHasDummyBlocks, IConfigurableSides, IBlockOverlayText {
 
     public FluidTank tank = new FluidTank(FluidAttributes.BUCKET_VOLUME);
     public Map<Direction, IEEnums.IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
@@ -60,10 +72,15 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
 
     private final Map<Direction, ResettableCapability<IFluidHandler>> sidedFluidHandler = new EnumMap<>(Direction.class);
 
+    public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
+
     private boolean checkingArea = false;
     private final List<BlockPos> openList = new ArrayList<>();
     private final List<BlockPos> closedList = new ArrayList<>();
     private final List<BlockPos> checked = new ArrayList<>();
+    private final Map<Direction, CapabilityReference<IFluidHandler>> neighborFluids = CapabilityReference.forAllNeighbors(
+            this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+    );
 
 
     public SprinklerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -71,11 +88,24 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
     }
 
     @Override
-    public void readCustomNBT(CompoundTag nbt, boolean descPacket) {
+    public void readCustomNBT(CompoundTag nbt, boolean descPacket)
+    {
+        int[] sideConfigArray = nbt.getIntArray("sideConfig");
+        for(Direction d : DirectionUtils.VALUES)
+            sideConfig.put(d, IEEnums.IOSideConfig.VALUES[sideConfigArray[d.ordinal()]]);
+        tank.readFromNBT(nbt.getCompound("tank"));
+        if(descPacket)
+            this.markContainingBlockForUpdate(null);
     }
 
     @Override
-    public void writeCustomNBT(CompoundTag nbt, boolean descPacket) {
+    public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
+    {
+        int[] sideConfigArray = new int[6];
+        for(Direction d : DirectionUtils.VALUES)
+            sideConfigArray[d.ordinal()] = sideConfig.get(d).ordinal();
+        nbt.putIntArray("sideConfig", sideConfigArray);
+        nbt.put("tank", tank.writeToNBT(new CompoundTag()));
     }
 
     public void prepareAreaCheck()
@@ -93,19 +123,97 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
 
     @Override
     public void tickServer() {
-        if(tank.getFluidAmount() < tank.getCapacity())
+        //System.out.println(tank.getFluid().getAmount());
+        if (isDummy())
+            return;
+
+        if (!isRSPowered() && this.tank.getFluidAmount() >= 10  && getLevelNonnull().getGameTime()%20==0)
         {
-            // int i = inputFluid(tank.getFluid(), IFluidHandler.FluidAction.EXECUTE);
-            //TODO
-            //tank.fill(, IFluidHandler.FluidAction.EXECUTE);
+            tank.drain(10, IFluidHandler.FluidAction.EXECUTE);
+            getBlockState().setValue(ACTIVE, true);
+        }
+        else
+        {
+            getBlockState().setValue(ACTIVE, false);
         }
 
-        boolean hasRSSignal = isRSPowered();
-
-        if(hasRSSignal && this.tank.getFluidAmount() > 0)
-        {
-            // this.tank.drain(this.tank.getFluid().setAmount(1), IFluidHandler.FluidAction.EXECUTE);
+        if (this.tank.getFluidAmount() > this.tank.getCapacity()/2) {
+            int i = outputFluid(tank.getFluid(), IFluidHandler.FluidAction.EXECUTE);
+            tank.drain(i, IFluidHandler.FluidAction.EXECUTE);
         }
+
+        inputFluid(IFluidHandler.FluidAction.EXECUTE);
+    }
+
+    public int outputFluid(FluidStack fs, IFluidHandler.FluidAction action)
+    {
+        if(fs.isEmpty())
+            return 0;
+
+        int canAccept = fs.getAmount();
+        if(canAccept <= 0)
+            return 0;
+
+        final int fluidForSort = canAccept;
+        int maxFluidOutput = 0;
+        HashMap<FluidPipeBlockEntity.DirectionalFluidOutput, Integer> sorting = new HashMap<>();
+        for(Direction f : Direction.values()) {
+            if(sideConfig.get(f) != IEEnums.IOSideConfig.OUTPUT)
+                continue;
+
+            IFluidHandler handler = neighborFluids.get(f).getNullable();
+            if(handler == null)
+                continue;
+
+            BlockEntity tile = getLevelNonnull().getBlockEntity(worldPosition.relative(f));
+            FluidStack insertResource = Utils.copyFluidStackWithAmount(fs, fs.getAmount(), true);
+            int possiblePipeFluid = handler.fill(insertResource, IFluidHandler.FluidAction.SIMULATE);
+            if(possiblePipeFluid > 0)
+            {
+                sorting.put(new FluidPipeBlockEntity.DirectionalFluidOutput(handler, f, tile), possiblePipeFluid);
+                maxFluidOutput += possiblePipeFluid;
+            }
+        }
+        if(maxFluidOutput > 0)
+        {
+            int f = 0;
+            int i = 0;
+            for(FluidPipeBlockEntity.DirectionalFluidOutput output : sorting.keySet())
+            {
+                float prio = sorting.get(output)/(float)maxFluidOutput;
+                int amount = (int)(fluidForSort*prio);
+                if(i++==sorting.size()-1)
+                    amount = canAccept;
+                FluidStack insertResource = Utils.copyFluidStackWithAmount(fs, amount, true);
+                insertResource.getOrCreateTag().putBoolean(IFluidPipe.NBT_PRESSURIZED, true);
+                int r = output.output().fill(insertResource, action);
+                f += r;
+                canAccept -= r;
+                if(canAccept <= 0)
+                    break;
+            }
+            return f;
+        }
+        return 0;
+    }
+
+    public int inputFluid(IFluidHandler.FluidAction action) {
+        int acceptedFluid = 0;
+        int maxFluid = tank.getCapacity() - tank.getFluidAmount();
+        for (Direction direction : Direction.values()) {
+            if(sideConfig.get(direction) != IEEnums.IOSideConfig.INPUT)
+                continue;
+
+            IFluidHandler handler = neighborFluids.get(direction).getNullable();
+            if(handler == null)
+                continue;
+
+            FluidStack extractResource = handler.drain(maxFluid, action);
+            int fluidExtracted = tank.fill(extractResource, action);
+            acceptedFluid += fluidExtracted;
+            maxFluid -= fluidExtracted;
+        }
+        return acceptedFluid;
     }
 
     @Nullable
@@ -122,6 +230,19 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
         BlockState old = getBlockState();
         BlockState newState = old.setValue(IEProperties.MULTIBLOCKSLAVE, dummy);
         setState(newState);
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @javax.annotation.Nullable Direction facing)
+    {
+        if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && facing!=null && !isDummy())
+        {
+            if(!sidedFluidHandler.containsKey(facing))
+                sidedFluidHandler.put(facing, registerCapability(new SprinklerBlockEntity.SidedFluidHandler(this, facing)));
+            return sidedFluidHandler.get(facing).cast();
+        }
+        return super.getCapability(capability, facing);
     }
 
     @Override
@@ -157,6 +278,23 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
         BlockPos masterPos = getBlockPos().below();
         BlockEntity te = Utils.getExistingTileEntity(level, masterPos);
         return te instanceof SprinklerBlockEntity sprinkler ? sprinkler : null;
+    }
+
+    @Override
+    public Component[] getOverlayText(Player player, HitResult mop, boolean hammer)
+    {
+        if(hammer && IEClientConfig.showTextOverlay.get() && !isDummy() && mop instanceof BlockHitResult brtr)
+        {
+            IEEnums.IOSideConfig i = sideConfig.get(brtr.getDirection());
+            IEEnums.IOSideConfig j = sideConfig.get(brtr.getDirection().getOpposite());
+            return TextUtils.sideConfigWithOpposite(Lib.DESC_INFO+"blockSide.connectFluid.", i, j);
+        }
+        return null;
+    }
+
+    @Override
+    public boolean useNixieFont(Player player, HitResult mop) {
+        return false;
     }
 
     static class SidedFluidHandler implements IFluidHandler {
@@ -220,15 +358,6 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
     }
 
     @Override
-    public boolean canOutputPressurized(boolean consumePower)
-    {
-        if (this.tank.getFluidAmount() > this.tank.getCapacity()/2) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public void tickClient()
     {
         // TODO add sound
@@ -254,4 +383,5 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
         }
         return false;
     }
+
 }

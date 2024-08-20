@@ -7,6 +7,7 @@ import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -23,6 +24,7 @@ public class SprinklerBlock extends IEEntityBlock<SprinklerBlockEntity>
     {
         super.createBlockStateDefinition(builder);
         builder.add(IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE, BlockStateProperties.WATERLOGGED);
+        builder.add(SprinklerBlockEntity.ACTIVE);
     }
 
     @Override
