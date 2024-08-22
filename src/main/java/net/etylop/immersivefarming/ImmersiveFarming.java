@@ -1,11 +1,11 @@
 package net.etylop.immersivefarming;
 
 import com.mojang.logging.LogUtils;
-import net.etylop.immersivefarming.block.ModBlockEntities;
-import net.etylop.immersivefarming.block.ModBlocks;
+import net.etylop.immersivefarming.block.IFBlockEntities;
+import net.etylop.immersivefarming.block.IFBlocks;
 import net.etylop.immersivefarming.fluid.IFFluids;
-import net.etylop.immersivefarming.item.ModItems;
-import net.etylop.immersivefarming.particle.RegisterParticles;
+import net.etylop.immersivefarming.item.IFItems;
+import net.etylop.immersivefarming.particle.IFParticles;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.common.MinecraftForge;
@@ -28,10 +28,10 @@ public class ImmersiveFarming {
     public ImmersiveFarming() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        ModItems.register(eventBus);
-        ModBlocks.register(eventBus);
-        ModBlockEntities.register(eventBus);
-        RegisterParticles.register(eventBus);
+        IFItems.register(eventBus);
+        IFBlocks.register(eventBus);
+        IFBlockEntities.register(eventBus);
+        IFParticles.register(eventBus);
         IFFluids.register(eventBus);
 
         // Register the setup method for modloading

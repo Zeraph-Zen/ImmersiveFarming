@@ -1,6 +1,6 @@
-package net.etylop.immersivefarming.block;
+package net.etylop.immersivefarming.block.custom;
 
-import net.etylop.immersivefarming.particle.RegisterParticles;
+import net.etylop.immersivefarming.particle.IFParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -170,7 +170,7 @@ public class Soil extends FarmBlock {
 
     private static void spawnContaminatedParticles(Level level, BlockPos pos) {
         for(int i = 0; i < 10; i++) {
-            level.addParticle(RegisterParticles.CONTAMINATION_PARTICLES.get(),
+            level.addParticle(IFParticles.CONTAMINATION_PARTICLES.get(),
                     pos.getX() + Math.random(), pos.getY() + 1 + Math.random(), pos.getZ() + Math.random(),
                     0,0,0);
         }

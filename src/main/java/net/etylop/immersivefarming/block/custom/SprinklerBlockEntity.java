@@ -1,4 +1,4 @@
-package net.etylop.immersivefarming.block;
+package net.etylop.immersivefarming.block.custom;
 
 import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.IEProperties;
@@ -20,8 +20,9 @@ import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.etylop.immersivefarming.block.IFBlocks;
 import net.etylop.immersivefarming.fluid.IFFluids;
-import net.etylop.immersivefarming.particle.RegisterParticles;
+import net.etylop.immersivefarming.particle.IFParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -290,7 +291,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
     public void breakDummies(BlockPos pos, BlockState state)
     {
         for(int i = 0; i <= 1; i++)
-            if(Utils.isBlockAt(level, getBlockPos().offset(0, isDummy()?-1: 0, 0).offset(0, i, 0), ModBlocks.SPRINKLER.get()))
+            if(Utils.isBlockAt(level, getBlockPos().offset(0, isDummy()?-1: 0, 0).offset(0, i, 0), IFBlocks.SPRINKLER.get()))
                 level.removeBlock(getBlockPos().offset(0, isDummy()?-1: 0, 0).offset(0, i, 0), false);
     }
 
@@ -415,7 +416,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
         BlockPos pos = getBlockPos().above();
         for(int i = 0; i < 100; i++) {
             double velocity = 1 + 0.5*Math.random();
-            getLevelNonnull().addParticle(RegisterParticles.SPRINKLER_PARTICLES.get(),
+            getLevelNonnull().addParticle(IFParticles.SPRINKLER_PARTICLES.get(),
                     pos.getX() + 0.5d, pos.getY() + 1d, pos.getZ() + 0.5d,
                     Math.cos(i)*velocity, 0.7*velocity, Math.sin(i)*velocity);
         }

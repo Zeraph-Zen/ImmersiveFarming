@@ -1,8 +1,8 @@
 package net.etylop.immersivefarming.event;
 
 import net.etylop.immersivefarming.ImmersiveFarming;
-import net.etylop.immersivefarming.block.ModBlocks;
-import net.etylop.immersivefarming.block.Soil;
+import net.etylop.immersivefarming.block.IFBlocks;
+import net.etylop.immersivefarming.block.custom.Soil;
 import net.etylop.immersivefarming.utils.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ModEvents {
+public class IFEvents {
     @Mod.EventBusSubscriber(modid = ImmersiveFarming.MOD_ID)
     public static class ForgeEvents {
         private static final Map<ChunkPos, List<BlockPos>> chunkCrops = new HashMap<>();
@@ -40,7 +40,7 @@ public class ModEvents {
                 !event.getWorld().isClientSide() &&
                 event.getPlayer().getMainHandItem().getItem() instanceof HoeItem) {
 
-                event.getWorld().setBlock(event.getPos(), ModBlocks.SOIL.get().defaultBlockState(), 3);
+                event.getWorld().setBlock(event.getPos(), IFBlocks.SOIL.get().defaultBlockState(), 3);
                 event.getPlayer().getMainHandItem().hurtAndBreak(1, event.getPlayer(), (val) -> {
                     val.broadcastBreakEvent(event.getPlayer().getUsedItemHand());
                 });            }

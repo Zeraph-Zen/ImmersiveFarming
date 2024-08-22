@@ -9,13 +9,13 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-public class ModItems {
+public class IFItems {
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, ImmersiveFarming.MOD_ID);
 
     public static final RegistryObject<Item> TREATED_WATER_BUCKET = ITEMS.register("treated_water_bucket",
             () -> new BucketItem(IFFluids.TREATED_WATER_FLUID,
-                    new Item.Properties().tab(ModCreativeTab.MOD_TAB).stacksTo(1)));
+                    new Item.Properties().tab(IFCreativeTab.TAB).stacksTo(1)));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

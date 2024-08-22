@@ -1,8 +1,8 @@
 package net.etylop.immersivefarming.fluid;
 
 import net.etylop.immersivefarming.ImmersiveFarming;
-import net.etylop.immersivefarming.block.ModBlocks;
-import net.etylop.immersivefarming.item.ModItems;
+import net.etylop.immersivefarming.block.IFBlocks;
+import net.etylop.immersivefarming.item.IFItems;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -36,9 +36,9 @@ public class IFFluids {
             () -> TREATED_WATER_FLUID.get(), () -> TREATED_WATER_FLOWING.get(), FluidAttributes.builder(WATER_STILL_RL, WATER_FLOWING_RL)
             .overlay(WATER_OVERLAY_RL)
             .color(0xbfffffff))
-            .block(() -> IFFluids.TREATED_WATER_BLOCK.get()).bucket(() -> ModItems.TREATED_WATER_BUCKET.get());
+            .block(() -> IFFluids.TREATED_WATER_BLOCK.get()).bucket(() -> IFItems.TREATED_WATER_BUCKET.get());
 
-    public static final RegistryObject<LiquidBlock> TREATED_WATER_BLOCK = ModBlocks.BLOCKS.register("treated_water",
+    public static final RegistryObject<LiquidBlock> TREATED_WATER_BLOCK = IFBlocks.BLOCKS.register("treated_water",
             () -> new LiquidBlock(() -> IFFluids.TREATED_WATER_FLUID.get(), BlockBehaviour.Properties.of(Material.WATER)
                     .noCollission().strength(100f).noDrops()));
 

@@ -3,10 +3,9 @@ package net.etylop.immersivefarming.block;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.common.blocks.MultiblockBEType;
-import blusunrize.immersiveengineering.common.blocks.metal.FluidPumpBlockEntity;
-import blusunrize.immersiveengineering.common.register.IEBlocks;
 import com.google.common.collect.ImmutableSet;
 import net.etylop.immersivefarming.ImmersiveFarming;
+import net.etylop.immersivefarming.block.custom.SprinklerBlockEntity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -18,7 +17,7 @@ import java.util.Collection;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class ModBlockEntities {
+public class IFBlockEntities {
 
     public static final DeferredRegister<BlockEntityType<?>> REGISTER = DeferredRegister.create(
             ForgeRegistries.BLOCK_ENTITIES, ImmersiveFarming.MOD_ID);
@@ -28,7 +27,7 @@ public class ModBlockEntities {
     }
 
     public static final MultiblockBEType<SprinklerBlockEntity> SPRINKLER = makeMultiblock(
-            "sprinkler", SprinklerBlockEntity::new, ModBlocks.SPRINKLER
+            "sprinkler", SprinklerBlockEntity::new, IFBlocks.SPRINKLER
     );
 
 

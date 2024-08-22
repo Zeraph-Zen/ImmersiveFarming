@@ -1,7 +1,8 @@
-package net.etylop.immersivefarming.block;
+package net.etylop.immersivefarming.block.custom;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
+import net.etylop.immersivefarming.block.IFBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
@@ -13,7 +14,7 @@ public class SprinklerBlock extends IEEntityBlock<SprinklerBlockEntity>
 {
     public SprinklerBlock(Properties props)
     {
-        super(ModBlockEntities.SPRINKLER, props);
+        super(IFBlockEntities.SPRINKLER, props);
         this.registerDefaultState(
             this.stateDefinition.any()
                 .setValue(SprinklerBlockEntity.ACTIVE, false)

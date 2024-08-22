@@ -2,8 +2,10 @@ package net.etylop.immersivefarming.block;
 
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import net.etylop.immersivefarming.ImmersiveFarming;
-import net.etylop.immersivefarming.item.ModCreativeTab;
-import net.etylop.immersivefarming.item.ModItems;
+import net.etylop.immersivefarming.block.custom.Soil;
+import net.etylop.immersivefarming.block.custom.SprinklerBlock;
+import net.etylop.immersivefarming.item.IFCreativeTab;
+import net.etylop.immersivefarming.item.IFItems;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -17,7 +19,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Supplier;
 
-public class ModBlocks {
+public class IFBlocks {
 
     private static final Supplier<BlockBehaviour.Properties> METAL_PROPERTIES_NO_OVERLAY =
             () -> Block.Properties.of(Material.METAL)
@@ -54,8 +56,8 @@ public class ModBlocks {
     }
 
     private static <T extends Block> RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block) {
-        return ModItems.ITEMS.register(name, () -> new BlockItemIE(block.get(),
-                new Item.Properties().tab(ModCreativeTab.MOD_TAB)));
+        return IFItems.ITEMS.register(name, () -> new BlockItemIE(block.get(),
+                new Item.Properties().tab(IFCreativeTab.TAB)));
     }
     public static void register(IEventBus eventBus) {
         BLOCKS.register(eventBus);
