@@ -17,6 +17,7 @@ public class SprinklerBlock extends IEEntityBlock<SprinklerBlockEntity>
         super(IFBlockEntities.SPRINKLER, props);
         this.registerDefaultState(
             this.stateDefinition.any()
+                .setValue(IEProperties.MULTIBLOCKSLAVE, false)
                 .setValue(SprinklerBlockEntity.ACTIVE, false)
                 .setValue(SprinklerBlockEntity.USING_PESTICIDE, false)
         );
