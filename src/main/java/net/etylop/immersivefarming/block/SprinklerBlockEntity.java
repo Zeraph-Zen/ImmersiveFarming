@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
+import net.etylop.immersivefarming.fluid.IFFluids;
 import net.etylop.immersivefarming.particle.RegisterParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -237,7 +238,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
 
     private boolean isFluidValid(Fluid fluid) {
         if (tank.isEmpty()) {
-            if (fluid == Fluids.WATER || fluid == IEFluids.HERBICIDE.getStill()) {
+            if (fluid == Fluids.WATER || fluid == IFFluids.TREATED_WATER_FLUID.get()) {
                 return true;
             }
         }
