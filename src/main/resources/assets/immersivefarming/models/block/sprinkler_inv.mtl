@@ -1,6 +1,0 @@
-newmtl top
-map_Kd immersivefarming:block/sprinkler_top
-newmtl side
-map_Kd immersivefarming:block/sprinkler_side_none
-newmtl bottom
-map_Kd immersivefarming:block/sprinkler_up_none
