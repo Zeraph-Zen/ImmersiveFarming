@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
-import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.etylop.immersivefarming.block.IFBlocks;
@@ -120,7 +119,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
         {
             tank.drain(waterConsumption, IFluidHandler.FluidAction.EXECUTE);
 
-            if (this.tank.getFluid().getFluid() == IEFluids.HERBICIDE.getStill()) {
+            if (this.tank.getFluid().getFluid() == IFFluids.TREATED_WATER_FLUID.get()) {
                 setState(getBlockState().setValue(ACTIVE, true).setValue(USING_PESTICIDE, true));
             }
             else {
@@ -156,7 +155,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
             double d0 = (double)pPos.getX() + 0.5D;
             double d1 = (double)pPos.getY();
             double d2 = (double)pPos.getZ() + 0.5D;
-            getLevelNonnull().playLocalSound(d0, d1, d2, SoundEvents.GRASS_FALL, SoundSource.BLOCKS, 1.0F, 2.0F, false);
+            getLevelNonnull().playLocalSound(d0, d1, d2, SoundEvents.GRASS_FALL, SoundSource.BLOCKS, 2.0F, 2.0F, false);
             if (getBlockState().getValue(USING_PESTICIDE)) {
                 spawnPesticideParticles();
             }
