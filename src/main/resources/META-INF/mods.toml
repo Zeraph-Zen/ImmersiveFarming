@@ -40,9 +40,8 @@ authors="Etylop" #optional
 # IMPORTANT NOTE: this is NOT an instruction as to which environments (CLIENT or DEDICATED SERVER) your mod loads on. Your mod should load (and maybe do nothing!) whereever it finds itself.
 #displayTest="MATCH_VERSION" # MATCH_VERSION is the default if nothing is specified (#optional)
 
-# The description text for the mod (multi line!) (#mandatory)
+# The description text for the mod (multi line!) (#mandatory) TODO write it
 description='''
-TODO
 Mod made for an immersive farming experience.
 '''
 
@@ -70,7 +69,7 @@ Mod made for an immersive farming experience.
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
     side="BOTH"
 
-[[dependencies.examplemod]]
+[[dependencies.immersivefarming]]
     modId="minecraft"
     mandatory=true
     versionRange="[1.18.2,1.19)"

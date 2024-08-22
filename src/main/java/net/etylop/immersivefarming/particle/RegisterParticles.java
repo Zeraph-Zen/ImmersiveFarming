@@ -15,6 +15,8 @@ public class RegisterParticles {
     public static final RegistryObject<SimpleParticleType> SPRINKLER_PARTICLES =
             PARTICLE_TYPES.register("sprinkler_particles", () -> new SimpleParticleType(true));
 
+    public static final RegistryObject<SimpleParticleType> CONTAMINATION_PARTICLES =
+            PARTICLE_TYPES.register("contamination_particles", () -> new SimpleParticleType(true));
     public static void register(IEventBus eventBus) {
         PARTICLE_TYPES.register(eventBus);
     }

@@ -2,6 +2,7 @@ package net.etylop.immersivefarming.event;
 
 import net.etylop.immersivefarming.ImmersiveFarming;
 import net.etylop.immersivefarming.particle.RegisterParticles;
+import net.etylop.immersivefarming.particle.custom.ContaminationParticles;
 import net.etylop.immersivefarming.particle.custom.SprinklerParticles;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
@@ -14,5 +15,7 @@ public class ModEventBusEvents {
     public static void registerParticleFactories(final ParticleFactoryRegisterEvent event) {
         Minecraft.getInstance().particleEngine.register(RegisterParticles.SPRINKLER_PARTICLES.get(),
                 SprinklerParticles.Provider::new);
+        Minecraft.getInstance().particleEngine.register(RegisterParticles.CONTAMINATION_PARTICLES.get(),
+                ContaminationParticles.Provider::new);
     }
 }

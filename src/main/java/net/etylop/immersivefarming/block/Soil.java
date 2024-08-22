@@ -1,8 +1,8 @@
 package net.etylop.immersivefarming.block;
 
+import net.etylop.immersivefarming.particle.RegisterParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -22,25 +22,48 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FarmBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.fml.common.Mod;
 
 import java.util.Random;
+import java.util.Set;
 
 public class Soil extends FarmBlock {
     public static final int TILL_MAX = 7;
     public static final IntegerProperty TILL = IntegerProperty.create("till",0,TILL_MAX);
+    public static final int FERTILITY_MAX = 7;
+    public static final IntegerProperty FERTILITY = IntegerProperty.create("fertility", 0, FERTILITY_MAX);
+
+    // Probability for a crop to become sick during a random tick
+    public static final float START_CONTAMINATION = 0.1f;
+    // Probability for a crop to contaminate an adjacent crop during a random tick
+    public static final float PROXIMITY_CONTAMINATION = 0.8f;
+    // Probability for a crop to die when contaminated during a random tick
+    public static final float LETHALITY_CONTAMINATION = 0.0f;
+    public static final BooleanProperty CONTAMINATED = BooleanProperty.create("contaminated");
 
     public Soil(Properties properties) {
         super(properties);
         this.registerDefaultState(
             this.stateDefinition.any()
                 .setValue(TILL, 0)
+                .setValue(FERTILITY, 0)
+                .setValue(CONTAMINATED, false)
         );
     }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
+        super.createBlockStateDefinition(pBuilder);
+        pBuilder.add(TILL);
+        pBuilder.add(FERTILITY);
+        pBuilder.add(CONTAMINATED);
+    }
+
 
     @Override
     public boolean canSustainPlant(BlockState state, BlockGetter level, BlockPos pos, Direction facing, IPlantable plantable) {
@@ -93,13 +116,9 @@ public class Soil extends FarmBlock {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        super.createBlockStateDefinition(pBuilder);
-        pBuilder.add(TILL);
-    }
-
-    @Override
     public void randomTick(BlockState pState, ServerLevel pLevel, BlockPos pPos, Random pRandom) {
+
+        // Update moisture level
         int i = pState.getValue(MOISTURE);
         if (!isNearWater(pLevel, pPos) && !pLevel.isRainingAt(pPos.above())) {
             if (i > 0) {
@@ -113,8 +132,43 @@ public class Soil extends FarmBlock {
             pLevel.setBlock(pPos, pState.setValue(MOISTURE, Integer.valueOf(7)), 2);
         }
 
+        // Update contaminated level
+        boolean contaminated = pState.getValue(CONTAMINATED);
+        boolean isUnderCrops = isUnderCrops(pLevel, pPos);
+        if (isUnderCrops && !contaminated && Math.random()<START_CONTAMINATION) {
+            pLevel.setBlock(pPos, pState.setValue(CONTAMINATED, true), 2);
+        }
+        else if (!isUnderCrops && contaminated) {
+            pLevel.setBlock(pPos, pState.setValue(CONTAMINATED, false), 2);
+        }
+        else if (isUnderCrops && contaminated && Math.random()<LETHALITY_CONTAMINATION) {
+            pLevel.setBlock(pPos.above(), Blocks.DEAD_BUSH.defaultBlockState(), 3);
+            pLevel.setBlock(pPos, Blocks.DIRT.defaultBlockState(), 2);
+        }
+        else if (isUnderCrops && contaminated) {
+            for (BlockPos blockpos : BlockPos.betweenClosed(pPos.offset(-1, 0, -1), pPos.offset(1, 1, 1))) {
+                if (pLevel.getBlockState(blockpos).getBlock() instanceof Soil && isUnderCrops(pLevel, blockpos) && Math.random()<PROXIMITY_CONTAMINATION) {
+                    BlockState newSoil = pLevel.getBlockState(blockpos).setValue(CONTAMINATED, true);
+                    pLevel.setBlock(blockpos, newSoil, 2);
+                }
+            }
+        }
     }
 
+    @Override
+    public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, Random pRandom) {
+        if (pState.getValue(CONTAMINATED)) {
+            spawnContaminatedParticles(pLevel, pPos);
+        }
+    }
+
+    private static void spawnContaminatedParticles(Level level, BlockPos pos) {
+        for(int i = 0; i < 10; i++) {
+            level.addParticle(RegisterParticles.CONTAMINATION_PARTICLES.get(),
+                    pos.getX() + Math.random(), pos.getY() + 1 + Math.random(), pos.getZ() + Math.random(),
+                    0,0,0);
+        }
+    }
 
     private static boolean isNearWater(LevelReader pLevel, BlockPos pPos) {
         for (BlockPos blockpos : BlockPos.betweenClosed(pPos.offset(-1, 0, -1), pPos.offset(1, 1, 1))) {
@@ -122,7 +176,10 @@ public class Soil extends FarmBlock {
                 return true;
             }
         }
-        for (BlockPos blockpos : BlockPos.betweenClosed(pPos.offset(-6, 1, -6), pPos.offset(6, 4, 6))) {
+        ChunkAccess chunk = pLevel.getChunk(pPos);
+        Set<BlockPos> blocksPosSet = chunk.getBlockEntitiesPos();
+        //TODO optimize (check Chunk#loadedTileEntityList for sprinklers)
+        for (BlockPos blockpos : BlockPos.betweenClosed(pPos.offset(-5, 0, -5), pPos.offset(5, 2, 5))) {
             if (pLevel.getBlockState(blockpos).getBlock() instanceof SprinklerBlock && pLevel.getBlockState(blockpos).getValue(SprinklerBlockEntity.ACTIVE)) {
                 return true;
             }
@@ -145,6 +202,6 @@ public class Soil extends FarmBlock {
 
     @Override
     public boolean isFertile(BlockState state, BlockGetter level, BlockPos pos) {
-        return super.isFertile(state, level, pos);
+        return state.getValue(MOISTURE)>0;
     }
 }

@@ -1,13 +1,9 @@
 package net.etylop.immersivefarming.block;
 
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
-import blusunrize.immersiveengineering.common.blocks.metal.FluidPumpBlock;
-import blusunrize.immersiveengineering.common.register.IEBlocks;
 import net.etylop.immersivefarming.ImmersiveFarming;
 import net.etylop.immersivefarming.item.ModCreativeTab;
 import net.etylop.immersivefarming.item.ModItems;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -39,6 +35,8 @@ public class ModBlocks {
             "soil",
             () -> new Soil(BlockBehaviour.Properties.copy(Blocks.FARMLAND))
     );
+
+    // TODO fix sprinkler occlusion
     public static final RegistryObject<SprinklerBlock> SPRINKLER = registerBlock(
             "sprinkler",
             () -> new SprinklerBlock(Block.Properties.of(Material.METAL)

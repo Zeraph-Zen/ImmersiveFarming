@@ -1,6 +1,5 @@
 package net.etylop.immersivefarming.block;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
@@ -26,6 +25,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -103,21 +103,25 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
 
     @Override
     public void tickServer() {
-        //System.out.println(tank.getFluid().getAmount());
         if (isDummy())
             return;
 
-        if (getLevelNonnull().getGameTime()%20==0 && !isRSPowered() && this.tank.getFluidAmount() >= waterConsumption)
+        if (getLevelNonnull().getGameTime()%20!=0)
+            return;
+
+        if (!isRSPowered() && this.tank.getFluidAmount() >= waterConsumption)
         {
             tank.drain(waterConsumption, IFluidHandler.FluidAction.EXECUTE);
-            getBlockState().setValue(ACTIVE, true);
+            setState(getBlockState().setValue(ACTIVE, true));
         }
         else
         {
-            getBlockState().setValue(ACTIVE, false);
+            setState(getBlockState().setValue(ACTIVE, false));
         }
 
-        if (this.tank.getFluidAmount() > this.tank.getCapacity()/2) {
+
+        if (this.tank.getFluidAmount() > this.tank.getCapacity()/2)
+        {
             int i = outputFluid(tank.getFluid(), IFluidHandler.FluidAction.EXECUTE);
             tank.drain(i, IFluidHandler.FluidAction.EXECUTE);
         }
@@ -131,10 +135,15 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
         if (isDummy())
             return;
 
-        if (getLevelNonnull().getGameTime()%20==0 && !isRSPowered() && this.tank.getFluidAmount() >= waterConsumption)
+        if (getLevelNonnull().getGameTime()%20==0 && getBlockState().getValue(ACTIVE))
         {
             spawnParticles();
-            // TODO add sound
+            //TODO fix sound
+            BlockPos pPos = getBlockPos().above();
+            double d0 = (double)pPos.getX() + 0.5D;
+            double d1 = (double)pPos.getY();
+            double d2 = (double)pPos.getZ() + 0.5D;
+            getLevelNonnull().playLocalSound(d0, d1, d2, SoundEvents.GRASS_FALL, SoundSource.BLOCKS, 1.0F, 1.0F, false);
         }
     }
 
@@ -379,7 +388,6 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
             getLevelNonnull().addParticle(RegisterParticles.SPRINKLER_PARTICLES.get(),
                     pos.getX() + 0.5d, pos.getY() + 1d, pos.getZ() + 0.5d,
                     Math.cos(i)*velocity, 0.7*velocity, Math.sin(i)*velocity);
-            ImmersiveEngineering.proxy.handleTileSound(SoundEvents.GRASS_FALL, this, getBlockState().getValue(ACTIVE), .25f, 1);
         }
     }
 
