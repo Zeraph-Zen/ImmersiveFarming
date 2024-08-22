@@ -79,7 +79,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
     private final Map<Direction, CapabilityReference<IFluidHandler>> neighborFluids = CapabilityReference.forAllNeighbors(
             this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
     );
-    private final int waterConsumption = 10;
+    private final int WATER_CONSUMPTION = 10;
 
 
     public SprinklerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -115,9 +115,9 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
         if (getLevelNonnull().getGameTime()%20!=0)
             return;
 
-        if (!isRSPowered() && this.tank.getFluidAmount() >= waterConsumption)
+        if (!isRSPowered() && this.tank.getFluidAmount() >= WATER_CONSUMPTION)
         {
-            tank.drain(waterConsumption, IFluidHandler.FluidAction.EXECUTE);
+            tank.drain(WATER_CONSUMPTION, IFluidHandler.FluidAction.EXECUTE);
 
             if (this.tank.getFluid().getFluid() == IFFluids.TREATED_WATER_FLUID.get()) {
                 setState(getBlockState().setValue(ACTIVE, true).setValue(USING_PESTICIDE, true));
@@ -152,9 +152,9 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
             spawnParticles();
             //TODO fix sound
             BlockPos pPos = getBlockPos().above();
-            double d0 = (double)pPos.getX() + 0.5D;
-            double d1 = (double)pPos.getY();
-            double d2 = (double)pPos.getZ() + 0.5D;
+            double d0 = pPos.getX() + 0.5D;
+            double d1 = pPos.getY();
+            double d2 = pPos.getZ() + 0.5D;
             getLevelNonnull().playLocalSound(d0, d1, d2, SoundEvents.GRASS_FALL, SoundSource.BLOCKS, 2.0F, 2.0F, false);
             if (getBlockState().getValue(USING_PESTICIDE)) {
                 spawnPesticideParticles();
@@ -238,14 +238,9 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
 
     private boolean isFluidValid(Fluid fluid) {
         if (tank.isEmpty()) {
-            if (fluid == Fluids.WATER || fluid == IFFluids.TREATED_WATER_FLUID.get()) {
-                return true;
-            }
+            return fluid == Fluids.WATER || fluid == IFFluids.TREATED_WATER_FLUID.get();
         }
-        else if (fluid == tank.getFluid().getFluid()) {
-            return true;
-        }
-        return false;
+        else return fluid == tank.getFluid().getFluid();
     }
 
     @Nullable
@@ -290,7 +285,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
     public void breakDummies(BlockPos pos, BlockState state)
     {
         for(int i = 0; i <= 1; i++)
-            if(Utils.isBlockAt(level, getBlockPos().offset(0, isDummy()?-1: 0, 0).offset(0, i, 0), IFBlocks.SPRINKLER.get()))
+            if(Utils.isBlockAt(getLevelNonnull(), getBlockPos().offset(0, isDummy()?-1: 0, 0).offset(0, i, 0), IFBlocks.SPRINKLER.get()))
                 level.removeBlock(getBlockPos().offset(0, isDummy()?-1: 0, 0).offset(0, i, 0), false);
     }
 
