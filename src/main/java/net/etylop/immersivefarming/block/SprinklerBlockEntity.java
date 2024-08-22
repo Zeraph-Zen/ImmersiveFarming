@@ -17,11 +17,13 @@ import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
+import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.etylop.immersivefarming.particle.RegisterParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -32,6 +34,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -69,6 +73,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
     private final Map<Direction, ResettableCapability<IFluidHandler>> sidedFluidHandler = new EnumMap<>(Direction.class);
 
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
+    public static final BooleanProperty USING_PESTICIDE = BooleanProperty.create("using_pesticide");
 
     private final Map<Direction, CapabilityReference<IFluidHandler>> neighborFluids = CapabilityReference.forAllNeighbors(
             this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
@@ -112,7 +117,13 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
         if (!isRSPowered() && this.tank.getFluidAmount() >= waterConsumption)
         {
             tank.drain(waterConsumption, IFluidHandler.FluidAction.EXECUTE);
-            setState(getBlockState().setValue(ACTIVE, true));
+
+            if (this.tank.getFluid().getFluid() == IEFluids.HERBICIDE.getStill()) {
+                setState(getBlockState().setValue(ACTIVE, true).setValue(USING_PESTICIDE, true));
+            }
+            else {
+                setState(getBlockState().setValue(ACTIVE, true).setValue(USING_PESTICIDE, false));
+            }
         }
         else
         {
@@ -120,7 +131,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
         }
 
 
-        if (this.tank.getFluidAmount() > this.tank.getCapacity()/2)
+        if (this.tank.getFluidAmount() > 0)
         {
             int i = outputFluid(tank.getFluid(), IFluidHandler.FluidAction.EXECUTE);
             tank.drain(i, IFluidHandler.FluidAction.EXECUTE);
@@ -143,7 +154,10 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
             double d0 = (double)pPos.getX() + 0.5D;
             double d1 = (double)pPos.getY();
             double d2 = (double)pPos.getZ() + 0.5D;
-            getLevelNonnull().playLocalSound(d0, d1, d2, SoundEvents.GRASS_FALL, SoundSource.BLOCKS, 1.0F, 1.0F, false);
+            getLevelNonnull().playLocalSound(d0, d1, d2, SoundEvents.GRASS_FALL, SoundSource.BLOCKS, 1.0F, 2.0F, false);
+            if (getBlockState().getValue(USING_PESTICIDE)) {
+                spawnPesticideParticles();
+            }
         }
     }
 
@@ -199,8 +213,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
         return 0;
     }
 
-    public int inputFluid(IFluidHandler.FluidAction action) {
-        int acceptedFluid = 0;
+    public void inputFluid(IFluidHandler.FluidAction action) {
         int maxFluid = tank.getCapacity() - tank.getFluidAmount();
         for (Direction direction : Direction.values()) {
             if(sideConfig.get(direction) != IEEnums.IOSideConfig.INPUT)
@@ -210,12 +223,28 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
             if(handler == null)
                 continue;
 
-            FluidStack extractResource = handler.drain(maxFluid, action);
-            int fluidExtracted = tank.fill(extractResource, action);
-            acceptedFluid += fluidExtracted;
-            maxFluid -= fluidExtracted;
+            FluidStack pipeResource = handler.drain(maxFluid, IFluidHandler.FluidAction.SIMULATE);
+
+            if (isFluidValid(pipeResource.getFluid())) {
+                int amountFilled = tank.fill(pipeResource, action);
+                handler.drain(amountFilled, action);
+                maxFluid -= amountFilled;
+                if (maxFluid == 0)
+                    return;
+            }
         }
-        return acceptedFluid;
+    }
+
+    private boolean isFluidValid(Fluid fluid) {
+        if (tank.isEmpty()) {
+            if (fluid == Fluids.WATER || fluid == IEFluids.HERBICIDE.getStill()) {
+                return true;
+            }
+        }
+        else if (fluid == tank.getFluid().getFluid()) {
+            return true;
+        }
+        return false;
     }
 
     @Nullable
@@ -388,6 +417,15 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
             getLevelNonnull().addParticle(RegisterParticles.SPRINKLER_PARTICLES.get(),
                     pos.getX() + 0.5d, pos.getY() + 1d, pos.getZ() + 0.5d,
                     Math.cos(i)*velocity, 0.7*velocity, Math.sin(i)*velocity);
+        }
+    }
+
+    protected void spawnPesticideParticles() {
+        BlockPos pos = getBlockPos().above();
+        for (int i=0; i<10; i++) {
+            getLevelNonnull().addParticle(ParticleTypes.HAPPY_VILLAGER.getType(),
+                    pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(),
+                    0, 0,0);
         }
     }
 

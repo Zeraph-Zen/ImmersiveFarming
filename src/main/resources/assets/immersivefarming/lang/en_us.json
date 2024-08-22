@@ -1,5 +1,7 @@
 {
   "block.immersivefarming.soil": "Soil",
   "block.immersivefarming.sprinkler": "Sprinkler",
-  "itemGroup.immersivefarmingtab": "Immersive Farming"
+  "itemGroup.immersivefarmingtab": "Immersive Farming",
+  "item.immersivefarming.treated_water_bucket": "Treated Water Bucket",
+  "fluid.immersivefarming.treated_water_fluid": "Treated Water"
 }

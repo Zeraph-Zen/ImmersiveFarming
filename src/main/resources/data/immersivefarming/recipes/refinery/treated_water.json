@@ -1,0 +1,16 @@
+{
+  "type": "immersiveengineering:refinery",
+  "result": {
+    "fluid": "immersivefarming:treated_water_fluid",
+    "amount": 10
+  },
+  "input0": {
+    "tag": "minecraft:water",
+    "amount": 9
+  },
+  "input1": {
+    "tag": "forge:herbicide",
+    "amount": 1
+  },
+  "energy": 20
+}

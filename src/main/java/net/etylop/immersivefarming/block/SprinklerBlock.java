@@ -14,6 +14,11 @@ public class SprinklerBlock extends IEEntityBlock<SprinklerBlockEntity>
     public SprinklerBlock(Properties props)
     {
         super(ModBlockEntities.SPRINKLER, props);
+        this.registerDefaultState(
+            this.stateDefinition.any()
+                .setValue(SprinklerBlockEntity.ACTIVE, false)
+                .setValue(SprinklerBlockEntity.USING_PESTICIDE, false)
+        );
     }
 
     @Override
@@ -22,6 +27,7 @@ public class SprinklerBlock extends IEEntityBlock<SprinklerBlockEntity>
         super.createBlockStateDefinition(builder);
         builder.add(IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE, BlockStateProperties.WATERLOGGED);
         builder.add(SprinklerBlockEntity.ACTIVE);
+        builder.add(SprinklerBlockEntity.USING_PESTICIDE);
     }
 
     @Override

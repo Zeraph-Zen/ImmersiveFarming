@@ -41,7 +41,7 @@ public class Soil extends FarmBlock {
     // Probability for a crop to become sick during a random tick
     public static final float START_CONTAMINATION = 0.1f;
     // Probability for a crop to contaminate an adjacent crop during a random tick
-    public static final float PROXIMITY_CONTAMINATION = 0.8f;
+    public static final float PROXIMITY_CONTAMINATION = 0.3f;
     // Probability for a crop to die when contaminated during a random tick
     public static final float LETHALITY_CONTAMINATION = 0.0f;
     public static final BooleanProperty CONTAMINATED = BooleanProperty.create("contaminated");
@@ -120,7 +120,8 @@ public class Soil extends FarmBlock {
 
         // Update moisture level
         int i = pState.getValue(MOISTURE);
-        if (!isNearWater(pLevel, pPos) && !pLevel.isRainingAt(pPos.above())) {
+        int waterNearby = isNearWater(pLevel, pPos);
+        if (waterNearby==0 && !pLevel.isRainingAt(pPos.above())) {
             if (i > 0) {
                 pLevel.setBlock(pPos, pState.setValue(MOISTURE, Integer.valueOf(i - 1)), 2);
             } else if (!isUnderCrops(pLevel, pPos)) {
@@ -135,7 +136,12 @@ public class Soil extends FarmBlock {
         // Update contaminated level
         boolean contaminated = pState.getValue(CONTAMINATED);
         boolean isUnderCrops = isUnderCrops(pLevel, pPos);
-        if (isUnderCrops && !contaminated && Math.random()<START_CONTAMINATION) {
+        if (waterNearby==2) {
+            if (contaminated) {
+                pLevel.setBlock(pPos, pState.setValue(CONTAMINATED, false), 2);
+            }
+        }
+        else if (isUnderCrops && !contaminated && Math.random()<START_CONTAMINATION) {
             pLevel.setBlock(pPos, pState.setValue(CONTAMINATED, true), 2);
         }
         else if (!isUnderCrops && contaminated) {
@@ -170,21 +176,32 @@ public class Soil extends FarmBlock {
         }
     }
 
-    private static boolean isNearWater(LevelReader pLevel, BlockPos pPos) {
-        for (BlockPos blockpos : BlockPos.betweenClosed(pPos.offset(-1, 0, -1), pPos.offset(1, 1, 1))) {
-            if (pLevel.getFluidState(blockpos).is(FluidTags.WATER)) {
-                return true;
-            }
-        }
+    private static int isNearWater(LevelReader pLevel, BlockPos pPos) {
+        /**
+         * Checks nearby blocks for sources of water
+         * @return 0: no water found, 1: water found, 2: treated water found
+         */
+
         ChunkAccess chunk = pLevel.getChunk(pPos);
         Set<BlockPos> blocksPosSet = chunk.getBlockEntitiesPos();
+        boolean found_sprinkler = false;
         //TODO optimize (check Chunk#loadedTileEntityList for sprinklers)
         for (BlockPos blockpos : BlockPos.betweenClosed(pPos.offset(-5, 0, -5), pPos.offset(5, 2, 5))) {
             if (pLevel.getBlockState(blockpos).getBlock() instanceof SprinklerBlock && pLevel.getBlockState(blockpos).getValue(SprinklerBlockEntity.ACTIVE)) {
-                return true;
+                found_sprinkler = true;
+                if (pLevel.getBlockState(blockpos).getValue(SprinklerBlockEntity.USING_PESTICIDE)) {
+                    return 2;
+                }
             }
         }
-        return false;
+        if (found_sprinkler)
+            return 1;
+        for (BlockPos blockpos : BlockPos.betweenClosed(pPos.offset(-1, 0, -1), pPos.offset(1, 1, 1))) {
+            if (pLevel.getFluidState(blockpos).is(FluidTags.WATER)) {
+                return 1;
+            }
+        }
+        return 0;
     }
 
     private static boolean isUnderCrops(BlockGetter pLevel, BlockPos pPos) {
