@@ -42,7 +42,7 @@ public class SprinklerRenderer extends IEBlockEntityRenderer<SprinklerBlockEntit
 
 		matrixStack.pushPose();
 		matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), angle, true));
-		renderBarrel(SPRINKLER_TOP, matrixStack, bufferIn, combinedLightIn, combinedOverlayIn);
+		renderBarrel(SPRINKLER_TOP, matrixStack, bufferIn, combinedLightIn	, combinedOverlayIn);
 		matrixStack.popPose();
 		matrixStack.popPose();
 	}
@@ -52,7 +52,7 @@ public class SprinklerRenderer extends IEBlockEntityRenderer<SprinklerBlockEntit
 		matrix.pushPose();
 		matrix.translate(-.5, -.5, -.5);
 		List<BakedQuad> quads = sprinklerModel.get().getQuads(null, null, Utils.RAND, EmptyModelData.INSTANCE);
-		RenderUtils.renderModelTESRFast(quads, buffer.getBuffer(RenderType.solid()), matrix, light, overlay);
+		RenderUtils.renderModelTESRFast(quads, buffer.getBuffer(RenderType.translucentMovingBlock()), matrix, light, overlay);
 		matrix.popPose();
 	}
 
