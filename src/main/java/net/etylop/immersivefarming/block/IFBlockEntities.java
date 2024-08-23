@@ -5,7 +5,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces;
 import blusunrize.immersiveengineering.common.blocks.MultiblockBEType;
 import com.google.common.collect.ImmutableSet;
 import net.etylop.immersivefarming.ImmersiveFarming;
-import net.etylop.immersivefarming.block.custom.SprinklerBlockEntity;
+import net.etylop.immersivefarming.block.entity.SprinklerBlockEntity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;

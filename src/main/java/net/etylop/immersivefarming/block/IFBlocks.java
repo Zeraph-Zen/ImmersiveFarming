@@ -21,15 +21,6 @@ import java.util.function.Supplier;
 
 public class IFBlocks {
 
-    private static final Supplier<BlockBehaviour.Properties> METAL_PROPERTIES_NO_OVERLAY =
-            () -> Block.Properties.of(Material.METAL)
-                    .sound(SoundType.METAL)
-                    .strength(3, 15)
-                    .requiresCorrectToolForDrops()
-                    .isViewBlocking((state, blockReader, pos) -> false);
-    private static final Supplier<BlockBehaviour.Properties> METAL_PROPERTIES_NO_OCCLUSION = () -> METAL_PROPERTIES_NO_OVERLAY.get().noOcclusion();
-
-
     public static final DeferredRegister<Block> BLOCKS =
             DeferredRegister.create(ForgeRegistries.BLOCKS, ImmersiveFarming.MOD_ID);
 
@@ -45,7 +36,8 @@ public class IFBlocks {
                     .sound(SoundType.METAL)
                     .strength(3, 15)
                     .requiresCorrectToolForDrops()
-                    .isViewBlocking((state, blockReader, pos) -> false))
+                    .isViewBlocking((state, blockReader, pos) -> false)
+                    .noOcclusion())
     );
 
 

@@ -4,7 +4,7 @@
       "model":"immersivefarming:block/sprinkler_bottom"
     },
     "multiblockslave=true":{
-      "model":"immersivefarming:block/sprinkler"
+      "model":"immersivefarming:block/sprinkler_top_base"
     }
   }
 }

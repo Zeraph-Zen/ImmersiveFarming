@@ -1,5 +1,6 @@
 package net.etylop.immersivefarming.block.custom;
 
+import net.etylop.immersivefarming.block.entity.SprinklerBlockEntity;
 import net.etylop.immersivefarming.particle.IFParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

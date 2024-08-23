@@ -1,4 +1,4 @@
-package net.etylop.immersivefarming.block.custom;
+package net.etylop.immersivefarming.block.entity;
 
 import blusunrize.immersiveengineering.api.IEEnums;
 import blusunrize.immersiveengineering.api.IEProperties;
@@ -81,6 +81,8 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
     );
     private final int WATER_CONSUMPTION = 10;
 
+    public float sprinklerRotation = 0;
+
 
     public SprinklerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -144,20 +146,22 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
     @Override
     public void tickClient()
     {
-        if (isDummy())
+        if (isDummy()) {
             return;
-
-        if (getLevelNonnull().getGameTime()%20==0 && getBlockState().getValue(ACTIVE))
-        {
-            spawnParticles();
-            //TODO fix sound
-            BlockPos pPos = getBlockPos().above();
-            double d0 = pPos.getX() + 0.5D;
-            double d1 = pPos.getY();
-            double d2 = pPos.getZ() + 0.5D;
-            getLevelNonnull().playLocalSound(d0, d1, d2, SoundEvents.GRASS_FALL, SoundSource.BLOCKS, 2.0F, 2.0F, false);
-            if (getBlockState().getValue(USING_PESTICIDE)) {
-                spawnPesticideParticles();
+        }
+        if (getBlockState().getValue(ACTIVE)) {
+            sprinklerRotation = (sprinklerRotation + 12) % 360;
+            if (getLevelNonnull().getGameTime()%20==0)
+            {
+                spawnParticles();
+                BlockPos pPos = getBlockPos().above();
+                double d0 = pPos.getX() + 0.5D;
+                double d1 = pPos.getY();
+                double d2 = pPos.getZ() + 0.5D;
+                getLevelNonnull().playLocalSound(d0, d1, d2, SoundEvents.GRASS_FALL, SoundSource.BLOCKS, 2.0F, 2.0F, false);
+                if (getBlockState().getValue(USING_PESTICIDE)) {
+                    spawnPesticideParticles();
+                }
             }
         }
     }
