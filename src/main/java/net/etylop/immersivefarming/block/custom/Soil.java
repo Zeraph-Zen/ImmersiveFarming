@@ -88,10 +88,10 @@ public class Soil extends FarmBlock {
             return 2;
         }
         else if (tag == BlockTags.NEEDS_DIAMOND_TOOL) {
-            return 2 + (Math.random()>0.5 ? 1 : 0);
+            return 3;
         }
         else if (tag == Tags.Blocks.NEEDS_NETHERITE_TOOL) {
-            return 3;
+            return 4;
         }
         return 1;
     }
