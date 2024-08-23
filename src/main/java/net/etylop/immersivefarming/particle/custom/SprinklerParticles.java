@@ -11,13 +11,14 @@ public class SprinklerParticles extends TextureSheetParticle {
                                SpriteSet spriteSet, double xd, double yd, double zd) {
         super(level, xCoord, yCoord, zCoord, xd, yd, zd);
 
-        this.friction = 0.6F;
+        this.friction = 0.9F;
         this.xd = xd;
         this.yd = yd;
         this.zd = zd;
         this.quadSize *= 0.85F;
         this.lifetime = 100;
         this.gravity = 2;
+        this.hasPhysics = false;
         this.setSpriteFromAge(spriteSet);
 
         this.rCol = 1f;

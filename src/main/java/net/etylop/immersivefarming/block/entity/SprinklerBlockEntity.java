@@ -150,7 +150,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
             return;
         }
         if (getBlockState().getValue(ACTIVE)) {
-            sprinklerRotation = (sprinklerRotation + 12) % 360;
+            sprinklerRotation = (sprinklerRotation + 18) % 360;
             if (getLevelNonnull().getGameTime()%20==0)
             {
                 spawnParticles();
@@ -413,10 +413,10 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
     protected void spawnParticles() {
         BlockPos pos = getBlockPos().above();
         for(int i = 0; i < 100; i++) {
-            double velocity = 1 + 0.5*Math.random();
+            double velocity = 0.3 + 0.5*Math.random();
             getLevelNonnull().addParticle(IFParticles.SPRINKLER_PARTICLES.get(),
-                    pos.getX() + 0.5d, pos.getY() + 1d, pos.getZ() + 0.5d,
-                    Math.cos(i)*velocity, 0.7*velocity, Math.sin(i)*velocity);
+                    pos.getX() + 0.5d, pos.getY() + 0.6d, pos.getZ() + 0.5d,
+                    Math.cos(i)*velocity, 0.6*velocity, Math.sin(i)*velocity);
         }
     }
 
