@@ -31,6 +31,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -83,6 +84,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
             ;
     public float sprinklerRotation = 0;
     protected float sprinklerRotationSpeed = 18;
+    protected Block referenceBlock = IFBlocks.SPRINKLER.get();
 
 
     public SprinklerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -290,7 +292,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
     public void breakDummies(BlockPos pos, BlockState state)
     {
         for(int i = 0; i <= 1; i++)
-            if(Utils.isBlockAt(getLevelNonnull(), getBlockPos().offset(0, isDummy()?-1: 0, 0).offset(0, i, 0), IFBlocks.SPRINKLER.get()))
+            if(Utils.isBlockAt(getLevelNonnull(), getBlockPos().offset(0, isDummy()?-1: 0, 0).offset(0, i, 0), referenceBlock))
                 level.removeBlock(getBlockPos().offset(0, isDummy()?-1: 0, 0).offset(0, i, 0), false);
     }
 
