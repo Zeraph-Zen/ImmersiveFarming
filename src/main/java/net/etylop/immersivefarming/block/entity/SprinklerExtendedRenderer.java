@@ -24,7 +24,7 @@ import java.util.List;
 
 public class SprinklerExtendedRenderer extends IEBlockEntityRenderer<SprinklerExtendedBlockEntity>
 {
-	public static String NAME_SPRINKLER = "sprinkler_top";
+	public static String NAME_SPRINKLER = "sprinkler_extended_top";
 	public static IFDynamicModel SPRINKLER_TOP;
 
 	@Override
