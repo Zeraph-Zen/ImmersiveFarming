@@ -13,11 +13,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.event.entity.player.BonemealEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.event.world.ChunkWatchEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -33,7 +31,6 @@ public class IFEvents {
         private static final Map<ChunkPos, List<BlockPos>> chunkCrops = new HashMap<>();
         private static final Map<BlockPos, Long> cropDate = new HashMap<>();
 
-        //TODO : search for hoe use event
         @SubscribeEvent
         public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
             Block target = event.getWorld().getBlockState(event.getPos()).getBlock();
@@ -76,46 +73,6 @@ public class IFEvents {
                 return false;
         }
 
-        private static final long getGeometricSample(double p) {
-            double u = Math.random();
-            long k = (int) Math.ceil(Math.log(1-u)/Math.log(1+p) + 1);
-            return 2-k;
-        }
-
-        private static void growRandomCrop(BlockState state, Level level, BlockPos pos, long time) {
-            int age = state.getValue(CropBlock.AGE);
-            long cropTime = 0;
-            while (age <= CropBlock.MAX_AGE && cropTime <= time) {
-                cropTime += getGeometricSample(3*0.33/4096);
-                age += 1;
-            }
-            level.setBlock(pos, state.getBlock().defaultBlockState().setValue(CropBlock.AGE, Integer.valueOf(age-1)), 2);
-        }
-
-        //TODO: optimize if keep
-        @SubscribeEvent
-        public static void onChunkLoad(ChunkWatchEvent.Watch event) {
-            /*
-            if (event.getWorld() == null || event.getWorld().isClientSide()) return;
-            ChunkPos chunkPos = event.getPos();
-            if (chunkCrops.get(chunkPos) == null) return;
-            List<BlockPos> crops = chunkCrops.get(chunkPos);
-            long currentTick = event.getWorld().dayTime();
-            for (BlockPos cropPos : crops) {
-                if (!(event.getWorld().getBlockState(cropPos).getBlock() instanceof CropBlock)) continue;
-                if (!canCropGrow(event.getWorld(), cropPos)) continue;
-
-                long delta = currentTick - cropDate.get(cropPos);
-                BlockState crop = event.getWorld().getBlockState(cropPos);
-
-                if (net.minecraftforge.common.ForgeHooks.onCropsGrowPre((Level) event.getWorld(), cropPos, event.getWorld().getBlockState(cropPos), true)) {
-                    growRandomCrop(crop, event.getWorld(), cropPos, delta);
-                    net.minecraftforge.common.ForgeHooks.onCropsGrowPost((Level) event.getWorld(), cropPos, event.getWorld().getBlockState(cropPos));
-                }
-            }
-            */
-        }
-
         @SubscribeEvent
         public static void onPlaceCrop(BlockEvent.EntityPlaceEvent event) {
             if (event.getWorld().getBlockState(event.getPos()).getBlock() instanceof CropBlock &&
@@ -128,7 +85,5 @@ public class IFEvents {
                 chunkCrops.get(chunkPos).add(event.getPos());
             }
         }
-
-
     }
 }

@@ -29,7 +29,6 @@ public class IFBlocks {
             () -> new Soil(BlockBehaviour.Properties.copy(Blocks.FARMLAND))
     );
 
-    // TODO fix item block
     public static final RegistryObject<SprinklerBlock> SPRINKLER = registerBlock(
             "sprinkler",
             () -> new SprinklerBlock(Block.Properties.of(Material.METAL)
