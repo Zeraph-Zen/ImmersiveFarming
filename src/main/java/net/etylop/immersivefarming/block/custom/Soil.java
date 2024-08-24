@@ -184,17 +184,30 @@ public class Soil extends FarmBlock {
          */
 
         ChunkAccess chunk = pLevel.getChunk(pPos);
-        Set<BlockPos> blocksPosSet = chunk.getBlockEntitiesPos();
         boolean found_sprinkler = false;
-        //TODO optimize (check Chunk#loadedTileEntityList for sprinklers)
-        for (BlockPos blockpos : BlockPos.betweenClosed(pPos.offset(-5, 0, -5), pPos.offset(5, 2, 5))) {
-            if (pLevel.getBlockState(blockpos).getBlock() instanceof SprinklerBlock && pLevel.getBlockState(blockpos).getValue(SprinklerBlockEntity.ACTIVE)) {
-                found_sprinkler = true;
-                if (pLevel.getBlockState(blockpos).getValue(SprinklerBlockEntity.USING_PESTICIDE)) {
-                    return 2;
+        int chunkPosX = chunk.getPos().x;
+        int chunkPosZ = chunk.getPos().z;
+
+        for (int i=chunkPosX-1; i<chunkPosX+2; i++) {
+            for (int j=chunkPosZ-1; j<chunkPosZ+2; j++) {
+                Set<BlockPos> entitiesPos = pLevel.getChunk(i,j).getBlockEntitiesPos();
+                for (BlockPos pos : entitiesPos) {
+                    if (pLevel.getBlockState(pos).getBlock() instanceof SprinklerBlock && distance(pPos, pos)<6) {
+                        found_sprinkler = true;
+                        if (pLevel.getBlockState(pos).getValue(SprinklerBlockEntity.USING_PESTICIDE)) {
+                            return 2;
+                        }
+                    }
+                    else if (pLevel.getBlockState(pos).getBlock() instanceof SprinklerExtendedBlock && distance(pPos, pos)<11) {
+                        found_sprinkler = true;
+                        if (pLevel.getBlockState(pos).getValue(SprinklerBlockEntity.USING_PESTICIDE)) {
+                            return 2;
+                        }
+                    }
                 }
             }
         }
+
         if (found_sprinkler)
             return 1;
         for (BlockPos blockpos : BlockPos.betweenClosed(pPos.offset(-1, 0, -1), pPos.offset(1, 1, 1))) {
