@@ -1,6 +1,6 @@
 # Description
 
-Immersive Farming is an addon for Immersive Engineering focusing on improving the farming experience. Players will be able to craft sprinklers, to better irrigate their crops and make pesticides to prevent their crops from getting sick and dying. Immersive farming also introduces several new mechanics that will be detailed later on.
+Immersive Farming is an addon for Immersive Engineering focusing on improving the farming experience. Players will be able to craft sprinklers, to better irrigate their crops and make pesticides to prevent their crops from getting sick and dying. Immersive Farming also introduces several new mechanics that change vanilla farming.
 
 
 # Features
