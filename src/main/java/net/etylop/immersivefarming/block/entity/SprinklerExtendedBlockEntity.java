@@ -10,8 +10,9 @@ public class SprinklerExtendedBlockEntity extends SprinklerBlockEntity {
 
     public SprinklerExtendedBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        this.sprinklerRotationSpeed = 1f;
-        this.referenceBlock = IFBlocks.SPRINKLER_EXTENDED.get();
+        this.ROTATION_SPEED = 1f;
+        this.REFERENCE_BLOCK = IFBlocks.SPRINKLER_EXTENDED.get();
+        this.WATER_CONSUMPTION = 30;
     }
 
     @Override

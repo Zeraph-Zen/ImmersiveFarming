@@ -80,11 +80,11 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
     private final Map<Direction, CapabilityReference<IFluidHandler>> neighborFluids = CapabilityReference.forAllNeighbors(
             this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
     );
-    private final int WATER_CONSUMPTION = 10
+    protected int WATER_CONSUMPTION = 10
             ;
     public float sprinklerRotation = 0;
-    protected float sprinklerRotationSpeed = 18;
-    protected Block referenceBlock = IFBlocks.SPRINKLER.get();
+    protected float ROTATION_SPEED = 18;
+    protected Block REFERENCE_BLOCK = IFBlocks.SPRINKLER.get();
 
 
     public SprinklerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -153,7 +153,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
             return;
         }
         if (getBlockState().getValue(ACTIVE)) {
-            sprinklerRotation = (sprinklerRotation + sprinklerRotationSpeed) % 360;
+            sprinklerRotation = (sprinklerRotation + ROTATION_SPEED) % 360;
             if (getLevelNonnull().getGameTime()%20==0)
             {
                 spawnParticles();
@@ -292,7 +292,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
     public void breakDummies(BlockPos pos, BlockState state)
     {
         for(int i = 0; i <= 1; i++)
-            if(Utils.isBlockAt(getLevelNonnull(), getBlockPos().offset(0, isDummy()?-1: 0, 0).offset(0, i, 0), referenceBlock))
+            if(Utils.isBlockAt(getLevelNonnull(), getBlockPos().offset(0, isDummy()?-1: 0, 0).offset(0, i, 0), REFERENCE_BLOCK))
                 level.removeBlock(getBlockPos().offset(0, isDummy()?-1: 0, 0).offset(0, i, 0), false);
     }
 
