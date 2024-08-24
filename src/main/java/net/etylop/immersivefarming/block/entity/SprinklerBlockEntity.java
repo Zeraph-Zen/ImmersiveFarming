@@ -79,9 +79,10 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
     private final Map<Direction, CapabilityReference<IFluidHandler>> neighborFluids = CapabilityReference.forAllNeighbors(
             this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
     );
-    private final int WATER_CONSUMPTION = 10;
-
+    private final int WATER_CONSUMPTION = 10
+            ;
     public float sprinklerRotation = 0;
+    protected float sprinklerRotationSpeed = 18;
 
 
     public SprinklerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -150,7 +151,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
             return;
         }
         if (getBlockState().getValue(ACTIVE)) {
-            sprinklerRotation = (sprinklerRotation + 18) % 360;
+            sprinklerRotation = (sprinklerRotation + sprinklerRotationSpeed) % 360;
             if (getLevelNonnull().getGameTime()%20==0)
             {
                 spawnParticles();

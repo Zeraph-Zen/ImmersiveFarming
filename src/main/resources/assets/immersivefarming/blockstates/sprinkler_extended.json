@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "multiblockslave=false":{
+      "model":"immersivefarming:block/sprinkler_bottom"
+    },
+    "multiblockslave=true":{
+      "model":"immersivefarming:block/sprinkler_top_base"
+    }
+  }
+}
