@@ -256,7 +256,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
     {
         if(!isDummy())
             return Shapes.block();
-        return Shapes.box(.1875f, 0, .1875f, .8125f, 1, .8125f);
+        return Shapes.box(.1875f, 0, .1875f, .8125f, .8f, .8125f);
     }
 
     public void setDummy(boolean dummy)
