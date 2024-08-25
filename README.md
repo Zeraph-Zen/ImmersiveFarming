@@ -25,7 +25,6 @@ This mod is still in its early stage of development so feel free to give any sug
 ## Planned features
 
 * Crop growth halted in cold temperates (with serene seasons compatibility)
-* Crop growth in unloaded chunks
 * Fertilizers to speed up crop growth
 
 ## Modpack information
