@@ -18,7 +18,7 @@ public class SprinklerParticles extends TextureSheetParticle {
         this.quadSize *= 0.85F;
         this.lifetime = 100;
         this.gravity = 2;
-        this.hasPhysics = false;
+        this.hasPhysics = true;
         this.setSpriteFromAge(spriteSet);
 
         this.rCol = 1f;
