@@ -80,7 +80,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
     private final Map<Direction, CapabilityReference<IFluidHandler>> neighborFluids = CapabilityReference.forAllNeighbors(
             this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
     );
-    protected int WATER_CONSUMPTION = 10
+    protected int WATER_CONSUMPTION = 1
             ;
     public float sprinklerRotation = 0;
     protected float ROTATION_SPEED = 18;
@@ -234,6 +234,8 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
             FluidStack pipeResource = handler.drain(maxFluid, IFluidHandler.FluidAction.SIMULATE);
 
             if (isFluidValid(pipeResource.getFluid())) {
+                if (pipeResource.getFluid() != tank.getFluid().getFluid() && tank.getFluidAmount()<WATER_CONSUMPTION)
+                    tank.drain(tank.getFluidAmount(), action);
                 int amountFilled = tank.fill(pipeResource, action);
                 handler.drain(amountFilled, action);
                 maxFluid -= amountFilled;
@@ -244,7 +246,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
     }
 
     private boolean isFluidValid(Fluid fluid) {
-        if (tank.isEmpty()) {
+        if (tank.getFluidAmount()<this.WATER_CONSUMPTION) {
             return fluid == Fluids.WATER || fluid == IFFluids.TREATED_WATER_FLUID.get();
         }
         else return fluid == tank.getFluid().getFluid();
@@ -425,7 +427,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
 
     protected void spawnPesticideParticles() {
         BlockPos pos = getBlockPos().above();
-        for (int i=0; i<10; i++) {
+        for (int i=0; i<6; i++) {
             getLevelNonnull().addParticle(ParticleTypes.HAPPY_VILLAGER.getType(),
                     pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(),
                     0, 0,0);
