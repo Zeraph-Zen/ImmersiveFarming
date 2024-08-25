@@ -6,7 +6,7 @@ Immersive Farming is an addon for Immersive Engineering focusing on improving th
 # Features
 
 * Irrigation
-  * Sprinklers! Sprinklers can be crafted in order to irrigate crops (5 block radius for the regular and 10 blocks for the high pressure one)
+  * Sprinklers! Sprinklers can be crafted in order to irrigate crops (6 block radius for the regular and 12 blocks for the high pressure one)
   * Sprinklers need to be fed with water or treated water in order to function. The water can be inputed and output on the bottom part of the block using a hammer (to configure input or output) and pipes
   * Water tiles only irrigate the adjacent farmland tiles
 * Crop disease
@@ -25,7 +25,6 @@ This mod is still in its early stage of development so feel free to give any sug
 ## Planned features
 
 * Crop growth halted in cold temperates (with serene seasons compatibility)
-* Crop growth in unloaded chunks
 * Fertilizers to speed up crop growth
 
 ## Modpack information
