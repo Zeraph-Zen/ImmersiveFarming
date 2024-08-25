@@ -192,13 +192,13 @@ public class Soil extends FarmBlock {
             for (int j=chunkPosZ-1; j<chunkPosZ+2; j++) {
                 Set<BlockPos> entitiesPos = pLevel.getChunk(i,j).getBlockEntitiesPos();
                 for (BlockPos pos : entitiesPos) {
-                    if (pLevel.getBlockState(pos).getBlock() instanceof SprinklerBlock && distance(pPos, pos)<6) {
+                    if (pLevel.getBlockState(pos).getBlock() instanceof SprinklerBlock && distanceWater(pPos, pos)<7) {
                         found_sprinkler = true;
                         if (pLevel.getBlockState(pos).getValue(SprinklerBlockEntity.USING_PESTICIDE)) {
                             return 2;
                         }
                     }
-                    else if (pLevel.getBlockState(pos).getBlock() instanceof SprinklerExtendedBlock && distance(pPos, pos)<11) {
+                    else if (pLevel.getBlockState(pos).getBlock() instanceof SprinklerExtendedBlock && distanceWater(pPos, pos)<13) {
                         found_sprinkler = true;
                         if (pLevel.getBlockState(pos).getValue(SprinklerBlockEntity.USING_PESTICIDE)) {
                             return 2;
@@ -224,10 +224,10 @@ public class Soil extends FarmBlock {
         return plant.getBlock() instanceof net.minecraftforge.common.IPlantable && state.canSustainPlant(pLevel, pPos, Direction.UP, (net.minecraftforge.common.IPlantable)plant.getBlock());
     }
 
-    private static int distance(BlockPos pos1, BlockPos pos2) {
+    private static int distanceWater(BlockPos pos1, BlockPos pos2) {
+        if (Math.abs(pos1.getY()-pos2.getY())>3) return 1000000;
         int res = Math.abs(pos1.getX()-pos2.getX());
-        res += Math.abs(pos1.getY()-pos2.getY());
-        res += Math.abs(pos1.getZ()-pos2.getZ());
+        res = Math.max(res,Math.abs(pos1.getZ()-pos2.getZ()));
         return res;
     }
 
