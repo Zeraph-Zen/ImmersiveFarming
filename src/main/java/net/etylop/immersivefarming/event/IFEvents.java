@@ -9,16 +9,21 @@ import net.minecraft.core.Registry;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.entity.player.BonemealEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
+import sereneseasons.api.season.Season;
+import sereneseasons.api.season.SeasonHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,10 +64,27 @@ public class IFEvents {
 
         @SubscribeEvent
         public static void onCropGrowth(BlockEvent.CropGrowEvent.Pre event) {
-            if (canCropGrow((Level) event.getWorld(), event.getPos()))
-                event.setResult(Event.Result.DEFAULT);
-            else
+            LevelAccessor level = event.getWorld();
+            if (level.getBiome(event.getPos()).containsTag(Tags.Biomes.IS_COLD)) {
                 event.setResult(Event.Result.DENY);
+                return;
+            }
+
+
+            if (ModList.get().isLoaded("sereneseasons")) {
+                if (SeasonHelper.getSeasonState((Level) level).getSeason() == Season.WINTER) {
+                    System.out.println("winter !");
+                    event.setResult(Event.Result.DENY);
+                    return;
+                }
+            }
+
+            if (canCropGrow((Level) event.getWorld(), event.getPos())) {
+                event.setResult(Event.Result.DEFAULT);
+                return;
+            }
+
+            event.setResult(Event.Result.DENY);
         }
 
         private static boolean canCropGrow(Level level, BlockPos pos) {

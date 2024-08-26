@@ -146,6 +146,8 @@ dependencies {
     // at runtime, use the full JEI jar for Forge
     runtimeOnly(fg.deobf("mezz.jei:jei-${version_minecraft}-forge:${version_jei}"))
 
+    implementation fg.deobf("curse.maven:serene-seasons-291874:3804257")
+
     //compileOnly fg.deobf("org.squiddev:cc-tweaked-${version_minecraft}:${version_cctweaked}")
 }
 

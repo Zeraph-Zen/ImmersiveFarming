@@ -80,8 +80,8 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
     private final Map<Direction, CapabilityReference<IFluidHandler>> neighborFluids = CapabilityReference.forAllNeighbors(
             this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
     );
-    protected int WATER_CONSUMPTION = 1
-            ;
+    protected int WATER_CONSUMPTION = 1;
+
     public float sprinklerRotation = 0;
     protected float ROTATION_SPEED = 18;
     protected Block REFERENCE_BLOCK = IFBlocks.SPRINKLER.get();

@@ -192,13 +192,13 @@ public class Soil extends FarmBlock {
             for (int j=chunkPosZ-1; j<chunkPosZ+2; j++) {
                 Set<BlockPos> entitiesPos = pLevel.getChunk(i,j).getBlockEntitiesPos();
                 for (BlockPos pos : entitiesPos) {
-                    if (pLevel.getBlockState(pos).getBlock() instanceof SprinklerBlock && distanceWater(pPos, pos)<7) {
+                    if (pLevel.getBlockState(pos).getBlock() instanceof SprinklerBlock && pLevel.getBlockState(pos).getValue(SprinklerBlockEntity.ACTIVE) && distanceWater(pPos, pos)<7) {
                         found_sprinkler = true;
                         if (pLevel.getBlockState(pos).getValue(SprinklerBlockEntity.USING_PESTICIDE)) {
                             return 2;
                         }
                     }
-                    else if (pLevel.getBlockState(pos).getBlock() instanceof SprinklerExtendedBlock && distanceWater(pPos, pos)<13) {
+                    else if (pLevel.getBlockState(pos).getBlock() instanceof SprinklerExtendedBlock &&  pLevel.getBlockState(pos).getValue(SprinklerBlockEntity.ACTIVE) && distanceWater(pPos, pos)<13) {
                         found_sprinkler = true;
                         if (pLevel.getBlockState(pos).getValue(SprinklerBlockEntity.USING_PESTICIDE)) {
                             return 2;
