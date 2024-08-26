@@ -1,3 +1,8 @@
+##### Unreleased
+
+* Crops cannot grow in cold weather anymore (cold biomes or serene season winter)
+
+
 ##### Version 1.18.2-0.1
 
 * Irrigation
