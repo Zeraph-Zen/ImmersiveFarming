@@ -2,6 +2,7 @@ package net.etylop.immersivefarming.item;
 
 import net.etylop.immersivefarming.ImmersiveFarming;
 import net.etylop.immersivefarming.fluid.IFFluids;
+import net.etylop.immersivefarming.item.custom.CompostItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -16,6 +17,9 @@ public class IFItems {
     public static final RegistryObject<Item> TREATED_WATER_BUCKET = ITEMS.register("treated_water_bucket",
             () -> new BucketItem(IFFluids.TREATED_WATER_FLUID,
                     new Item.Properties().tab(IFCreativeTab.TAB).stacksTo(1)));
+
+    public static final RegistryObject<CompostItem> COMPOST = ITEMS.register("compost",
+            () -> new CompostItem(new Item.Properties().tab(IFCreativeTab.TAB)));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
