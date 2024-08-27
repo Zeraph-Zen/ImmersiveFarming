@@ -80,7 +80,13 @@ public class IFEvents {
             }
 
             if (canCropGrow((Level) event.getWorld(), event.getPos())) {
-                event.setResult(Event.Result.DEFAULT);
+                int fertilization = event.getWorld().getBlockState(event.getPos().below()).getValue(Soil.FERTILITY);
+                if (fertilization==0 && Math.random()<0.75*0.5)
+                    event.setResult(Event.Result.DENY);
+                else if (fertilization==1 && Math.random()<0.5)
+                    event.setResult(Event.Result.DENY);
+                else
+                    event.setResult(Event.Result.DEFAULT);
                 return;
             }
 
@@ -106,6 +112,19 @@ public class IFEvents {
                 }
                 chunkCrops.get(chunkPos).add(event.getPos());
             }
+        }
+
+        @SubscribeEvent
+        public static void onHarvestCrop(BlockEvent.BreakEvent event) {
+            BlockState block = event.getState();
+            if (!(block.getBlock() instanceof CropBlock))
+                return;
+
+            BlockState soil = event.getWorld().getBlockState(event.getPos().below());
+            if (!(soil.getBlock() instanceof Soil))
+                return;
+
+            soil.setValue(Soil.FERTILITY,0);
         }
     }
 }
