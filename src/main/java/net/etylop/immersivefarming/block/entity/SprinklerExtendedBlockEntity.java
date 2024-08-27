@@ -22,7 +22,7 @@ public class SprinklerExtendedBlockEntity extends SprinklerBlockEntity {
         for(int i = 0; i < 120; i++) {
             double velocity = 0.65+0.6*Math.random();
             getLevelNonnull().addParticle(IFParticles.SPRINKLER_PARTICLES.get(),
-                    pos.getX() + 0.5d, pos.getY() + 0.6d, pos.getZ() + 0.5d,
+                    pos.getX() + 0.5d, pos.getY() + 0.4d, pos.getZ() + 0.5d,
                     (Math.cos(angle)+0.12*getRandom())*velocity, (0.45+0.2*Math.random())*velocity, (Math.sin(angle)+0.12*getRandom())*velocity);
         }
     }

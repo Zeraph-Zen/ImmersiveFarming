@@ -420,7 +420,7 @@ public class SprinklerBlockEntity extends IEBaseBlockEntity implements IEServerT
         for(int i = 0; i < 100; i++) {
             double velocity = 0.3 + 0.5*Math.random();
             getLevelNonnull().addParticle(IFParticles.SPRINKLER_PARTICLES.get(),
-                    pos.getX() + 0.5d, pos.getY() + 0.6d, pos.getZ() + 0.5d,
+                    pos.getX() + 0.5d, pos.getY() + 0.5d, pos.getZ() + 0.5d,
                     Math.cos(i)*velocity, 0.6*velocity, Math.sin(i)*velocity);
         }
     }
