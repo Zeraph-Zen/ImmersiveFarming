@@ -1,10 +1,12 @@
 package net.etylop.immersivefarming.block;
 
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
+import blusunrize.immersiveengineering.common.blocks.metal.MetalMultiblockBlock;
 import net.etylop.immersivefarming.ImmersiveFarming;
 import net.etylop.immersivefarming.block.custom.Soil;
 import net.etylop.immersivefarming.block.custom.SprinklerBlock;
 import net.etylop.immersivefarming.block.custom.SprinklerExtendedBlock;
+import net.etylop.immersivefarming.block.multiblocks.composter.ComposterBlockEntity;
 import net.etylop.immersivefarming.item.IFCreativeTab;
 import net.etylop.immersivefarming.item.IFItems;
 import net.minecraft.world.item.Item;
@@ -22,7 +24,7 @@ import java.util.function.Supplier;
 
 public class IFBlocks {
 
-    private static final BlockBehaviour.Properties METAL_NO_OCCLUSION = Block.Properties.of(Material.METAL)
+    public static final BlockBehaviour.Properties METAL_NO_OCCLUSION = Block.Properties.of(Material.METAL)
             .sound(SoundType.METAL)
             .strength(3, 15)
             .requiresCorrectToolForDrops()
@@ -47,6 +49,15 @@ public class IFBlocks {
             () -> new SprinklerExtendedBlock(METAL_NO_OCCLUSION)
     );
 
+    public static final RegistryObject<MetalMultiblockBlock<ComposterBlockEntity>> COMPOSTER = registerMultiblock(
+            "composter",
+            () -> new MetalMultiblockBlock<>(IFBlockEntities.COMPOSTER, METAL_NO_OCCLUSION)
+    );
+
+
+    private static <T extends Block> RegistryObject<T> registerMultiblock(String name, Supplier<T> block) {
+        return BLOCKS.register(name, block);
+    }
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
