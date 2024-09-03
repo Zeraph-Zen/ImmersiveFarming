@@ -1,9 +1,12 @@
 package net.etylop.immersivefarming;
 
 import com.mojang.logging.LogUtils;
+import net.etylop.immersivefarming.api.crafting.IFRecipeTypes;
 import net.etylop.immersivefarming.block.IFBlockEntities;
 import net.etylop.immersivefarming.block.IFBlocks;
+import net.etylop.immersivefarming.block.IFMultiblocks;
 import net.etylop.immersivefarming.fluid.IFFluids;
+import net.etylop.immersivefarming.gui.IFMenuTypes;
 import net.etylop.immersivefarming.item.IFItems;
 import net.etylop.immersivefarming.particle.IFParticles;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -33,6 +36,10 @@ public class ImmersiveFarming {
         IFBlockEntities.register(eventBus);
         IFParticles.register(eventBus);
         IFFluids.register(eventBus);
+        IFMenuTypes.register(eventBus);
+        IFRecipeTypes.register(eventBus);
+
+        IFMultiblocks.init();
 
         // Register the setup method for modloading
         eventBus.addListener(this::setup);

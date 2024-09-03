@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableSet;
 import net.etylop.immersivefarming.ImmersiveFarming;
 import net.etylop.immersivefarming.block.entity.SprinklerBlockEntity;
 import net.etylop.immersivefarming.block.entity.SprinklerExtendedBlockEntity;
+import net.etylop.immersivefarming.block.multiblocks.composter.ComposterBlockEntity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -34,6 +35,13 @@ public class IFBlockEntities {
     public static final MultiblockBEType<SprinklerExtendedBlockEntity> SPRINKLER_EXTENDED = makeMultiblock(
             "sprinkler_extended", SprinklerExtendedBlockEntity::new, IFBlocks.SPRINKLER_EXTENDED
     );
+
+    public static final MultiblockBEType<ComposterBlockEntity> COMPOSTER = makeMultiblock(
+            "composter", ComposterBlockEntity::new, IFBlocks.COMPOSTER
+    );
+
+
+
 
 
     public static <T extends BlockEntity> Supplier<BlockEntityType<T>> makeType(BlockEntityType.BlockEntitySupplier<T> create, Supplier<? extends Block> valid)
