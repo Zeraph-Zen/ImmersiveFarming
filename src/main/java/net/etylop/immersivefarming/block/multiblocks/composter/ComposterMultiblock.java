@@ -8,12 +8,13 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ComposterMultiblock extends IFTemplateMultiblock
 {
+    public static final ComposterMultiblock INSTANCE = new ComposterMultiblock();
     public ComposterMultiblock()
     {
         super(new ResourceLocation(ImmersiveFarming.MOD_ID, "multiblocks/composter"),
-                new BlockPos(1, 1, 1),
-                new BlockPos(1, 1, 1),
-                new BlockPos(3, 3, 3),
+                new BlockPos(0, 1, 2),
+                new BlockPos(0, 1, 2),
+                new BlockPos(3, 4, 3),
                 IFBlocks.COMPOSTER);
     }
 

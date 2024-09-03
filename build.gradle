@@ -79,7 +79,7 @@ minecraft {
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             mods {
-                immersivepetroleum {
+                immersivefarming {
                     source sourceSets.main
                 }
             }
@@ -96,7 +96,7 @@ minecraft {
             arg '-nogui'
 
             mods {
-                immersivepetroleum {
+                immersivefarming {
                     source sourceSets.main
                 }
             }
@@ -110,7 +110,7 @@ minecraft {
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
-            args '--mod', 'immersivepetroleum',
+            args '--mod', 'immersivefarming',
                     '--all',
                     '--output', file('src/generated/resources/'),
                     '--validate',
@@ -119,7 +119,7 @@ minecraft {
             ideaModule project.name + ".datagen"
 
             mods {
-                immersivepetroleum {
+                immersivefarming {
                     source sourceSets.main
                     source sourceSets.datagen
                 }

@@ -58,4 +58,9 @@ public class ImmersiveFarming {
     private void setup(final FMLCommonSetupEvent event) {
         // some preinit code
     }
+
+    public static Logger getNewLogger()
+    {
+        return LogUtils.getLogger();
+    }
 }

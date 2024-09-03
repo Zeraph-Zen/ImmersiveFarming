@@ -239,49 +239,39 @@ public class ComposterBlockEntity extends PoweredMultiblockBlockEntity<Composter
 
     private static List<AABB> getShape(BlockPos posInMultiblock)
     {
+
         if(new BlockPos(2, 0, 2).equals(posInMultiblock))
             return ImmutableList.of(
                     new AABB(0, 0, 0, 1, .5f, 1),
                     new AABB(0.125, .5f, 0.625, 0.25, 1, 0.875),
                     new AABB(0.75, .5f, 0.625, 0.875, 1, 0.875)
             );
-        else if(posInMultiblock.getX() > 0&&posInMultiblock.getY()==0&&posInMultiblock.getZ() < 2)
-        {
-            List<AABB> list = Utils.flipBoxes(posInMultiblock.getZ()==0, posInMultiblock.getX()==2,
-                    new AABB(0, 0, 0, 1, .5f, 1),
-                    new AABB(0.0625, .5f, 0.6875, 0.3125, 1, 0.9375)
-            );
-
-            if(new BlockPos(1, 0, 1).equals(posInMultiblock))
-            {
-                list.add(new AABB(0, .5f, 0.375, 1.125, .75f, 0.625));
-                list.add(new AABB(0.875, .5f, -0.125, 1.125, .75f, 0.375));
-                list.add(new AABB(0.875, .75f, -0.125, 1.125, 1, 0.125));
+        else if (posInMultiblock.getY()==0 && posInMultiblock.getZ()<2) {
+            List<AABB> list = new ArrayList<>();
+            list.add(new AABB(0, 0, 0, 1, .5f, 1));
+            if (new BlockPos(0,0,0).equals(posInMultiblock)) {
+                list.add(new AABB(4*0.0625, 0.5, 3*0.0625, 8*0.0625, 1, 7*0.0625));
             }
-
+            else if (new BlockPos(0,0,1).equals(posInMultiblock)) {
+                list.add(new AABB(4*0.0625, 0.5, 9*0.0625, 8*0.0625, 1, 13*0.0625));
+            }
+            else if (new BlockPos(2,0,0).equals(posInMultiblock)) {
+                list.add(new AABB(8*0.0625, 0.5, 3*0.0625, 12*0.0625, 1, 7*0.0625));
+            }
+            else if (new BlockPos(2,0,1).equals(posInMultiblock)) {
+                list.add(new AABB(8*0.0625, 0.5, 9*0.0625, 12*0.0625, 1, 13*0.0625));
+            }
             return list;
         }
-        else if(posInMultiblock.getX() > 0&&posInMultiblock.getY()==1&&posInMultiblock.getZ() < 2)
-            return Utils.flipBoxes(posInMultiblock.getZ()==0, posInMultiblock.getX()==2,
-                    new AABB(0.1875, -.25, 0, 1, 0, 0.8125),
-                    new AABB(0.0625, 0, 0, 0.1875, 1, 0.9375),
-                    new AABB(0.1875, 0, 0.8125, 1, 1, 0.9375)
-            );
-        else if(new BlockPos(0, 2, 1).equals(posInMultiblock))
-            return ImmutableList.of(new AABB(0.1875, 0, 0.1875, 1, .625f, 0.6875));
-        else if(new BlockPos(1, 2, 1).equals(posInMultiblock))
-            return ImmutableList.of(
-                    new AABB(0.5625, .1875, -0.4375, 1.4375, 1, 0.4375),
-                    new AABB(0, 0, 0, 0.5625, .875, 0.5)
-            );
-        else if(posInMultiblock.getY()==0&&!ImmutableSet.of(
-                new BlockPos(0, 0, 2),
-                new BlockPos(0, 0, 1),
-                new BlockPos(1, 0, 2)
-        ).contains(posInMultiblock))
-            return ImmutableList.of(new AABB(0, 0, 0, 1, .5f, 1));
-        else if(new BlockPos(2, 1, 2).equals(posInMultiblock))
+        else if (new BlockPos(2,1,2).equals(posInMultiblock)) {
             return ImmutableList.of(new AABB(0, 0, 0.5, 1, 1, 1));
+        }
+        else if (new BlockPos(1,1,2).equals(posInMultiblock)) {
+            return ImmutableList.of(new AABB(4*0.0625, 0, 4*0.0625, 12*0.0625, 1, 12*0.0625));
+        }
+        else if (new BlockPos(1,2,2).equals(posInMultiblock)) {
+            return ImmutableList.of(new AABB(4*0.0625, 0, 4*0.0625, 12*0.0625, 1, 12*0.0625));
+        }
         else
             return ImmutableList.of(new AABB(0, 0, 0, 1, 1, 1));
     }
@@ -412,9 +402,10 @@ public class ComposterBlockEntity extends PoweredMultiblockBlockEntity<Composter
     private final MultiblockCapability<IFluidHandler> fluidOutputCap = MultiblockCapability.make(
             this, be -> be.fluidOutputCap, ComposterBlockEntity::master, registerFluidOutput(tank)
     );
-    private static final MultiblockFace FLUID_OUTPUT = new MultiblockFace(1, 0, 2, RelativeBlockFace.FRONT);
-    private static final MultiblockFace FLUID_INPUT = new MultiblockFace(0, 0, 1, RelativeBlockFace.LEFT);
 
+    //TODO remove
+    private static final MultiblockFace FLUID_OUTPUT = new MultiblockFace(0, 0, 1, RelativeBlockFace.LEFT);
+    private static final MultiblockFace FLUID_INPUT = new MultiblockFace(1, 0, 2, RelativeBlockFace.FRONT);
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
