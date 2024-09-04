@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.Lists;
+import net.etylop.immersivefarming.crafting.IFRecipeSerializer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +23,7 @@ import java.util.Set;
 public class ComposterRecipe extends IFMultiblockRecipe
 {
 	public static RecipeType<ComposterRecipe> TYPE;
-	public static RegistryObject<IERecipeSerializer<ComposterRecipe>> SERIALIZER;
+	public static final RegistryObject<IERecipeSerializer<ComposterRecipe>> SERIALIZER = IFRecipeSerializer.COMPOSTER_SERIALIZER;
 	public static final CachedRecipeList<ComposterRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, ComposterRecipe.class);
 
 	public final IngredientWithSize[] itemInputs;

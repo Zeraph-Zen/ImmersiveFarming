@@ -5,6 +5,7 @@ import net.etylop.immersivefarming.api.crafting.IFRecipeTypes;
 import net.etylop.immersivefarming.block.IFBlockEntities;
 import net.etylop.immersivefarming.block.IFBlocks;
 import net.etylop.immersivefarming.block.IFMultiblocks;
+import net.etylop.immersivefarming.crafting.IFRecipeSerializer;
 import net.etylop.immersivefarming.fluid.IFFluids;
 import net.etylop.immersivefarming.gui.IFMenuTypes;
 import net.etylop.immersivefarming.item.IFItems;
@@ -38,6 +39,7 @@ public class ImmersiveFarming {
         IFFluids.register(eventBus);
         IFMenuTypes.register(eventBus);
         IFRecipeTypes.register(eventBus);
+        IFRecipeSerializer.register(eventBus);
 
         IFMultiblocks.init();
 

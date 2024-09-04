@@ -272,6 +272,12 @@ public class ComposterBlockEntity extends PoweredMultiblockBlockEntity<Composter
         else if (new BlockPos(1,2,2).equals(posInMultiblock)) {
             return ImmutableList.of(new AABB(4*0.0625, 0, 4*0.0625, 12*0.0625, 1, 12*0.0625));
         }
+        else if (new BlockPos(1,3,2).equals(posInMultiblock)) {
+            return ImmutableList.of(new AABB(4*0.0625, 0, 0, 12*0.0625, 12*0.0625, 12*0.0625));
+        }
+        else if (new BlockPos(1,3,1).equals(posInMultiblock)) {
+            return ImmutableList.of(new AABB(4*0.0625, 0, 4*0.0625, 12*0.0625, 12*0.0625, 15*0.0625));
+        }
         else
             return ImmutableList.of(new AABB(0, 0, 0, 1, 1, 1));
     }
