@@ -9,11 +9,11 @@
     }
   ],
   "result": {
-    "fluid": "minecraft:lava",
+    "fluid": "immersiveengineering:herbicide",
     "amount": 500
   },
   "fluid": {
-    "tag": "minecraft:water",
+    "tag": "forge:ethanol",
     "amount": 500
   },
   "energy": 3200

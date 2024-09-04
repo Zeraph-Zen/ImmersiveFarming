@@ -49,15 +49,11 @@ public class IFBlocks {
             () -> new SprinklerExtendedBlock(METAL_NO_OCCLUSION)
     );
 
-    public static final RegistryObject<MetalMultiblockBlock<ComposterBlockEntity>> COMPOSTER = registerMultiblock(
+    public static final RegistryObject<MetalMultiblockBlock<ComposterBlockEntity>> COMPOSTER = registerBlock(
             "composter",
             () -> new MetalMultiblockBlock<>(IFBlockEntities.COMPOSTER, METAL_NO_OCCLUSION)
     );
 
-
-    private static <T extends Block> RegistryObject<T> registerMultiblock(String name, Supplier<T> block) {
-        return BLOCKS.register(name, block);
-    }
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);

@@ -1,16 +1,6 @@
-/*
- * BluSunrize
- * Copyright (c) 2017
- *
- * This code is licensed under "Blu's License of Common Sense"
- * Details can be found in the license file in the root folder of this project
- */
-
 package net.etylop.immersivefarming.utils.integration.jei;
 
-
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
-import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -29,7 +19,7 @@ import net.minecraftforge.fluids.FluidAttributes;
 
 import java.util.Arrays;
 
-public class ComposterRecipeCategory extends IERecipeCategory<ComposterRecipe>
+public class ComposterRecipeCategory extends IFRecipeCategory<ComposterRecipe>
 {
 	public static final RecipeType<ComposterRecipe> TYPE = RecipeType.create(ImmersiveFarming.MOD_ID, "composter", ComposterRecipe.class);
 	private final IDrawableStatic tankTexture;
