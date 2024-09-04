@@ -3,7 +3,6 @@ package net.etylop.immersivefarming.api.crafting;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.Lists;
 import net.etylop.immersivefarming.crafting.IFRecipeSerializer;
 import net.minecraft.core.NonNullList;
@@ -24,7 +23,7 @@ public class ComposterRecipe extends IFMultiblockRecipe
 {
 	public static RecipeType<ComposterRecipe> TYPE;
 	public static final RegistryObject<IERecipeSerializer<ComposterRecipe>> SERIALIZER = IFRecipeSerializer.COMPOSTER_SERIALIZER;
-	public static final CachedRecipeList<ComposterRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, ComposterRecipe.class);
+	public static final IFCachedRecipeList<ComposterRecipe> RECIPES = new IFCachedRecipeList<>(() -> TYPE, ComposterRecipe.class);
 
 	public final IngredientWithSize[] itemInputs;
 	public final FluidTagInput fluidInput;

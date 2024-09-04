@@ -1,6 +1,5 @@
 package net.etylop.immersivefarming.utils.integration.jei;
 
-import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.common.util.compat.jei.IEFluidTooltipCallback;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -14,6 +13,7 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.etylop.immersivefarming.ImmersiveFarming;
 import net.etylop.immersivefarming.api.crafting.ComposterRecipe;
+import net.etylop.immersivefarming.api.crafting.IFCachedRecipeList;
 import net.etylop.immersivefarming.block.IFBlocks;
 import net.etylop.immersivefarming.gui.ComposterScreen;
 import net.minecraft.client.Minecraft;
@@ -55,7 +55,7 @@ public class JEIHelper implements IModPlugin{
 		registration.addRecipes(this.composter_type, getRecipes(ComposterRecipe.RECIPES));
 	}
 
-	private <T extends Recipe<?>> List<T> getRecipes(CachedRecipeList<T> cachedList)
+	private <T extends Recipe<?>> List<T> getRecipes(IFCachedRecipeList<T> cachedList)
 	{
 		return List.copyOf(cachedList.getRecipes(Minecraft.getInstance().level));
 	}

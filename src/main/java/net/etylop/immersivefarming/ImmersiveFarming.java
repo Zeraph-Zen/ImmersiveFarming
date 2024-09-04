@@ -1,6 +1,5 @@
 package net.etylop.immersivefarming;
 
-import com.mojang.logging.LogUtils;
 import net.etylop.immersivefarming.api.crafting.IFRecipeTypes;
 import net.etylop.immersivefarming.block.IFBlockEntities;
 import net.etylop.immersivefarming.block.IFBlocks;
@@ -18,16 +17,18 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(ImmersiveFarming.MOD_ID)
 public class ImmersiveFarming {
     public static final String MOD_ID = "immersivefarming";
 
+    public static final Logger log = LogManager.getLogger(MOD_ID);
 
-    // Directly reference a slf4j logger
-    private static final Logger LOGGER = LogUtils.getLogger();
 
     public ImmersiveFarming() {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -61,8 +62,4 @@ public class ImmersiveFarming {
         // some preinit code
     }
 
-    public static Logger getNewLogger()
-    {
-        return LogUtils.getLogger();
-    }
 }
