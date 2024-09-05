@@ -1,6 +1,6 @@
 {
   "loader": "forge:obj",
-  "model": "immersiveengineering:models/block/multiblock/composter/composter.obj",
+  "model": "immersivefarming:models/block/multiblock/composter/composter.obj",
   "flip-v": true,
   "transform": {
     "thirdperson_righthand": {

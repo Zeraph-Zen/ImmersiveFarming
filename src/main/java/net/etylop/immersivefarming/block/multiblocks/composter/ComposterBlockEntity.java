@@ -5,7 +5,6 @@ import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
-import blusunrize.immersiveengineering.client.fx.FluidSplashOptions;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
@@ -13,12 +12,10 @@ import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
-import blusunrize.immersiveengineering.common.register.IEParticles;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
-import blusunrize.immersiveengineering.common.util.inventory.MultiFluidTank;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -31,7 +28,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
@@ -40,18 +36,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -63,10 +58,14 @@ import java.util.function.BiFunction;
 public class ComposterBlockEntity extends PoweredMultiblockBlockEntity<ComposterBlockEntity, ComposterRecipe> implements
         IInteractionObjectIE<ComposterBlockEntity>, IBlockBounds, IEClientTickableBE, ISoundBE, IFMenuProvider<ComposterBlockEntity>
 {
-    public final MultiFluidTank tank = new MultiFluidTank(8*FluidAttributes.BUCKET_VOLUME);
-    public final NonNullList<ItemStack> inventory = NonNullList.withSize(8, ItemStack.EMPTY);
-    public float animation_agitator = 0;
-    public boolean outputAll;
+    public FluidTank[] tanks = new FluidTank[]{
+            new FluidTank(8*FluidAttributes.BUCKET_VOLUME), // water tank
+            new FluidTank(8*FluidAttributes.BUCKET_VOLUME), // nitrogen tank
+            new FluidTank(8*FluidAttributes.BUCKET_VOLUME)  // carbone tank
+    };
+    public static final int INPUT_SLOT = 0;
+    public static final int OUTPUT_SLOT = 1;
+    public final NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 
     public ComposterBlockEntity(BlockEntityType<ComposterBlockEntity> type, BlockPos pos, BlockState state)
     {
@@ -77,29 +76,31 @@ public class ComposterBlockEntity extends PoweredMultiblockBlockEntity<Composter
     public void readCustomNBT(CompoundTag nbt, boolean descPacket)
     {
         super.readCustomNBT(nbt, descPacket);
-        tank.readFromNBT(nbt.getCompound("tank"));
+        tanks[0].readFromNBT(nbt.getCompound("tankWater"));
+        tanks[1].readFromNBT(nbt.getCompound("tankNitrogen"));
+        tanks[2].readFromNBT(nbt.getCompound("tankCarbon"));
         if(!descPacket)
             ContainerHelper.loadAllItems(nbt, inventory);
-        outputAll = nbt.getBoolean("outputAll");
     }
 
     @Override
     public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
     {
         super.writeCustomNBT(nbt, descPacket);
-        CompoundTag tankTag = tank.writeToNBT(new CompoundTag());
-        nbt.put("tank", tankTag);
+        CompoundTag tankTag = tanks[0].writeToNBT(new CompoundTag());
+        nbt.put("tankWater", tankTag);
+        tankTag = tanks[1].writeToNBT(new CompoundTag());
+        nbt.put("tankNitrogen", tankTag);
+        tankTag = tanks[2].writeToNBT(new CompoundTag());
+        nbt.put("tankCarbon", tankTag);
         if(!descPacket)
             ContainerHelper.saveAllItems(nbt, inventory);
-        nbt.putBoolean("outputAll", outputAll);
     }
 
     @Override
     public void receiveMessageFromClient(CompoundTag message)
     {
         super.receiveMessageFromClient(message);
-        if(message.contains("outputAll", Tag.TAG_BYTE))
-            outputAll = message.getBoolean("outputAll");
     }
 
     @Override
@@ -113,26 +114,6 @@ public class ComposterBlockEntity extends PoweredMultiblockBlockEntity<Composter
     {
         if(shouldRenderAsActive())
         {
-            if(!tank.fluids.isEmpty())
-            {
-                FluidStack fs = tank.fluids.get(0);
-                float amount = tank.getFluidAmount()/(float)tank.getCapacity()*1.125f;
-                Vec3 partPos = new Vec3(getBlockPos().getX()+.5f+getFacing().getStepX()*.5f+(getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise()).getStepX()*.5f, getBlockPos().getY()-.0625f+amount, getBlockPos().getZ()+.5f+getFacing().getStepZ()*.5f+(getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise()).getStepZ()*.5f);
-                float r = Utils.RAND.nextFloat()*.8125f;
-                float angleRad = (float)Math.toRadians(animation_agitator);
-                partPos = partPos.add(r*Math.cos(angleRad), 0, r*Math.sin(angleRad));
-                if(Utils.RAND.nextBoolean())
-                {
-                    level.addAlwaysVisibleParticle(IEParticles.IE_BUBBLE.get(), partPos.x, partPos.y-0.25, partPos.z, 0, 0, 0);
-                    level.addAlwaysVisibleParticle(IEParticles.IE_BUBBLE.get(), partPos.x, partPos.y-0.25, partPos.z, 0, 0, 0);
-                }
-                else
-                {
-                    level.addAlwaysVisibleParticle(new FluidSplashOptions(fs.getFluid()), partPos.x, partPos.y, partPos.z, 0, 0, 0);
-                    level.addAlwaysVisibleParticle(new FluidSplashOptions(fs.getFluid()), partPos.x, partPos.y, partPos.z, 0, 0, 0);
-                }
-            }
-            animation_agitator = (animation_agitator+9)%360;
             ImmersiveEngineering.proxy.handleTileSound(IESounds.mixer, this, shouldRenderAsActive(), 0.075f, 1f);
         }
     }
@@ -142,90 +123,42 @@ public class ComposterBlockEntity extends PoweredMultiblockBlockEntity<Composter
     {
         super.tickServer();
         boolean update = false;
-        boolean foundRecipe = false;
-        if(energyStorage.getEnergyStored() > 0&&processQueue.size() < this.getProcessQueueMaxLength())
-        {
-            int tankAmount = tank.getFluidAmount();
-            if(tankAmount > 0)
-            {
-                Set<Integer> usedInvSlots = new HashSet<>();
-                for(MultiblockProcess<ComposterRecipe> process : processQueue)
-                    if(process instanceof MultiblockProcessInMachine)
-                        for(int i : ((MultiblockProcessInMachine<ComposterRecipe>)process).getInputSlots())
-                            usedInvSlots.add(i);
-                NonNullList<ItemStack> components = NonNullList.withSize(this.inventory.size(), ItemStack.EMPTY);
-                for(int i = 0; i < components.size(); i++)
-                    if(!usedInvSlots.contains(i))
-                        components.set(i, inventory.get(i));
 
-                for(FluidStack fs : tank.fluids)
+        if(energyStorage.getEnergyStored() > 0&& processQueue.isEmpty())
+        {
+            ComposterRecipe recipe = ComposterRecipe.findRecipe(level, getTankFluids(), this.inventory.get(0));
+            if(recipe!=null)
+            {
+                MultiblockProcessInMachine<ComposterRecipe> process = new MultiblockProcessComposter(recipe, this::getRecipeForId).setInputTanks(0);
+                if(this.addProcessToQueue(process, true))
                 {
-                    ComposterRecipe recipe = ComposterRecipe.findRecipe(level, fs, components);
-                    if(recipe!=null)
-                    {
-                        foundRecipe = true;
-                        MultiblockProcessInMachine<ComposterRecipe> process = new ComposterBlockEntity.MultiblockProcessMixer(recipe, this::getRecipeForId, recipe.getUsedSlots(fs, components)).setInputTanks(0);
-                        if(this.addProcessToQueue(process, true))
-                        {
-                            this.addProcessToQueue(process, false);
-                            update = true;
-                        }
-                    }
+                    this.addProcessToQueue(process, false);
+                    update = true;
                 }
             }
         }
 
-        int fluidTypes = this.tank.getFluidTypes();
-        if(fluidTypes>0 &&(fluidTypes> 1||!foundRecipe||outputAll))
-        {
-            BlockPos outputPos = this.getBlockPos().below().relative(getFacing().getOpposite(), 2);
-            update |= FluidUtil.getFluidHandler(level, outputPos, getFacing()).map(output ->
-            {
-                boolean ret = false;
-                if(!outputAll)
-                {
-                    FluidStack inTank = this.tank.getFluid();
-                    FluidStack out = Utils.copyFluidStackWithAmount(inTank, Math.min(inTank.getAmount(), FluidAttributes.BUCKET_VOLUME), false);
-                    int accepted = output.fill(out, FluidAction.SIMULATE);
-                    if(accepted > 0)
-                    {
-                        int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false),
-                                FluidAction.EXECUTE);
-                        this.tank.drain(drained, FluidAction.EXECUTE);
-                        ret = true;
-                    }
-                }
-                else
-                {
-                    int totalOut = 0;
-                    Iterator<FluidStack> it = this.tank.fluids.iterator();
-                    while(it.hasNext())
-                    {
-                        FluidStack fs = it.next();
-                        if(fs!=null)
-                        {
-                            FluidStack out = Utils.copyFluidStackWithAmount(fs, Math.min(fs.getAmount(), FluidAttributes.BUCKET_VOLUME-totalOut), false);
-                            int accepted = output.fill(out, FluidAction.SIMULATE);
-                            if(accepted > 0)
-                            {
-                                int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false), FluidAction.EXECUTE);
-                                MultiFluidTank.drain(drained, fs, it, FluidAction.EXECUTE);
-                                totalOut += drained;
-                                ret = true;
-                            }
-                            if(totalOut >= FluidAttributes.BUCKET_VOLUME)
-                                break;
-                        }
-                    }
-                }
-                return ret;
-            }).orElse(false);
-        }
         if(update)
         {
             this.setChanged();
             this.markContainingBlockForUpdate(null);
         }
+    }
+
+
+    @Override
+    protected ComposterRecipe getRecipeForId(Level level, ResourceLocation id)
+    {
+        return ComposterRecipe.RECIPES.getById(level, id);
+    }
+
+
+    private FluidStack[] getTankFluids() {
+        FluidStack[] fss = new FluidStack[3];
+        fss[0] = tanks[0].getFluid();
+        fss[1] = tanks[1].getFluid();
+        fss[2] = tanks[2].getFluid();
+        return fss;
     }
 
     private static final CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> SHAPES =
@@ -338,13 +271,13 @@ public class ComposterBlockEntity extends PoweredMultiblockBlockEntity<Composter
     @Override
     public int getMaxProcessPerTick()
     {
-        return 8;
+        return 1;
     }
 
     @Override
     public int getProcessQueueMaxLength()
     {
-        return 8;
+        return 1;
     }
 
     @Override
@@ -388,7 +321,7 @@ public class ComposterBlockEntity extends PoweredMultiblockBlockEntity<Composter
     @Nonnull
     public IFluidTank[] getInternalTanks()
     {
-        return new IFluidTank[]{tank};
+        return new IFluidTank[]{tanks[0]};
     }
 
     @Override
@@ -403,15 +336,15 @@ public class ComposterBlockEntity extends PoweredMultiblockBlockEntity<Composter
             registerCapability(new IEInventoryHandler(8, this, 0, new boolean[]{true, true, true, true, true, true, true, true}, new boolean[8]))
     );
     private final MultiblockCapability<IFluidHandler> fluidInputCap = MultiblockCapability.make(
-            this, be -> be.fluidInputCap, ComposterBlockEntity::master, registerFluidInput(tank)
+            this, be -> be.fluidInputCap, ComposterBlockEntity::master, registerFluidInput(tanks[0])
     );
     private final MultiblockCapability<IFluidHandler> fluidOutputCap = MultiblockCapability.make(
-            this, be -> be.fluidOutputCap, ComposterBlockEntity::master, registerFluidOutput(tank)
+            this, be -> be.fluidOutputCap, ComposterBlockEntity::master, registerFluidOutput(tanks[0])
     );
 
-    //TODO remove
-    private static final MultiblockFace FLUID_OUTPUT = new MultiblockFace(0, 0, 1, RelativeBlockFace.LEFT);
+
     private static final MultiblockFace FLUID_INPUT = new MultiblockFace(1, 0, 2, RelativeBlockFace.FRONT);
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
@@ -423,8 +356,6 @@ public class ComposterBlockEntity extends PoweredMultiblockBlockEntity<Composter
             MultiblockFace relativeFace = asRelativeFace(facing);
             if(FLUID_INPUT.equals(relativeFace))
                 return fluidInputCap.getAndCast();
-            else if(FLUID_OUTPUT.equals(relativeFace))
-                return fluidOutputCap.getAndCast();
         }
         if((facing==null||new BlockPos(1, 1, 0).equals(posInMultiblock))&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
             return insertionHandler.getAndCast();
@@ -437,31 +368,25 @@ public class ComposterBlockEntity extends PoweredMultiblockBlockEntity<Composter
         return null;
     }
 
-    @Override
-    protected ComposterRecipe getRecipeForId(Level level, ResourceLocation id)
-    {
-        return ComposterRecipe.RECIPES.getById(level, id);
-    }
 
     @Nullable
     @Override
     protected MultiblockProcess<ComposterRecipe> loadProcessFromNBT(CompoundTag tag)
     {
         ResourceLocation id = new ResourceLocation(tag.getString("recipe"));
-        int[] inputSlots = tag.getIntArray("process_inputSlots");
-        return new ComposterBlockEntity.MultiblockProcessMixer(id, this::getRecipeForId, inputSlots);
+        return new MultiblockProcessComposter(id, this::getRecipeForId);
     }
 
-    public static class MultiblockProcessMixer extends MultiblockProcessInMachine<ComposterRecipe>
+    public static class MultiblockProcessComposter extends MultiblockProcessInMachine<ComposterRecipe>
     {
-        public MultiblockProcessMixer(ComposterRecipe recipe, BiFunction<Level, ResourceLocation, ComposterRecipe> getRecipe, int... inputSlots)
+        public MultiblockProcessComposter(ComposterRecipe recipe, BiFunction<Level, ResourceLocation, ComposterRecipe> getRecipe)
         {
-            super(recipe, getRecipe, inputSlots);
+            super(recipe, getRecipe, 0);
         }
 
-        public MultiblockProcessMixer(ResourceLocation recipeId, BiFunction<Level, ResourceLocation, ComposterRecipe> getRecipe, int... inputSlots)
+        public MultiblockProcessComposter(ResourceLocation recipeId, BiFunction<Level, ResourceLocation, ComposterRecipe> getRecipe)
         {
-            super(recipeId, getRecipe, inputSlots);
+            super(recipeId, getRecipe, 0);
         }
 
         @Override
@@ -482,11 +407,11 @@ public class ComposterBlockEntity extends PoweredMultiblockBlockEntity<Composter
             LevelDependentData<ComposterRecipe> levelData = getLevelData(multiblock.getLevel());
             if (levelData.recipe() == null)
                 return true;
-            if(!(multiblock instanceof ComposterBlockEntity mixer))
+            if(!(multiblock instanceof ComposterBlockEntity composter))
                 return false;
             // we don't need to check filling since after draining 1 mB of input fluid there will be space for 1 mB of output fluid
-            return mixer.energyStorage.extractEnergy(levelData.energyPerTick(), true)==levelData.energyPerTick()&&
-                    !mixer.tank.drain(levelData.recipe().fluidInput.withAmount(1), FluidAction.SIMULATE).isEmpty();
+            return composter.energyStorage.extractEnergy(levelData.energyPerTick(), true)==levelData.energyPerTick()&&
+                    !composter.tanks[0].drain(1, FluidAction.SIMULATE).isEmpty();
         }
 
         @Override
@@ -498,28 +423,25 @@ public class ComposterBlockEntity extends PoweredMultiblockBlockEntity<Composter
                 this.clearProcess = true;
                 return;
             }
-            int timerStep = Math.max(levelData.maxTicks()/levelData.recipe().fluidAmount, 1);
-            if(timerStep!=0&&this.processTick%timerStep==0)
+            ComposterBlockEntity composter = (ComposterBlockEntity)multiblock;
+            ComposterRecipe recipe = levelData.recipe();
+            if(this.processTick == recipe.getTotalProcessTime()-1)
             {
-                int amount = levelData.recipe().fluidAmount/levelData.maxTicks();
-                int leftover = levelData.recipe().fluidAmount%levelData.maxTicks();
-                if(leftover > 0)
-                {
-                    double distBetweenExtra = levelData.maxTicks()/(double)leftover;
-                    if(Math.floor(processTick/distBetweenExtra)!=Math.floor((processTick-1)/distBetweenExtra))
-                        amount++;
+                if (recipe.fluidProduct) {
+                    FluidStack[] fluidOuputs = recipe.getFluidOutput();
+                    if (fluidOuputs[0] != null)
+                        composter.tanks[1].fill(fluidOuputs[0], FluidAction.EXECUTE);
+                    if (fluidOuputs[1] != null)
+                        composter.tanks[2].fill(fluidOuputs[1], FluidAction.EXECUTE);
                 }
-                ComposterBlockEntity mixer = (ComposterBlockEntity)multiblock;
-                FluidStack drained = mixer.tank.drain(levelData.recipe().fluidInput.withAmount(amount), FluidAction.EXECUTE);
-                if(!drained.isEmpty())
-                {
-                    NonNullList<ItemStack> components = NonNullList.withSize(this.inputSlots.length, ItemStack.EMPTY);
-                    for(int i = 0; i < components.size(); i++)
-                        components.set(i, mixer.getInventory().get(this.inputSlots[i]));
-                    FluidStack output = levelData.recipe().getFluidOutput(drained, components);
-
-                    FluidStack fs = Utils.copyFluidStackWithAmount(output, drained.getAmount(), false);
-                    mixer.tank.fill(fs, FluidAction.EXECUTE);
+                else {
+                    FluidTagInput[] fluidInputs = recipe.getFluidInput();
+                    for (int i=0; i<3; i++) {
+                        composter.tanks[i].drain(fluidInputs[i].getAmount(), FluidAction.EXECUTE);
+                    }
+                    ItemStack outputItems = recipe.itemOutput.getMatchingStacks()[0];
+                    outputItems.setCount(composter.inventory.get(OUTPUT_SLOT).getCount()+1);
+                    composter.inventory.set(OUTPUT_SLOT, outputItems);
                 }
             }
             super.doProcessTick(multiblock);

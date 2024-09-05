@@ -1,0 +1,21 @@
+{
+  "type": "immersivefarming:composter",
+  "fluidProduct": false,
+  "result": {
+    "item": "immersivefarming:compost",
+    "amount": 1
+  },
+  "input0": {
+    "tag": "minecraft:water",
+    "amount": 10
+  },
+  "input1": {
+    "tag": "immersivefarming:wet_matter_fluid",
+    "amount": 10
+  },
+  "input2": {
+    "tag": "immersivefarming:dry_matter_fluid",
+    "amount": 10
+  },
+  "energy": 100
+}

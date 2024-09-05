@@ -8,25 +8,20 @@
 
 package net.etylop.immersivefarming.gui;
 
-import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.gui.IEBaseContainer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
-import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
-import net.etylop.immersivefarming.api.crafting.ComposterRecipe;
 import net.etylop.immersivefarming.block.multiblocks.composter.ComposterBlockEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 ;
 
 //TODO custom subclass of ItemStackHandler for markDirty etc
-public class ComposterContainer extends IEBaseContainer<ComposterBlockEntity> implements ICallbackContainer
+public class ComposterContainer extends IEBaseContainer<ComposterBlockEntity>
 {
 	public ComposterContainer(MenuType<?> type, int id, Inventory inventoryPlayer, ComposterBlockEntity tile)
 	{
@@ -34,9 +29,10 @@ public class ComposterContainer extends IEBaseContainer<ComposterBlockEntity> im
 
 		IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
 				.orElseThrow(RuntimeException::new);
-		for(int i = 0; i < 8; i++)
-			this.addSlot(new IESlot.ContainerCallback(this, inv, i, 7+(i%2)*21, 7+(i/2)*18));
-		slotCount = 8;
+
+		this.addSlot(new IESlot.ContainerCallback(this, inv, 0, 22, 15));
+		this.addSlot(new IESlot.ContainerCallback(this, inv, 1, 22, 53));
+		slotCount = 1;
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
@@ -44,27 +40,5 @@ public class ComposterContainer extends IEBaseContainer<ComposterBlockEntity> im
 		for(int i = 0; i < 9; i++)
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 144));
 		addGenericData(GenericContainerData.energy(tile.energyStorage));
-	}
-
-	@Override
-	public boolean canInsert(ItemStack stack, int slotNumer, Slot slotObject)
-	{
-		for(MultiblockProcess<ComposterRecipe> process : tile.processQueue)
-			if(process instanceof MultiblockProcessInMachine)
-				for(int s : ((MultiblockProcessInMachine)process).getInputSlots())
-					if(s==slotNumer)
-						return false;
-		return true;
-	}
-
-	@Override
-	public boolean canTake(ItemStack stack, int slotNumber, Slot slotObject)
-	{
-		for(MultiblockProcess<ComposterRecipe> process : tile.processQueue)
-			if(process instanceof MultiblockProcessInMachine)
-				for(int s : ((MultiblockProcessInMachine)process).getInputSlots())
-					if(s==slotNumber)
-						return false;
-		return true;
 	}
 }

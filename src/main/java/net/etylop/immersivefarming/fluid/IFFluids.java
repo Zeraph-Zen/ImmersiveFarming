@@ -31,11 +31,17 @@ public class IFFluids {
     public static final RegistryObject<FlowingFluid> TREATED_WATER_FLOWING
             = FLUIDS.register("treated_water_flowing", () -> new ForgeFlowingFluid.Flowing(IFFluids.TREATED_WATER_PROPERTIES));
 
+    public static final RegistryObject<FlowingFluid> DRY_MATTER_FLUID
+            = FLUIDS.register("dry_matter_fluid", () -> new ForgeFlowingFluid.Source(IFFluids.TREATED_WATER_PROPERTIES));
+
+    public static final RegistryObject<FlowingFluid> WET_MATTER_FLUID
+            = FLUIDS.register("wet_matter_fluid", () -> new ForgeFlowingFluid.Source(IFFluids.TREATED_WATER_PROPERTIES));
+
 
     public static final ForgeFlowingFluid.Properties TREATED_WATER_PROPERTIES = new ForgeFlowingFluid.Properties(
             () -> TREATED_WATER_FLUID.get(), () -> TREATED_WATER_FLOWING.get(), FluidAttributes.builder(WATER_STILL_RL, WATER_FLOWING_RL)
             .overlay(WATER_OVERLAY_RL)
-            .color(0xbfffffff))
+            .color(0xbf0f0fff))
             .block(() -> IFFluids.TREATED_WATER_BLOCK.get()).bucket(() -> IFItems.TREATED_WATER_BUCKET.get());
 
     public static final RegistryObject<LiquidBlock> TREATED_WATER_BLOCK = IFBlocks.BLOCKS.register("treated_water",

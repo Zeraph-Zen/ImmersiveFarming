@@ -1,0 +1,17 @@
+{
+  "type": "immersivefarming:composter",
+  "fluidProduct": true,
+  "input": {
+    "item": "minecraft:wheat",
+    "amount": 1
+  },
+  "output0": {
+    "fluid": "immersivefarming:wet_matter_fluid",
+    "amount": 10
+  },
+  "output1": {
+    "fluid": "immersivefarming:dry_matter_fluid",
+    "amount": 10
+  },
+  "energy": 10
+}

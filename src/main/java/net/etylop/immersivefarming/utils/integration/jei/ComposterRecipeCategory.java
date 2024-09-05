@@ -17,8 +17,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidAttributes;
 
-import java.util.Arrays;
-
 public class ComposterRecipeCategory extends IFRecipeCategory<ComposterRecipe>
 {
 	public static final RecipeType<ComposterRecipe> TYPE = RecipeType.create(ImmersiveFarming.MOD_ID, "composter", ComposterRecipe.class);
@@ -40,26 +38,19 @@ public class ComposterRecipeCategory extends IFRecipeCategory<ComposterRecipe>
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, ComposterRecipe recipe, IFocusGroup focuses)
 	{
-		long tankSize = Math.max(2*FluidAttributes.BUCKET_VOLUME,  Math.max(recipe.fluidInput.getAmount(),recipe.fluidOutput.getAmount()));
+		if (recipe.fluidProduct)
+			return;
+
+		long tankSize = 2*FluidAttributes.BUCKET_VOLUME;
 		builder.addSlot(RecipeIngredientRole.INPUT, 48, 3)
 				.setFluidRenderer(tankSize, false, 58, 47)
-				.addIngredients(ForgeTypes.FLUID_STACK, recipe.fluidInput.getMatchingFluidStacks())
+				.addIngredients(ForgeTypes.FLUID_STACK, recipe.getFluidInput()[0].getMatchingFluidStacks())
 				.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 139, 3)
-				.setFluidRenderer(tankSize, false, 16, 47)
-				.setOverlay(tankOverlay, 0, 0)
-				.addIngredient(ForgeTypes.FLUID_STACK, recipe.fluidOutput)
-				.addTooltipCallback(JEIHelper.fluidTooltipCallback);
+				.addItemStack(recipe.itemOutput.getMatchingStacks()[0])
+				.setBackground(JEIHelper.slotDrawable, -1, -1);
 
-		for(int i = 0; i < recipe.itemInputs.length; i++)
-		{
-			int x = (i%2)*18+1;
-			int y = i/2*18+1;
-			builder.addSlot(RecipeIngredientRole.INPUT, x, y)
-					.addItemStacks(Arrays.asList(recipe.itemInputs[i].getMatchingStacks()))
-					.setBackground(JEIHelper.slotDrawable, -1, -1);
-		}
 	}
 
 	@Override
