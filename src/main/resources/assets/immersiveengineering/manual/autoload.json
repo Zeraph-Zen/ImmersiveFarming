@@ -1,0 +1,12 @@
+{
+  "autoload_priority": 2,
+  "immersivefarming:farming": {
+    "category_weight": 100,
+    "entry_list": [
+      "immersivefarming:irrigation",
+      "immersivefarming:diseases",
+      "immersivefarming:fertility",
+      "immersivefarming:composter"
+    ]
+  }
+}

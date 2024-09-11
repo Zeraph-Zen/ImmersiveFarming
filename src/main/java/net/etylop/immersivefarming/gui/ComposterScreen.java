@@ -38,7 +38,7 @@ public class ComposterScreen extends IEContainerScreen<ComposterContainer>
 	protected List<InfoArea> makeInfoAreas()
 	{
 		return ImmutableList.of(
-				new EnergyInfoArea(leftPos+158, topPos+22, tile.energyStorage),
+				new EnergyInfoArea(leftPos+157, topPos+21, tile.energyStorage),
 				new FluidInfoArea(tile.tanks[0], new Rect2i(leftPos+109, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
 				new FluidInfoArea(tile.tanks[1], new Rect2i(leftPos+82, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
 				new FluidInfoArea(tile.tanks[2], new Rect2i(leftPos+55, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE)

@@ -8,5 +8,6 @@
   "fluid.immersivefarming.wet_matter_fluid": "Green Material",
   "fluid.immersivefarming.dry_matter_fluid": "Brown Material",
   "item.immersivefarming.compost": "Compost",
-  "block.immersivefarming.composter": "Industrial Composter"
+  "block.immersivefarming.composter": "Industrial Composter",
+  "manual.immersivefarming.farming": "Farming"
 }

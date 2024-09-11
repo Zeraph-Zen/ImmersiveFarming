@@ -2,7 +2,11 @@
 
 * Crops cannot grow in cold weather anymore (cold biomes or serene season winter)
 * Changed the sprinkler models
+* Engineer's manual integration
 * Composter multiblock
+  * Produces compost from organic matter
+* Compost
+  * Soil can be fertilized using compost, boosting crop growth speed
 
 ##### Version 1.18.2-0.1
 

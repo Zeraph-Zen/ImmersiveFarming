@@ -1,0 +1,7 @@
+Crop Diseases
+Keep 'em healthy !
+
+When growing, crops have a chance of becoming sick and will contaminate adjacent crops over time.
+Contaminated crops will have small flies around them (small black particles). After some time, contaminated crops will eventually die, giving no yield.
+
+In order to prevent and treat crops, you can use treated water instead of water with your sprinklers.
