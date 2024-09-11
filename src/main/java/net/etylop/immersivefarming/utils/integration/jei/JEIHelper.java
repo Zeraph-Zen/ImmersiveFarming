@@ -67,6 +67,6 @@ public class JEIHelper implements IModPlugin{
 
 	@Override
 	public void registerGuiHandlers(IGuiHandlerRegistration registration){
-		registration.addRecipeClickArea(ComposterScreen.class, 0, 0, 1, 1, this.composter_type);
+		registration.addRecipeClickArea(ComposterScreen.class, 132, 30, 19, 30, this.composter_type);
 	}
 }

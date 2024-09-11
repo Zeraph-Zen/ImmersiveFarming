@@ -1,7 +1,6 @@
 package net.etylop.immersivefarming.event;
 
 import blusunrize.immersiveengineering.common.gui.IEBaseContainer;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import net.etylop.immersivefarming.ImmersiveFarming;
 import net.etylop.immersivefarming.block.IFBlockEntities;
 import net.etylop.immersivefarming.block.entity.SprinklerExtendedRenderer;
@@ -13,6 +12,7 @@ import net.etylop.immersivefarming.gui.IFMenuTypes;
 import net.etylop.immersivefarming.particle.IFParticles;
 import net.etylop.immersivefarming.particle.custom.ContaminationParticles;
 import net.etylop.immersivefarming.particle.custom.SprinklerParticles;
+import net.etylop.immersivefarming.utils.IFBasicClientProperties;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
@@ -65,6 +65,7 @@ public class IFEventBusEvents {
     {
         SprinklerRenderer.SPRINKLER_TOP = new IFDynamicModel(SprinklerRenderer.NAME_SPRINKLER);
         SprinklerExtendedRenderer.SPRINKLER_TOP = new IFDynamicModel(SprinklerExtendedRenderer.NAME_SPRINKLER);
+        IFBasicClientProperties.initModels();
     }
 
     @SubscribeEvent

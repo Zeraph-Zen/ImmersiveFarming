@@ -2,12 +2,12 @@ package net.etylop.immersivefarming.block.multiblocks;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks;
-import blusunrize.immersiveengineering.client.utils.BasicClientProperties;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
+import net.etylop.immersivefarming.ImmersiveFarming;
+import net.etylop.immersivefarming.utils.IFBasicClientProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -58,7 +58,7 @@ public abstract class IFTemplateMultiblock extends IETemplateMultiblock
             world.blockEvent(actualPos, world.getBlockState(actualPos).getBlock(), 255, 0);
         }
         else
-            IELogger.logger.error("Expected MB TE at {} during placement", actualPos);
+            ImmersiveFarming.log.error("Expected MB TE at {} during placement", actualPos);
     }
 
     public Direction transformDirection(Direction original)
@@ -102,13 +102,13 @@ public abstract class IFTemplateMultiblock extends IETemplateMultiblock
         if(be instanceof MultiblockPartBlockEntity<?> multiblockBE)
             multiblockBE.formed = false;
         else if(be!=null)
-            IELogger.logger.error("Expected multiblock TE at {}, got {}", pos, be);
+            ImmersiveFarming.log.error("Expected multiblock TE at {}, got {}", pos, be);
     }
 
     @Override
     public void initializeClient(Consumer<ClientMultiblocks.MultiblockManualData> consumer)
     {
-        consumer.accept(new BasicClientProperties(this));
+        consumer.accept(new IFBasicClientProperties(this));
     }
 
     public ResourceLocation getBlockName() { return baseState.getId(); }
