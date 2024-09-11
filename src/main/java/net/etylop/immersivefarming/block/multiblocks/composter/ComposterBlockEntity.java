@@ -52,7 +52,10 @@ import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 public class ComposterBlockEntity extends PoweredMultiblockBlockEntity<ComposterBlockEntity, ComposterRecipe> implements
@@ -64,8 +67,7 @@ public class ComposterBlockEntity extends PoweredMultiblockBlockEntity<Composter
             new FluidTank(8*FluidAttributes.BUCKET_VOLUME)  // carbone tank
     };
     public static final int INPUT_SLOT = 0;
-    public static final int OUTPUT_SLOT = 1;
-    public final NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
+    public final NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 
     public ComposterBlockEntity(BlockEntityType<ComposterBlockEntity> type, BlockPos pos, BlockState state)
     {
@@ -243,7 +245,8 @@ public class ComposterBlockEntity extends PoweredMultiblockBlockEntity<Composter
 
     private DirectionalBlockPos getOutputPos()
     {
-        return new DirectionalBlockPos(worldPosition.relative(getFacing(), 2), getFacing());
+        BlockPos pos = worldPosition.relative(getFacing(), 1).relative(getFacing().getClockWise(), 3);
+        return new DirectionalBlockPos(pos, getFacing().getClockWise());
     }
 
     private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forBlockEntityAt(
@@ -411,7 +414,7 @@ public class ComposterBlockEntity extends PoweredMultiblockBlockEntity<Composter
                 return false;
             // we don't need to check filling since after draining 1 mB of input fluid there will be space for 1 mB of output fluid
             return composter.energyStorage.extractEnergy(levelData.energyPerTick(), true)==levelData.energyPerTick()&&
-                    !composter.tanks[0].drain(1, FluidAction.SIMULATE).isEmpty();
+                    !composter.tanks[0].drain(1, FluidAction.SIMULATE).isEmpty(); // TODO remove
         }
 
         @Override
@@ -440,8 +443,8 @@ public class ComposterBlockEntity extends PoweredMultiblockBlockEntity<Composter
                         composter.tanks[i].drain(fluidInputs[i].getAmount(), FluidAction.EXECUTE);
                     }
                     ItemStack outputItems = recipe.itemOutput.getMatchingStacks()[0];
-                    outputItems.setCount(composter.inventory.get(OUTPUT_SLOT).getCount()+1);
-                    composter.inventory.set(OUTPUT_SLOT, outputItems);
+                    composter.doProcessOutput(outputItems);
+
                 }
             }
             super.doProcessTick(multiblock);

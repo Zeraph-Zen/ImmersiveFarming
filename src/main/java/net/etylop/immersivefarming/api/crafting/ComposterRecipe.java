@@ -38,7 +38,7 @@ public class ComposterRecipe extends IFMultiblockRecipe
 		this.itemInput = itemInput;
 		this.itemOutput = null;
 
-		timeAndEnergy(1, energy);
+		timeAndEnergy(20, energy);
 		this.fluidOutputList = Lists.newArrayList(fluidNitrogen, fluidCarbon);
 		setInputListWithSizes(Lists.newArrayList(this.itemInput));
 	}
@@ -53,7 +53,7 @@ public class ComposterRecipe extends IFMultiblockRecipe
 		this.itemOutput = itemOutput;
 		this.itemInput = null;
 
-		timeAndEnergy(10, energy);
+		timeAndEnergy(100, energy);
 		this.fluidInputList = Lists.newArrayList(fluidWater, fluidNitrogen, fluidCarbon);
 	}
 

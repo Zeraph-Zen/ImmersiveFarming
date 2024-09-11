@@ -31,7 +31,6 @@ public class ComposterContainer extends IEBaseContainer<ComposterBlockEntity>
 				.orElseThrow(RuntimeException::new);
 
 		this.addSlot(new IESlot.ContainerCallback(this, inv, 0, 22, 15));
-		this.addSlot(new IESlot.ContainerCallback(this, inv, 1, 22, 53));
 		slotCount = 1;
 
 		for(int i = 0; i < 3; i++)
