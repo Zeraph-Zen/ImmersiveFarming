@@ -336,7 +336,7 @@ public class ComposterBlockEntity extends PoweredMultiblockBlockEntity<Composter
 
     private final MultiblockCapability<IItemHandler> insertionHandler = MultiblockCapability.make(
             this, be -> be.insertionHandler, ComposterBlockEntity::master,
-            registerCapability(new IEInventoryHandler(8, this, 0, new boolean[]{true, true, true, true, true, true, true, true}, new boolean[8]))
+            registerCapability(new IEInventoryHandler(1, this, 0, new boolean[]{true}, new boolean[1]))
     );
     private final MultiblockCapability<IFluidHandler> fluidInputCap = MultiblockCapability.make(
             this, be -> be.fluidInputCap, ComposterBlockEntity::master, registerFluidInput(tanks[0])
@@ -360,7 +360,7 @@ public class ComposterBlockEntity extends PoweredMultiblockBlockEntity<Composter
             if(FLUID_INPUT.equals(relativeFace))
                 return fluidInputCap.getAndCast();
         }
-        if((facing==null||new BlockPos(1, 1, 0).equals(posInMultiblock))&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        if((facing==null||new BlockPos(0, 2, 1).equals(posInMultiblock))&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
             return insertionHandler.getAndCast();
         return super.getCapability(capability, facing);
     }

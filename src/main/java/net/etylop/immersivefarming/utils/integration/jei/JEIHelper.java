@@ -29,6 +29,8 @@ public class JEIHelper implements IModPlugin{
 
 	private RecipeType<ComposterRecipe> composter_type;
 	public static IDrawableStatic slotDrawable;
+	public static IDrawableStatic fluidDrawable;
+	public static IDrawableStatic fluidOverlay;
 	public static IRecipeSlotTooltipCallback fluidTooltipCallback = new IEFluidTooltipCallback();
 
 	@Override
@@ -38,7 +40,7 @@ public class JEIHelper implements IModPlugin{
 	}
 
 	@Override
-	public void registerCategories(IRecipeCategoryRegistration registration){
+	public void registerCategories(IRecipeCategoryRegistration registration) {
 		IGuiHelper guiHelper = registration.getJeiHelpers().getGuiHelper();
 
 		ComposterRecipeCategory composter = new ComposterRecipeCategory(guiHelper);
@@ -48,6 +50,9 @@ public class JEIHelper implements IModPlugin{
 		registration.addRecipeCategories(composter);
 
 		slotDrawable = guiHelper.getSlotDrawable();
+		ResourceLocation background = new ResourceLocation(ImmersiveFarming.MOD_ID, "textures/gui/composter.png");
+		fluidDrawable = guiHelper.drawableBuilder(background, 107, 18, 20, 51).build();
+		fluidOverlay = guiHelper.drawableBuilder(background, 177, 31, 20, 51).build();
 	}
 
 	@Override

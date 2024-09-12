@@ -7,11 +7,11 @@
   },
   "output0": {
     "fluid": "immersivefarming:wet_matter_fluid",
-    "amount": 10
+    "amount": 100
   },
   "output1": {
     "fluid": "immersivefarming:dry_matter_fluid",
-    "amount": 10
+    "amount": 100
   },
   "energy": 1000
 }

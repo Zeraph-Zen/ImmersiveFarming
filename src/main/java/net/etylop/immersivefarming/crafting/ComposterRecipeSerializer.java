@@ -9,10 +9,13 @@ import net.etylop.immersivefarming.api.crafting.ComposterRecipe;
 import net.etylop.immersivefarming.block.IFBlocks;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 
@@ -30,12 +33,21 @@ public class ComposterRecipeSerializer extends IERecipeSerializer<ComposterRecip
 		boolean fluidProduct = GsonHelper.getAsBoolean(json, "fluidProduct");
 		ComposterRecipe recipe;
 		if (fluidProduct) {
-			IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
+
 			FluidStack[] fluidOutputs = new FluidStack[2];
 			fluidOutputs[0] = ApiUtils.jsonDeserializeFluidStack(GsonHelper.getAsJsonObject(json, "output0"));
 			fluidOutputs[1] = ApiUtils.jsonDeserializeFluidStack(GsonHelper.getAsJsonObject(json, "output1"));
 			int energy = GsonHelper.getAsInt(json, "energy");
-			recipe = new ComposterRecipe(recipeId, fluidOutputs[0], fluidOutputs[1], input, energy);
+			if (json.has("input")) {
+				IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
+				recipe = new ComposterRecipe(recipeId, fluidOutputs[0], fluidOutputs[1], input, energy);
+			}
+			else {
+				String inputString = GsonHelper.getAsJsonObject(json, "inputTag").get("tag").getAsString();
+				TagKey<Item> input = ForgeRegistries.ITEMS.tags().createTagKey(new ResourceLocation(inputString));
+				recipe = new ComposterRecipe(recipeId, fluidOutputs[0], fluidOutputs[1], input, energy);
+			}
+
 		}
 		else {
 			FluidTagInput[] fluidInputs = new FluidTagInput[3];

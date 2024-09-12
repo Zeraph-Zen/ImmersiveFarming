@@ -22,7 +22,6 @@ import net.minecraftforge.client.model.generators.loaders.OBJLoaderBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -32,7 +31,6 @@ import java.util.stream.Stream;
 
 public class IFBlockStateProvider extends BlockStateProvider {
 
-    private Logger log = ImmersiveFarming.getNewLogger();
     private final NongeneratedModels nongeneratedModels;
     final ExistingFileHelper exFileHelper;
     private final BlockModelProvider customModels;
@@ -54,7 +52,7 @@ public class IFBlockStateProvider extends BlockStateProvider {
     }
     @Override
     protected void registerStatesAndModels() {
-        ImmersiveFarming.getNewLogger().info("Registering block states...");
+        ImmersiveFarming.log.info("Registering block states...");
         composter();
     }
 

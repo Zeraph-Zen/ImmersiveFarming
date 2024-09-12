@@ -1,6 +1,7 @@
 package net.etylop.immersivefarming.utils.integration.jei;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -11,6 +12,7 @@ import net.etylop.immersivefarming.ImmersiveFarming;
 import net.etylop.immersivefarming.api.crafting.ComposterRecipe;
 import net.etylop.immersivefarming.block.IFBlocks;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidAttributes;
 
 public class ComposterRecipeCategory extends IFRecipeCategory<ComposterRecipe>
 {
@@ -28,12 +30,32 @@ public class ComposterRecipeCategory extends IFRecipeCategory<ComposterRecipe>
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, ComposterRecipe recipe, IFocusGroup focuses)
 	{
-		if (recipe.fluidProduct)
-			return;
+		if (recipe.fluidProduct) {
+			builder.addSlot(RecipeIngredientRole.INPUT, 10, 20)
+					.addItemStack(recipe.itemInput.getMatchingStacks()[0])
+					.setBackground(JEIHelper.slotDrawable, -1, -1);
 
-		builder.addSlot(RecipeIngredientRole.OUTPUT, 92, 20)
-				.addItemStack(recipe.itemOutput.getMatchingStacks()[0])
-				.setBackground(JEIHelper.slotDrawable, -1, -1);
+			builder.addSlot(RecipeIngredientRole.OUTPUT, 100, 10)
+					.setFluidRenderer(FluidAttributes.BUCKET_VOLUME/2, false, 16, 47)
+					.addIngredient(ForgeTypes.FLUID_STACK, recipe.getFluidOutput()[0])
+					.addTooltipCallback(blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper.fluidTooltipCallback)
+					.setBackground(JEIHelper.fluidDrawable, -2, -2)
+					.setOverlay(JEIHelper.fluidOverlay, -2, -2);
+
+			builder.addSlot(RecipeIngredientRole.OUTPUT, 125, 10)
+					.setFluidRenderer(FluidAttributes.BUCKET_VOLUME/2, false, 16, 47)
+					.addIngredient(ForgeTypes.FLUID_STACK, recipe.getFluidOutput()[1])
+					.addTooltipCallback(blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper.fluidTooltipCallback)
+					.setBackground(JEIHelper.fluidDrawable, -2, -2)
+					.setOverlay(JEIHelper.fluidOverlay, -2, -2);
+		}
+
+		else {
+			builder.addSlot(RecipeIngredientRole.OUTPUT, 110, 20)
+					.addItemStack(recipe.itemOutput.getMatchingStacks()[0])
+					.setBackground(JEIHelper.slotDrawable, -1, -1);
+		}
+
 
 	}
 
@@ -42,7 +64,7 @@ public class ComposterRecipeCategory extends IFRecipeCategory<ComposterRecipe>
 	{
 		transform.pushPose();
 		transform.scale(3f, 3f, 1);
-		this.getIcon().draw(transform, 10, 2);
+		this.getIcon().draw(transform, 14, 2);
 		transform.popPose();
 	}
 }

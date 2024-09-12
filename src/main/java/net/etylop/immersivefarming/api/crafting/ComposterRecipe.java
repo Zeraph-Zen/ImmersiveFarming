@@ -6,6 +6,8 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import com.google.common.collect.Lists;
 import net.etylop.immersivefarming.crafting.IFRecipeSerializer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -26,7 +28,10 @@ public class ComposterRecipe extends IFMultiblockRecipe
 	public final IngredientWithSize itemInput;
 	public final IngredientWithSize itemOutput;
 
-
+	public ComposterRecipe(ResourceLocation id, FluidStack fluidNitrogen, FluidStack fluidCarbon, TagKey<Item> itemInput, int energy)
+	{
+		this(id, fluidNitrogen, fluidCarbon, new IngredientWithSize(itemInput, 1), energy);
+	}
 
 	public ComposterRecipe(ResourceLocation id, FluidStack fluidNitrogen, FluidStack fluidCarbon, IngredientWithSize itemInput, int energy)
 	{
@@ -38,7 +43,7 @@ public class ComposterRecipe extends IFMultiblockRecipe
 		this.itemInput = itemInput;
 		this.itemOutput = null;
 
-		timeAndEnergy(20, energy);
+		timeAndEnergy(energy, energy);
 		this.fluidOutputList = Lists.newArrayList(fluidNitrogen, fluidCarbon);
 		setInputListWithSizes(Lists.newArrayList(this.itemInput));
 	}
