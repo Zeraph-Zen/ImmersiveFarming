@@ -20,10 +20,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
-import sereneseasons.api.season.Season;
-import sereneseasons.api.season.SeasonHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,31 +62,30 @@ public class IFEvents {
         @SubscribeEvent
         public static void onCropGrowth(BlockEvent.CropGrowEvent.Pre event) {
             LevelAccessor level = event.getWorld();
+            BlockState cropBlock =  level.getBlockState(event.getPos());
+
             if (level.getBiome(event.getPos()).containsTag(Tags.Biomes.IS_COLD)) {
                 event.setResult(Event.Result.DENY);
                 return;
             }
 
-
-            if (ModList.get().isLoaded("sereneseasons")) {
-                if (SeasonHelper.getSeasonState((Level) level).getSeason() == Season.WINTER) {
-                    System.out.println("winter !");
-                    event.setResult(Event.Result.DENY);
-                    return;
-                }
-            }
-
             if (canCropGrow((Level) event.getWorld(), event.getPos())) {
-                int fertilization = event.getWorld().getBlockState(event.getPos().below()).getValue(Soil.FERTILITY);
+                BlockState soilBlock =  event.getWorld().getBlockState(event.getPos().below());
+                int fertilization = soilBlock.getValue(Soil.FERTILITY);
                 if (fertilization==0 && Math.random()<0.75*0.5)
                     event.setResult(Event.Result.DENY);
                 else if (fertilization==1 && Math.random()<0.5)
                     event.setResult(Event.Result.DENY);
-                else
-                    event.setResult(Event.Result.DEFAULT);
+                else {
+                    if (cropBlock.getValue(CropBlock.AGE)==CropBlock.MAX_AGE-1) {
+
+                        level.setBlock(event.getPos().below(), soilBlock.setValue(Soil.FERTILITY, 0), 2);
+                    }
+                    else
+                        event.setResult(Event.Result.DEFAULT);
+                }
                 return;
             }
-
             event.setResult(Event.Result.DENY);
         }
 

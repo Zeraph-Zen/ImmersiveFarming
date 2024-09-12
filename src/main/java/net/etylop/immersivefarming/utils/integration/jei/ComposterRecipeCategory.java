@@ -36,14 +36,14 @@ public class ComposterRecipeCategory extends IFRecipeCategory<ComposterRecipe>
 					.setBackground(JEIHelper.slotDrawable, -1, -1);
 
 			builder.addSlot(RecipeIngredientRole.OUTPUT, 100, 10)
-					.setFluidRenderer(FluidAttributes.BUCKET_VOLUME/2, false, 16, 47)
+					.setFluidRenderer(FluidAttributes.BUCKET_VOLUME/10, false, 16, 47)
 					.addIngredient(ForgeTypes.FLUID_STACK, recipe.getFluidOutput()[0])
 					.addTooltipCallback(blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper.fluidTooltipCallback)
 					.setBackground(JEIHelper.fluidDrawable, -2, -2)
 					.setOverlay(JEIHelper.fluidOverlay, -2, -2);
 
 			builder.addSlot(RecipeIngredientRole.OUTPUT, 125, 10)
-					.setFluidRenderer(FluidAttributes.BUCKET_VOLUME/2, false, 16, 47)
+					.setFluidRenderer(FluidAttributes.BUCKET_VOLUME/10, false, 16, 47)
 					.addIngredient(ForgeTypes.FLUID_STACK, recipe.getFluidOutput()[1])
 					.addTooltipCallback(blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper.fluidTooltipCallback)
 					.setBackground(JEIHelper.fluidDrawable, -2, -2)
