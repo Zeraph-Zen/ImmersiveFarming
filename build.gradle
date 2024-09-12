@@ -17,7 +17,7 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '17'
 //----------------------------------------------------------------------------------------------------------------------
 
-version = '1.18.2-0.1'
+version = '1.18.2-0.2'
 group = 'net.etylop.immersivefarming' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'immersivefarming'
 

@@ -40,9 +40,9 @@ public class Soil extends FarmBlock {
     public static final IntegerProperty FERTILITY = IntegerProperty.create("fertility", 0, FERTILITY_MAX);
 
     // Probability for a crop to become sick during a random tick
-    public static final float START_CONTAMINATION = 0.005f;
+    public static final float START_CONTAMINATION = 0.001f;
     // Probability for a crop to contaminate an adjacent crop during a random tick
-    public static final float PROXIMITY_CONTAMINATION = 0.14f;
+    public static final float PROXIMITY_CONTAMINATION = 0.1f;
     // Probability for a crop to die when contaminated during a random tick
     public static final float LETHALITY_CONTAMINATION = 0.03f;
     public static final BooleanProperty CONTAMINATED = BooleanProperty.create("contaminated");
