@@ -9,7 +9,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.HoeItem;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -24,17 +23,10 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 
 public class IFEvents {
     @Mod.EventBusSubscriber(modid = ImmersiveFarming.MOD_ID)
     public static class ForgeEvents {
-        private static final Map<ChunkPos, List<BlockPos>> chunkCrops = new HashMap<>();
-        private static final Map<BlockPos, Long> cropDate = new HashMap<>();
 
         @SubscribeEvent
         public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
@@ -107,24 +99,9 @@ public class IFEvents {
 
         private static boolean canCropGrow(Level level, BlockPos pos) {
             BlockState soil = level.getBlockState(pos.below());
-            if ((soil.getBlock() instanceof Soil) && soil.getBlock().isFertile(soil, level, pos) && level.canSeeSky(pos))
-                return true;
-            else
-                return false;
+            return (soil.getBlock() instanceof Soil) && soil.getBlock().isFertile(soil, level, pos) && level.canSeeSky(pos);
         }
-
-        @SubscribeEvent
-        public static void onPlaceCrop(BlockEvent.EntityPlaceEvent event) {
-            if (event.getWorld().getBlockState(event.getPos()).getBlock() instanceof CropBlock &&
-            !event.getWorld().isClientSide()) {
-                cropDate.put(event.getPos(), event.getWorld().dayTime());
-                ChunkPos chunkPos = event.getWorld().getChunk(event.getPos()).getPos();
-                if (chunkCrops.get(chunkPos) == null) {
-                    chunkCrops.put(chunkPos, new ArrayList());
-                }
-                chunkCrops.get(chunkPos).add(event.getPos());
-            }
-        }
+        
 
         @SubscribeEvent
         public static void onHarvestCrop(BlockEvent.BreakEvent event) {
@@ -141,10 +118,8 @@ public class IFEvents {
 
         public static CropSavedData getCropSavedData(Level w)
         {
-            if (w.isClientSide() || !(w instanceof ServerLevel))
+            if (w.isClientSide() || !(w instanceof ServerLevel world))
                 return null;
-
-            ServerLevel world = (ServerLevel)w;
 
             return world.getChunkSource().getDataStorage().computeIfAbsent(CropSavedData::load, CropSavedData::create, CropSavedData.DATA_IDENTIFIER);
         }
