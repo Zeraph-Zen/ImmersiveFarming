@@ -1,3 +1,9 @@
+##### Unreleased
+
+* Growth speed fix
+* Crop rotation boosts growth speed
+
+
 ##### Version 1.18.2-0.2
 
 * Composter multiblock
