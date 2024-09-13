@@ -2,6 +2,7 @@
 
 * Growth speed fix
 * Crop rotation boosts growth speed
+* Refactored soil blockstate values
 
 
 ##### Version 1.18.2-0.2

@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class CompostItem extends Item {
 
-    private int FERTILITY = 2;
+    private static final int FERTILITY = 1;
 
     public CompostItem(Properties pProperties) {
         super(pProperties);
@@ -23,8 +23,8 @@ public class CompostItem extends Item {
         if (block.getValue(Soil.FERTILITY) >= FERTILITY)
             return  InteractionResult.FAIL;
 
-        block.setValue(Soil.FERTILITY, this.FERTILITY);
-        pContext.getLevel().setBlock(pContext.getClickedPos(), block.setValue(Soil.FERTILITY, this.FERTILITY), 3);
+        block.setValue(Soil.FERTILITY, CompostItem.FERTILITY);
+        pContext.getLevel().setBlock(pContext.getClickedPos(), block.setValue(Soil.FERTILITY, CompostItem.FERTILITY), 3);
 
         //TODO
         pContext.getItemInHand().setCount(pContext.getItemInHand().getCount()-1);

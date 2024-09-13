@@ -36,9 +36,7 @@ public class IFEvents {
                 event.getPlayer().getMainHandItem().getItem() instanceof HoeItem) {
 
                 event.getWorld().setBlock(event.getPos(), IFBlocks.SOIL.get().defaultBlockState(), 3);
-                event.getPlayer().getMainHandItem().hurtAndBreak(1, event.getPlayer(), (val) -> {
-                    val.broadcastBreakEvent(event.getPlayer().getUsedItemHand());
-                });            }
+                event.getPlayer().getMainHandItem().hurtAndBreak(1, event.getPlayer(), (val) -> val.broadcastBreakEvent(event.getPlayer().getUsedItemHand()));            }
         }
 
         @SubscribeEvent
@@ -68,7 +66,7 @@ public class IFEvents {
                 BlockState soilBlock =  event.getWorld().getBlockState(event.getPos().below());
                 int fertilization = soilBlock.getValue(Soil.FERTILITY);
 
-                if (fertilization>=2) {
+                if (fertilization>=1) {
                     event.setResult(Event.Result.DEFAULT);
                 }
                 else {
@@ -101,7 +99,7 @@ public class IFEvents {
             BlockState soil = level.getBlockState(pos.below());
             return (soil.getBlock() instanceof Soil) && soil.getBlock().isFertile(soil, level, pos) && level.canSeeSky(pos);
         }
-        
+
 
         @SubscribeEvent
         public static void onHarvestCrop(BlockEvent.BreakEvent event) {

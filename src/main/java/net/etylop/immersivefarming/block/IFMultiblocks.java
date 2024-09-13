@@ -68,7 +68,7 @@ public class IFMultiblocks {
                 return found.setValue(HopperBlock.FACING, expected.getValue(HopperBlock.FACING));
             return found;
         });
-        //Allow multiblocks to be formed under water
+        //Allow multiblocks to be formed underwater
         BlockMatcher.addPreprocessor((expected, found, world, pos) -> {
             // Un-waterlog if the expected state is dry, but the found one is not
             if(expected.hasProperty(WATERLOGGED)&&found.hasProperty(WATERLOGGED)

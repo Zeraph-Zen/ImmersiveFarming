@@ -45,7 +45,7 @@
     "till=7,moisture=7,fertility=0": {
       "model": "immersivefarming:block/soil_moist"
     },
-    "till=7,moisture=7,fertility=2": {
+    "till=7,moisture=7,fertility=1": {
       "model": "immersivefarming:block/soil_moist_f"
     }
   }
