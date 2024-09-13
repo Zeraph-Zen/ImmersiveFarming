@@ -1,4 +1,4 @@
-##### Unreleased
+##### Version 1.18.2-0.2.1
 
 * Growth speed fix
 * Crop rotation boosts growth speed
