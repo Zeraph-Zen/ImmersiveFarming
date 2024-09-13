@@ -3,9 +3,11 @@ package net.etylop.immersivefarming.event;
 import net.etylop.immersivefarming.ImmersiveFarming;
 import net.etylop.immersivefarming.block.IFBlocks;
 import net.etylop.immersivefarming.block.custom.Soil;
+import net.etylop.immersivefarming.utils.CropSavedData;
 import net.etylop.immersivefarming.utils.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -26,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 public class IFEvents {
     @Mod.EventBusSubscriber(modid = ImmersiveFarming.MOD_ID)
@@ -72,17 +75,30 @@ public class IFEvents {
             if (canCropGrow((Level) event.getWorld(), event.getPos())) {
                 BlockState soilBlock =  event.getWorld().getBlockState(event.getPos().below());
                 int fertilization = soilBlock.getValue(Soil.FERTILITY);
-                if (fertilization==0 && Math.random()<0.75*0.5)
-                    event.setResult(Event.Result.DENY);
-                else if (fertilization==1 && Math.random()<0.5)
-                    event.setResult(Event.Result.DENY);
-                else {
-                    if (cropBlock.getValue(CropBlock.AGE)==CropBlock.MAX_AGE-1) {
 
-                        level.setBlock(event.getPos().below(), soilBlock.setValue(Soil.FERTILITY, 0), 2);
-                    }
-                    else
+                if (fertilization>=2) {
+                    event.setResult(Event.Result.DEFAULT);
+                }
+                else {
+                    CropSavedData cropData = getCropSavedData((Level) event.getWorld());
+                    if (Math.random()<0.5 && cropData != null && cropData.testCrop((Level)level, event.getPos())) {
                         event.setResult(Event.Result.DEFAULT);
+                    }
+                    else if (Math.random()<0.25) {
+                        event.setResult(Event.Result.DEFAULT);
+                    }
+                    else {
+                        event.setResult(Event.Result.DENY);
+                    }
+                }
+                if (cropBlock.getValue(CropBlock.AGE)==CropBlock.MAX_AGE-1 && !(event.getResult()==Event.Result.DENY)) {
+                    level.setBlock(event.getPos().below(), soilBlock.setValue(Soil.FERTILITY, 0), 2);
+                    CropSavedData cropData = getCropSavedData((Level) event.getWorld());
+                    if (cropData!=null) {
+                        cropData.insertCrop((Level) level, event.getPos());
+                        cropData.setDirty();
+                    }
+                    event.setResult(Event.Result.ALLOW);
                 }
                 return;
             }
@@ -122,5 +138,16 @@ public class IFEvents {
 
             soil.setValue(Soil.FERTILITY,0);
         }
+
+        public static CropSavedData getCropSavedData(Level w)
+        {
+            if (w.isClientSide() || !(w instanceof ServerLevel))
+                return null;
+
+            ServerLevel world = (ServerLevel)w;
+
+            return world.getChunkSource().getDataStorage().computeIfAbsent(CropSavedData::load, CropSavedData::create, CropSavedData.DATA_IDENTIFIER);
+        }
+
     }
 }
