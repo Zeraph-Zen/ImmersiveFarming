@@ -8,7 +8,6 @@ import net.etylop.immersivefarming.utils.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -17,7 +16,7 @@ import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.entity.player.BonemealEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.UseHoeEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -28,6 +27,7 @@ public class IFEvents {
     @Mod.EventBusSubscriber(modid = ImmersiveFarming.MOD_ID)
     public static class ForgeEvents {
 
+        /*
         @SubscribeEvent
         public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
             Block target = event.getWorld().getBlockState(event.getPos()).getBlock();
@@ -37,6 +37,21 @@ public class IFEvents {
 
                 event.getWorld().setBlock(event.getPos(), IFBlocks.SOIL.get().defaultBlockState(), 3);
                 event.getPlayer().getMainHandItem().hurtAndBreak(1, event.getPlayer(), (val) -> val.broadcastBreakEvent(event.getPlayer().getUsedItemHand()));            }
+        }
+        */
+
+        @SubscribeEvent
+        public static void onHoeUse(UseHoeEvent event) {
+            Level level = event.getContext().getLevel();
+            Block target = level.getBlockState(event.getContext().getClickedPos()).getBlock();
+            if (Registry.BLOCK.getHolderOrThrow(Registry.BLOCK.getResourceKey(target).get()).is(ModTags.Blocks.TILLABLE_BLOCK) &&
+                    !level.isClientSide()) {
+
+                level.setBlock(event.getContext().getClickedPos(), IFBlocks.SOIL.get().defaultBlockState(), 3);
+                event.getPlayer().getMainHandItem().hurtAndBreak(1, event.getPlayer(), (val) -> {
+                    val.broadcastBreakEvent(event.getPlayer().getUsedItemHand());
+                });
+            }
         }
 
         @SubscribeEvent
