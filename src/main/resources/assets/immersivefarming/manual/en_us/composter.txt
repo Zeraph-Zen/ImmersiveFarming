@@ -1,0 +1,12 @@
+Industrial Composter
+Makes some compost
+
+<&multiblock>
+
+The Industrial Composter allows to process organic materials into compost.
+
+Compost is automatically generated when there is sufficient Dry Matter, Wet Matter, and water.
+
+Dry Matter is generated from logs, leaves, or calcium based materials.
+
+Wet Matter is generated from crops or fruits.

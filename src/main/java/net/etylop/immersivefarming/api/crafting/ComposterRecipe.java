@@ -3,46 +3,63 @@ package net.etylop.immersivefarming.api.crafting;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.Lists;
 import net.etylop.immersivefarming.crafting.IFRecipeSerializer;
-import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 
 public class ComposterRecipe extends IFMultiblockRecipe
 {
 	public static RecipeType<ComposterRecipe> TYPE;
 	public static final RegistryObject<IERecipeSerializer<ComposterRecipe>> SERIALIZER = IFRecipeSerializer.COMPOSTER_SERIALIZER;
-	public static final CachedRecipeList<ComposterRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, ComposterRecipe.class);
+	public static final IFCachedRecipeList<ComposterRecipe> RECIPES = new IFCachedRecipeList<>(() -> TYPE, ComposterRecipe.class);
 
-	public final IngredientWithSize[] itemInputs;
-	public final FluidTagInput fluidInput;
-	public final FluidStack fluidOutput;
-	public final int fluidAmount;
+	public final boolean fluidProduct; // if the recipe produces fluids
 
-	public ComposterRecipe(ResourceLocation id, FluidStack fluidOutput, FluidTagInput fluidInput, IngredientWithSize[] itemInputs, int energy)
+	private FluidStack[] fluidOutputs = new FluidStack[2];
+	private final FluidTagInput[] fluidInputs = new FluidTagInput[3];
+	public final IngredientWithSize itemInput;
+	public final IngredientWithSize itemOutput;
+
+	public ComposterRecipe(ResourceLocation id, FluidStack fluidNitrogen, FluidStack fluidCarbon, TagKey<Item> itemInput, int energy)
+	{
+		this(id, fluidNitrogen, fluidCarbon, new IngredientWithSize(itemInput, 1), energy);
+	}
+
+	public ComposterRecipe(ResourceLocation id, FluidStack fluidNitrogen, FluidStack fluidCarbon, IngredientWithSize itemInput, int energy)
 	{
 		super(ItemStack.EMPTY, IFRecipeTypes.COMPOSTER, id);
-		this.fluidOutput = fluidOutput;
-		this.fluidAmount = fluidOutput.getAmount();
-		this.fluidInput = fluidInput;
-		this.itemInputs = itemInputs;
-		timeAndEnergy(fluidOutput.getAmount(), energy);
+		this.fluidProduct = true;
 
-		this.fluidInputList = Lists.newArrayList(this.fluidInput);
-		setInputListWithSizes(Lists.newArrayList(this.itemInputs));
-		this.fluidOutputList = Lists.newArrayList(this.fluidOutput);
+		this.fluidOutputs[0] = fluidNitrogen;
+		this.fluidOutputs[1] = fluidCarbon;
+		this.itemInput = itemInput;
+		this.itemOutput = null;
+
+		timeAndEnergy(energy, energy);
+		this.fluidOutputList = Lists.newArrayList(fluidNitrogen, fluidCarbon);
+		setInputListWithSizes(Lists.newArrayList(this.itemInput));
+	}
+
+	public ComposterRecipe(ResourceLocation id, FluidTagInput fluidWater, FluidTagInput fluidNitrogen, FluidTagInput fluidCarbon, IngredientWithSize itemOutput, int energy) {
+		super(ItemStack.EMPTY, IFRecipeTypes.COMPOSTER, id);
+		this.fluidProduct = false;
+
+		this.fluidInputs[0] = fluidWater;
+		this.fluidInputs[1] = fluidNitrogen;
+		this.fluidInputs[2] = fluidCarbon;
+		this.itemOutput = itemOutput;
+		this.itemInput = null;
+
+		timeAndEnergy(100, energy);
+		this.fluidInputList = Lists.newArrayList(fluidWater, fluidNitrogen, fluidCarbon);
 	}
 
 	@Override
@@ -51,90 +68,51 @@ public class ComposterRecipe extends IFMultiblockRecipe
 		return SERIALIZER.get();
 	}
 
-	public static ComposterRecipe findRecipe(Level level, FluidStack fluid, NonNullList<ItemStack> components)
+	// TODO rewrite this
+	public static ComposterRecipe findRecipe(Level level, FluidStack[] fluids, ItemStack component)
 	{
-		if(fluid.isEmpty())
+		if (fluids.length != 3)
 			return null;
-		for(ComposterRecipe recipe : RECIPES.getRecipes(level))
-			if(recipe.matches(fluid, components))
+
+		for(ComposterRecipe recipe : RECIPES.getRecipes(level)) {
+			if (!recipe.fluidProduct)
+				continue;
+			if (recipe.matches(component) || recipe.matches(fluids))
 				return recipe;
+		}
+		for(ComposterRecipe recipe : RECIPES.getRecipes(level)) {
+			if (recipe.fluidProduct)
+				continue;
+			if (recipe.matches(fluids) || recipe.matches(component))
+				return recipe;
+		}
 		return null;
 	}
 
-	public FluidStack getFluidOutput(FluidStack input, NonNullList<ItemStack> components)
+	public FluidStack[] getFluidOutput()
 	{
-		return this.fluidOutput;
+		return this.fluidOutputs;
 	}
 
-	public boolean matches(FluidStack fluid, NonNullList<ItemStack> components)
-	{
-		return compareToInputs(fluid, components, this.fluidInput, this.itemInputs);
+	public FluidTagInput[] getFluidInput() {
+		return this.fluidInputs;
 	}
 
-	protected boolean compareToInputs(FluidStack fluid, NonNullList<ItemStack> components, FluidTagInput fluidInput,
-									  IngredientWithSize[] itemInputs)
-	{
-		if(fluid!=null&&fluidInput.test(fluid))
-		{
-			ArrayList<ItemStack> queryList = new ArrayList<>(components.size());
-			for(ItemStack s : components)
-				if(!s.isEmpty())
-					queryList.add(s.copy());
-
-			for(IngredientWithSize add : itemInputs)
-				if(add!=null)
-				{
-					int addAmount = add.getCount();
-					Iterator<ItemStack> it = queryList.iterator();
-					while(it.hasNext())
-					{
-						ItemStack query = it.next();
-						if(!query.isEmpty())
-						{
-							if(add.test(query))
-								if(query.getCount() > addAmount)
-								{
-									query.shrink(addAmount);
-									addAmount = 0;
-								}
-								else
-								{
-									addAmount -= query.getCount();
-									query.setCount(0);
-								}
-							if(query.getCount() <= 0)
-								it.remove();
-							if(addAmount <= 0)
-								break;
-						}
-					}
-					if(addAmount > 0)
-						return false;
-				}
-			return true;
+	public boolean matches(FluidStack[] fluids) {
+		if (this.fluidProduct)
+			return false;
+		for (int i=0; i<3; i++) {
+			if (fluids[i].getAmount() < this.fluidInputs[i].getAmount())
+				return false;
 		}
-		return false;
+		return true;
 	}
 
-
-	public int[] getUsedSlots(FluidStack input, NonNullList<ItemStack> components)
-	{
-		Set<Integer> usedSlotSet = new HashSet<>();
-		for(IngredientWithSize ingr : itemInputs)
-		{
-			for(int j = 0; j < components.size(); j++)
-				if(!usedSlotSet.contains(j)&&!components.get(j).isEmpty()&&ingr.test(components.get(j)))
-				{
-					usedSlotSet.add(j);
-					break;
-				}
-		}
-		int it = 0;
-		int[] processSlots = new int[usedSlotSet.size()];
-		for(Integer slot : usedSlotSet)
-			processSlots[it++] = slot;
-		return processSlots;
-	}
+	public boolean matches(ItemStack component) {
+		if (!this.fluidProduct)
+			return false;
+        return itemInput.test(component);
+    }
 
 	@Override
 	public int getMultipleProcessTicks()

@@ -1,20 +1,21 @@
 {
   "type": "immersivefarming:composter",
-  "inputs": [
-    {
-      "tag": "forge:dusts/sulfur"
-    },
-    {
-      "tag": "forge:dusts/copper"
-    }
-  ],
+  "fluidProduct": false,
   "result": {
-    "fluid": "minecraft:lava",
-    "amount": 500
+    "item": "immersivefarming:compost",
+    "amount": 1
   },
-  "fluid": {
+  "input0": {
     "tag": "minecraft:water",
-    "amount": 500
+    "amount": 10
   },
-  "energy": 3200
+  "input1": {
+    "tag": "immersivefarming:wet_matter_fluid",
+    "amount": 10
+  },
+  "input2": {
+    "tag": "immersivefarming:dry_matter_fluid",
+    "amount": 10
+  },
+  "energy": 500
 }

@@ -4,5 +4,10 @@
   "block.immersivefarming.sprinkler_extended": "High Pressure Sprinkler",
   "itemGroup.immersivefarmingtab": "Immersive Farming",
   "item.immersivefarming.treated_water_bucket": "Treated Water Bucket",
-  "fluid.immersivefarming.treated_water_fluid": "Treated Water"
+  "fluid.immersivefarming.treated_water_fluid": "Treated Water",
+  "fluid.immersivefarming.wet_matter_fluid": "Green Material",
+  "fluid.immersivefarming.dry_matter_fluid": "Brown Material",
+  "item.immersivefarming.compost": "Compost",
+  "block.immersivefarming.composter": "Industrial Composter",
+  "manual.immersivefarming.farming": "Farming"
 }

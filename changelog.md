@@ -1,8 +1,22 @@
-##### Unreleased
+##### Version 1.18.2-0.2.1
 
-* Crops cannot grow in cold weather anymore (cold biomes or serene season winter)
-* Changed the sprinkler models
+* Growth speed fix
+* Crop rotation boosts growth speed
+* Refactored soil blockstate values
+
+
+##### Version 1.18.2-0.2
+
 * Composter multiblock
+  * Produces compost from organic matter
+  * Compatible with most food mods
+* Compost
+  * Soil can be fertilized using compost, boosting crop growth speed
+  * Fertilized soil has some small vegetation growing (green dots)
+* Crops cannot grow in cold weather anymore (cold biomes)
+* Changed the sprinkler models
+* Engineer's manual integration
+* Reduced crop disease chance
 
 ##### Version 1.18.2-0.1
 

@@ -4,8 +4,8 @@ import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.multiblocks.BlockMatcher;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
 import com.google.common.collect.ImmutableList;
+import net.etylop.immersivefarming.block.multiblocks.IFTemplateMultiblock;
 import net.etylop.immersivefarming.block.multiblocks.composter.ComposterMultiblock;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -22,7 +22,7 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 public class IFMultiblocks {
     public static final List<MultiblockHandler.IMultiblock> IF_MULTIBLOCKS = new ArrayList<>();
 
-    public static IETemplateMultiblock COMPOSTER;
+    public static IFTemplateMultiblock COMPOSTER;
 
     public static void init()
     {
@@ -68,7 +68,7 @@ public class IFMultiblocks {
                 return found.setValue(HopperBlock.FACING, expected.getValue(HopperBlock.FACING));
             return found;
         });
-        //Allow multiblocks to be formed under water
+        //Allow multiblocks to be formed underwater
         BlockMatcher.addPreprocessor((expected, found, world, pos) -> {
             // Un-waterlog if the expected state is dry, but the found one is not
             if(expected.hasProperty(WATERLOGGED)&&found.hasProperty(WATERLOGGED)

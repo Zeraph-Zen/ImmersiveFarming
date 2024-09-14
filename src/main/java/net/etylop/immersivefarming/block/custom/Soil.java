@@ -36,16 +36,17 @@ import java.util.Set;
 public class Soil extends FarmBlock {
     public static final int TILL_MAX = 7;
     public static final IntegerProperty TILL = IntegerProperty.create("till",0,TILL_MAX);
-    public static final int FERTILITY_MAX = 3;
+    public static final int FERTILITY_MAX = 2;
     public static final IntegerProperty FERTILITY = IntegerProperty.create("fertility", 0, FERTILITY_MAX);
 
     // Probability for a crop to become sick during a random tick
-    public static final float START_CONTAMINATION = 0.005f;
+    public static final float START_CONTAMINATION = 0.0001f;
     // Probability for a crop to contaminate an adjacent crop during a random tick
-    public static final float PROXIMITY_CONTAMINATION = 0.14f;
+    public static final float PROXIMITY_CONTAMINATION = 0.1f;
     // Probability for a crop to die when contaminated during a random tick
     public static final float LETHALITY_CONTAMINATION = 0.03f;
     public static final BooleanProperty CONTAMINATED = BooleanProperty.create("contaminated");
+
 
     public Soil(Properties properties) {
         super(properties);

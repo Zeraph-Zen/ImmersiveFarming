@@ -1,24 +1,11 @@
-/*
- * BluSunrize
- * Copyright (c) 2017
- *
- * This code is licensed under "Blu's License of Common Sense"
- * Details can be found in the license file in the root folder of this project
- */
-
 package net.etylop.immersivefarming.gui;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
-import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
+import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
-import blusunrize.immersiveengineering.client.gui.info.MultitankArea;
-import blusunrize.immersiveengineering.client.gui.info.TooltipArea;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
-import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -27,9 +14,7 @@ import net.etylop.immersivefarming.api.crafting.ComposterRecipe;
 import net.etylop.immersivefarming.block.multiblocks.composter.ComposterBlockEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -42,12 +27,10 @@ public class ComposterScreen extends IEContainerScreen<ComposterContainer>
 
 	private final ComposterBlockEntity tile;
 
-	public ComposterScreen(ComposterContainer container, Inventory inventoryPlayer, Component title)
+	public ComposterScreen(ComposterContainer container, Inventory inventoryPlayer, Component component)
 	{
-		super(container, inventoryPlayer, title, TEXTURE);
+		super(container, inventoryPlayer, component, TEXTURE);
 		this.tile = container.tile;
-		this.imageHeight = 167;
-		this.inventoryLabelY = this.imageHeight-91;
 	}
 
 	@Nonnull
@@ -55,29 +38,13 @@ public class ComposterScreen extends IEContainerScreen<ComposterContainer>
 	protected List<InfoArea> makeInfoAreas()
 	{
 		return ImmutableList.of(
-				new EnergyInfoArea(leftPos+158, topPos+22, tile.energyStorage),
-				new TooltipArea(
-						new Rect2i(leftPos+106, topPos+61, 30, 16),
-						() -> new TranslatableComponent(Lib.GUI_CONFIG+"mixer.output"+(tile.outputAll?"All": "Single"))
-				),
-				new MultitankArea(new Rect2i(leftPos+76, topPos+11, 58, 47), tile.tank)
+				new EnergyInfoArea(leftPos+157, topPos+21, tile.energyStorage),
+				new FluidInfoArea(tile.tanks[0], new Rect2i(leftPos+109, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
+				new FluidInfoArea(tile.tanks[1], new Rect2i(leftPos+82, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
+				new FluidInfoArea(tile.tanks[2], new Rect2i(leftPos+55, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE)
 		);
 	}
 
-	@Override
-	public void init()
-	{
-		super.init();
-		this.clearWidgets();
-		this.addRenderableWidget(new GuiButtonBoolean(leftPos+106, topPos+61, 30, 16, "", tile.outputAll, TEXTURE, 176, 82, 1,
-				btn -> {
-					CompoundTag tag = new CompoundTag();
-					tile.outputAll = !btn.getState();
-					tag.putBoolean("outputAll", tile.outputAll);
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(tile, tag));
-					fullInit();
-				}));
-	}
 
 	@Override
 	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)

@@ -1,0 +1,10 @@
+{
+  "sprinkler":{
+    "type": "crafting",
+    "recipe": "immersivefarming:crafting/sprinkler"
+  },
+  "sprinkler_extended": {
+    "type": "crafting",
+    "recipe": "immersivefarming:crafting/sprinkler_extended"
+  }
+}

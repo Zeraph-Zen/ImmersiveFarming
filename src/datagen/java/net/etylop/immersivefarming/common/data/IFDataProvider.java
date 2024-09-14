@@ -3,6 +3,7 @@ package net.etylop.immersivefarming.common.data;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
 import net.etylop.immersivefarming.ImmersiveFarming;
 import net.etylop.immersivefarming.common.data.generators.IFBlockStateProvider;
+import net.etylop.immersivefarming.common.data.generators.IFRecipes;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -17,10 +18,11 @@ public class IFDataProvider {
         ExistingFileHelper exHelper = event.getExistingFileHelper();
         StaticTemplateManager.EXISTING_HELPER = exHelper;
 
-        ImmersiveFarming.getNewLogger().info("-============ Immersive Farming Data Generation ============-");
+        ImmersiveFarming.log.info("-============ Immersive Farming Data Generation ============-");
 
         if(event.includeClient()){
             generator.addProvider(new IFBlockStateProvider(generator, exHelper));
+            generator.addProvider(new IFRecipes(generator));
         }
     }
 }
