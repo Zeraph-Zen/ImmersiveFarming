@@ -3,7 +3,7 @@ package net.etylop.immersivefarming.client.renderer.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import net.etylop.immersivefarming.ImmersiveFarming;
-import net.etylop.immersivefarming.client.renderer.AstikorCartsModelLayers;
+import net.etylop.immersivefarming.client.renderer.IFModelLayers;
 import net.etylop.immersivefarming.client.renderer.entity.model.PlowModel;
 import net.etylop.immersivefarming.entity.PlowEntity;
 import net.minecraft.client.Minecraft;
@@ -19,7 +19,7 @@ public final class PlowRenderer extends DrawnRenderer<PlowEntity, PlowModel> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(ImmersiveFarming.MOD_ID, "textures/entity/plow.png");
 
     public PlowRenderer(final EntityRendererProvider.Context renderManager) {
-        super(renderManager, new PlowModel(renderManager.bakeLayer(AstikorCartsModelLayers.PLOW)));
+        super(renderManager, new PlowModel(renderManager.bakeLayer(IFModelLayers.PLOW)));
         this.shadowRadius = 1.0F;
     }
 

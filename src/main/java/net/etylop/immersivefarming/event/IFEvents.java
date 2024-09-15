@@ -4,13 +4,11 @@ import net.etylop.immersivefarming.ImmersiveFarming;
 import net.etylop.immersivefarming.block.IFBlocks;
 import net.etylop.immersivefarming.block.custom.Soil;
 import net.etylop.immersivefarming.utils.CropSavedData;
-import net.etylop.immersivefarming.utils.ModTags;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -22,32 +20,19 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import static net.etylop.immersivefarming.utils.IFFunctions.isBlockTillable;
+
 
 public class IFEvents {
     @Mod.EventBusSubscriber(modid = ImmersiveFarming.MOD_ID)
     public static class ForgeEvents {
 
-        /*
-        @SubscribeEvent
-        public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-            Block target = event.getWorld().getBlockState(event.getPos()).getBlock();
-            if (Registry.BLOCK.getHolderOrThrow(Registry.BLOCK.getResourceKey(target).get()).is(ModTags.Blocks.TILLABLE_BLOCK) &&
-                !event.getWorld().isClientSide() &&
-                event.getPlayer().getMainHandItem().getItem() instanceof HoeItem) {
-
-                event.getWorld().setBlock(event.getPos(), IFBlocks.SOIL.get().defaultBlockState(), 3);
-                event.getPlayer().getMainHandItem().hurtAndBreak(1, event.getPlayer(), (val) -> val.broadcastBreakEvent(event.getPlayer().getUsedItemHand()));            }
-        }
-        */
-
         @SubscribeEvent
         public static void onHoeUse(UseHoeEvent event) {
-            Level level = event.getContext().getLevel();
-            Block target = level.getBlockState(event.getContext().getClickedPos()).getBlock();
-            if (Registry.BLOCK.getHolderOrThrow(Registry.BLOCK.getResourceKey(target).get()).is(ModTags.Blocks.TILLABLE_BLOCK) &&
-                    !level.isClientSide()) {
-
-                level.setBlock(event.getContext().getClickedPos(), IFBlocks.SOIL.get().defaultBlockState(), 3);
+            UseOnContext context = event.getContext();
+            Level level = context.getLevel();
+            if (isBlockTillable(level, context.getClickedPos())) {
+                level.setBlock(context.getClickedPos(), IFBlocks.SOIL.get().defaultBlockState(), 3);
                 event.getPlayer().getMainHandItem().hurtAndBreak(1, event.getPlayer(), (val) -> {
                     val.broadcastBreakEvent(event.getPlayer().getUsedItemHand());
                 });

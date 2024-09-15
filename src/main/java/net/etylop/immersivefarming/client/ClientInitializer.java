@@ -3,8 +3,10 @@ package net.etylop.immersivefarming.client;
 
 import net.etylop.immersivefarming.CommonInitializer;
 import net.etylop.immersivefarming.ImmersiveFarming;
+import net.etylop.immersivefarming.client.renderer.entity.SowerRenderer;
+import net.etylop.immersivefarming.client.renderer.entity.model.SowerModel;
 import net.etylop.immersivefarming.gui.screen.PlowScreen;
-import net.etylop.immersivefarming.client.renderer.AstikorCartsModelLayers;
+import net.etylop.immersivefarming.client.renderer.IFModelLayers;
 import net.etylop.immersivefarming.client.renderer.entity.PlowRenderer;
 import net.etylop.immersivefarming.client.renderer.entity.model.PlowModel;
 import net.etylop.immersivefarming.client.renderer.texture.AssembledTexture;
@@ -12,6 +14,7 @@ import net.etylop.immersivefarming.client.renderer.texture.AssembledTextureFacto
 import net.etylop.immersivefarming.client.renderer.texture.Material;
 import net.etylop.immersivefarming.entity.IFEntities;
 import net.etylop.immersivefarming.gui.IFMenuTypes;
+import net.etylop.immersivefarming.gui.screen.SowerScreen;
 import net.etylop.immersivefarming.network.serverbound.ActionKeyMessage;
 import net.etylop.immersivefarming.network.serverbound.ToggleSlowMessage;
 import net.etylop.immersivefarming.world.IFWorld;
@@ -33,7 +36,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.lwjgl.glfw.GLFW;
 
 public final class ClientInitializer extends CommonInitializer {
-    private final KeyMapping action = new KeyMapping("key.astikorcarts.desc", GLFW.GLFW_KEY_R, "key.categories.astikorcarts");
+    private final KeyMapping action = new KeyMapping("key.immersivefarming.desc", GLFW.GLFW_KEY_R, "key.categories.immersivefarming");
 
     @Override
     public void init(final Context mod) {
@@ -72,13 +75,18 @@ public final class ClientInitializer extends CommonInitializer {
         });
         mod.modBus().<FMLClientSetupEvent>addListener(e -> {
             MenuScreens.register(IFMenuTypes.PLOW_CART.get(), PlowScreen::new);
+            MenuScreens.register(IFMenuTypes.SOWER_CART.get(), SowerScreen::new);
             ClientRegistry.registerKeyBinding(this.action);
         });
         mod.modBus().<EntityRenderersEvent.RegisterRenderers>addListener(e -> {
             e.registerEntityRenderer(IFEntities.PLOW.get(), PlowRenderer::new);
+            e.registerEntityRenderer(IFEntities.SOWER.get(), SowerRenderer::new);
+
         });
         mod.modBus().<EntityRenderersEvent.RegisterLayerDefinitions>addListener(e -> {
-            ForgeHooksClient.registerLayerDefinition(AstikorCartsModelLayers.PLOW, PlowModel::createLayer);
+            ForgeHooksClient.registerLayerDefinition(IFModelLayers.PLOW, PlowModel::createLayer);
+            ForgeHooksClient.registerLayerDefinition(IFModelLayers.SOWER, SowerModel::createLayer);
+
         });
         new AssembledTextureFactory()
             .add(new ResourceLocation(ImmersiveFarming.MOD_ID, "textures/entity/plow.png"), new AssembledTexture(64, 64)

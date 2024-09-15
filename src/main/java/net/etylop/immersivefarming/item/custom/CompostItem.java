@@ -28,6 +28,6 @@ public class CompostItem extends Item {
 
         //TODO
         pContext.getItemInHand().setCount(pContext.getItemInHand().getCount()-1);
-        return InteractionResult.SUCCESS;
+        return InteractionResult.CONSUME;
     }
 }

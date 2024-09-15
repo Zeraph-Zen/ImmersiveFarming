@@ -8,6 +8,7 @@ import net.etylop.immersivefarming.block.multiblocks.composter.ComposterBlockEnt
 import net.etylop.immersivefarming.gui.IFMenuProvider.BEContainerIF;
 import net.etylop.immersivefarming.gui.container.ComposterContainer;
 import net.etylop.immersivefarming.gui.container.PlowContainer;
+import net.etylop.immersivefarming.gui.container.SowerContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -30,6 +31,9 @@ public class IFMenuTypes {
 
     public static final RegistryObject<MenuType<PlowContainer>> PLOW_CART = REGISTER.register("plow",
             () -> IForgeMenuType.create(PlowContainer::new));
+
+    public static final RegistryObject<MenuType<SowerContainer>> SOWER_CART = REGISTER.register("sower",
+            () -> IForgeMenuType.create(SowerContainer::new));
 
 
     public static void register(IEventBus eventBus) {

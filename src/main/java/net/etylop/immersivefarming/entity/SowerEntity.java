@@ -1,19 +1,19 @@
 package net.etylop.immersivefarming.entity;
 
 import com.google.common.collect.ImmutableList;
-import net.etylop.immersivefarming.block.IFBlocks;
-import net.etylop.immersivefarming.block.custom.Soil;
 import net.etylop.immersivefarming.config.IFConfig;
-import net.etylop.immersivefarming.gui.container.PlowContainer;
+import net.etylop.immersivefarming.gui.container.SowerContainer;
 import net.etylop.immersivefarming.item.IFItems;
+import net.etylop.immersivefarming.item.custom.CompostItem;
 import net.etylop.immersivefarming.utils.cart.CartItemStackHandler;
+import net.etylop.immersivefarming.utils.cart.ProxyItemUseContext;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -21,29 +21,30 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemNameBlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkHooks;
 
-import static net.etylop.immersivefarming.utils.IFFunctions.getHoeSpeed;
-import static net.etylop.immersivefarming.utils.IFFunctions.isBlockTillable;
-
-public final class PlowEntity extends AbstractDrawnInventoryEntity {
-    public static final int TOOL_COUNT = 3;
+public final class SowerEntity extends AbstractDrawnInventoryEntity {
+    private static final int SEED_COUNT = 2;
+    private static final int FERTILIZER_COUNT = 2;
     private static final double BLADEOFFSET = 1.7D;
-    private static final EntityDataAccessor<Boolean> PLOWING = SynchedEntityData.defineId(PlowEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> PLOWING = SynchedEntityData.defineId(SowerEntity.class, EntityDataSerializers.BOOLEAN);
 
     private static final ImmutableList<EntityDataAccessor<ItemStack>> INVENTORY = ImmutableList.of(
-            SynchedEntityData.defineId(PlowEntity.class, EntityDataSerializers.ITEM_STACK),
-            SynchedEntityData.defineId(PlowEntity.class, EntityDataSerializers.ITEM_STACK),
-            SynchedEntityData.defineId(PlowEntity.class, EntityDataSerializers.ITEM_STACK)
-    );
+            SynchedEntityData.defineId(SowerEntity.class, EntityDataSerializers.ITEM_STACK),
+            SynchedEntityData.defineId(SowerEntity.class, EntityDataSerializers.ITEM_STACK),
+            SynchedEntityData.defineId(SowerEntity.class, EntityDataSerializers.ITEM_STACK),
+            SynchedEntityData.defineId(SowerEntity.class, EntityDataSerializers.ITEM_STACK));
 
 
-    public PlowEntity(final EntityType<? extends Entity> entityTypeIn, final Level worldIn) {
+    public SowerEntity(final EntityType<? extends Entity> entityTypeIn, final Level worldIn) {
         super(entityTypeIn, worldIn);
         this.spacing = 1.3D;
     }
@@ -55,7 +56,7 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
 
     @Override
     protected ItemStackHandler initInventory() {
-        return new CartItemStackHandler<PlowEntity>(TOOL_COUNT, this) {
+        return new CartItemStackHandler<SowerEntity>(SEED_COUNT+FERTILIZER_COUNT, this) {
             @Override
             protected void onLoad() {
                 for (int i = 0; i < INVENTORY.size(); i++) {
@@ -95,32 +96,48 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
         }
     }
 
+    private ItemStack getSeeds() {
+        for (int i=0; i<SEED_COUNT; i++) {
+            final ItemStack stack = this.getStackInSlot(i);
+            if (stack.getItem() instanceof ItemNameBlockItem blockItem && blockItem.getBlock() instanceof CropBlock) {
+                return stack;
+            }
+        }
+        return null;
+    }
 
+    private ItemStack getFertilizer() {
+        for (int i=0; i<FERTILIZER_COUNT; i++) {
+            final ItemStack stack = this.getStackInSlot(SEED_COUNT+i);
+            if (stack.getItem() instanceof CompostItem) {
+                return stack;
+            }
+        }
+        return null;
+    }
 
     private void plow(final Player player) {
-        for (int i = 0; i < TOOL_COUNT; i++) {
-            final ItemStack stack = this.getStackInSlot(i);
-            if (!(stack.getItem() instanceof HoeItem))
-                return;
+        for (int i = 0; i < 3; i++) {
 
             final float offset = 38.0F - i * 38.0F;
             final double blockPosX = this.getX() + Mth.sin((float) Math.toRadians(this.getYRot() - offset)) * BLADEOFFSET;
             final double blockPosZ = this.getZ() - Mth.cos((float) Math.toRadians(this.getYRot() - offset)) * BLADEOFFSET;
             final BlockPos blockPos = new BlockPos(blockPosX, this.getY() - 0.5D, blockPosZ);
-            final boolean damageable = stack.isDamageableItem();
-            final int count = stack.getCount();
-            if (isBlockTillable(level, blockPos)) {
-                level.setBlock(blockPos, IFBlocks.SOIL.get().defaultBlockState().setValue(Soil.TILL, Soil.TILL_MAX), 3);
-                int hoeSpeed = getHoeSpeed(stack.getItem());
-                if (damageable) {
-                    stack.hurtAndBreak(Soil.TILL_MAX/hoeSpeed,player, (val) -> {
-                        val.broadcastBreakEvent(player.getUsedItemHand());
-                    });
+
+            ItemStack seeds = getSeeds();
+            if (seeds != null) {
+                InteractionResult result = seeds.getItem().useOn(new ProxyItemUseContext(player, seeds, new BlockHitResult(Vec3.ZERO, Direction.UP, blockPos, false)));
+                if (result == InteractionResult.CONSUME) {
+                    seeds.setCount(seeds.getCount()-1);
                 }
             }
-            if (damageable && stack.getCount() < count) {
-                this.playSound(SoundEvents.ITEM_BREAK, 0.8F, 0.8F + this.level.random.nextFloat() * 0.4F);
-                this.updateSlot(i);
+
+            ItemStack fertilizer = getFertilizer();
+            if (fertilizer!=null) {
+                InteractionResult result = fertilizer.getItem().useOn(new ProxyItemUseContext(player, seeds, new BlockHitResult(Vec3.ZERO, Direction.UP, blockPos, false)));
+                if (result == InteractionResult.CONSUME) {
+                    fertilizer.setCount(fertilizer.getCount()-1);
+                }
             }
         }
     }
@@ -181,7 +198,7 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
     private void openContainer(final Player player) {
         if (player instanceof ServerPlayer serverPlayer) {
             NetworkHooks.openGui(serverPlayer,
-                new SimpleMenuProvider((windowId, playerInventory, p) -> new PlowContainer(windowId, playerInventory, this), this.getDisplayName()),
+                new SimpleMenuProvider((windowId, playerInventory, p) -> new SowerContainer(windowId, playerInventory, this), this.getDisplayName()),
                 buf -> buf.writeInt(this.getId())
             );
         }

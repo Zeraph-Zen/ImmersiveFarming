@@ -17,6 +17,11 @@ public class IFEntities {
                 .sized(1.3F, 1.4F)
                 .build(ImmersiveFarming.MOD_ID + ":plow"));
 
+    public static final RegistryObject<EntityType<SowerEntity>> SOWER = ENTITIES.register("sower",
+            () -> EntityType.Builder.of(SowerEntity::new, MobCategory.MISC)
+                    .sized(1.3F, 1.4F)
+                    .build(ImmersiveFarming.MOD_ID + ":sower"));
+
 
 
     public static void register(IEventBus eventBus) {
