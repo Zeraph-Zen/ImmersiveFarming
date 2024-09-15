@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.Optional;
 
-public final class SimpleAstikorWorld implements AstikorWorld {
+public final class SimpleIFWorld implements IFWorld {
     private final Int2ObjectMap<AbstractDrawnEntity> pulling = new Int2ObjectOpenHashMap<>();
 
     @Override

@@ -14,11 +14,11 @@ import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public interface AstikorWorld {
+public interface IFWorld {
     final class Capability {
         private Capability() {}
 
-        private static net.minecraftforge.common.capabilities.Capability<AstikorWorld> INSTANCE = CapabilityManager.get(new CapabilityToken<>() {});;
+        private static net.minecraftforge.common.capabilities.Capability<IFWorld> INSTANCE = CapabilityManager.get(new CapabilityToken<>() {});;
     }
 
     void addPulling(final AbstractDrawnEntity drawn);
@@ -29,17 +29,17 @@ public interface AstikorWorld {
 
     void tick();
 
-    static LazyOptional<AstikorWorld> get(final Level world) {
+    static LazyOptional<IFWorld> get(final Level world) {
         return world.getCapability(Capability.INSTANCE);
     }
 
-    static Stream<AstikorWorld> stream(final Level world) {
+    static Stream<IFWorld> stream(final Level world) {
         return world.getCapability(Capability.INSTANCE).map(Stream::of).orElse(Stream.empty());
     }
 
-    static ICapabilityProvider createProvider(final NonNullSupplier<AstikorWorld> factory) {
+    static ICapabilityProvider createProvider(final NonNullSupplier<IFWorld> factory) {
         return new ICapabilityProvider() {
-            final LazyOptional<AstikorWorld> instance = LazyOptional.of(factory);
+            final LazyOptional<IFWorld> instance = LazyOptional.of(factory);
 
             @Override
             public <T> LazyOptional<T> getCapability(final net.minecraftforge.common.capabilities.Capability<T> cap, @Nullable final Direction side) {

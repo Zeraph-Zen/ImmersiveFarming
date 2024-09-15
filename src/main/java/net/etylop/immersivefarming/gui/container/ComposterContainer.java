@@ -21,7 +21,7 @@ import net.minecraftforge.items.IItemHandler;
 ;
 
 //TODO custom subclass of ItemStackHandler for markDirty etc
-public class ComposterContainer extends IEBaseContainer<ComposterBlockEntity>
+public final class ComposterContainer extends IEBaseContainer<ComposterBlockEntity>
 {
 	public ComposterContainer(MenuType<?> type, int id, Inventory inventoryPlayer, ComposterBlockEntity tile)
 	{

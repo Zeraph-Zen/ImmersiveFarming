@@ -1,7 +1,7 @@
 package net.etylop.immersivefarming.entity.ai.goal;
 
 
-import net.etylop.immersivefarming.world.AstikorWorld;
+import net.etylop.immersivefarming.world.IFWorld;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.Goal;
 
@@ -17,6 +17,6 @@ public final class PullCartGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        return AstikorWorld.get(this.mob.level).map(w -> w.isPulling(this.mob)).orElse(false);
+        return IFWorld.get(this.mob.level).map(w -> w.isPulling(this.mob)).orElse(false);
     }
 }

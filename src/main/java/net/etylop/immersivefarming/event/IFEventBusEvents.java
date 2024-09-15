@@ -6,7 +6,7 @@ import net.etylop.immersivefarming.block.IFBlockEntities;
 import net.etylop.immersivefarming.block.entity.SprinklerExtendedRenderer;
 import net.etylop.immersivefarming.block.entity.SprinklerRenderer;
 import net.etylop.immersivefarming.block.utils.IFDynamicModel;
-import net.etylop.immersivefarming.gui.ComposterScreen;
+import net.etylop.immersivefarming.gui.screen.ComposterScreen;
 import net.etylop.immersivefarming.gui.IFMenuProvider;
 import net.etylop.immersivefarming.gui.IFMenuTypes;
 import net.etylop.immersivefarming.particle.IFParticles;

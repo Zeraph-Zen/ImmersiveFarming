@@ -3,8 +3,8 @@ package net.etylop.immersivefarming;
 import net.etylop.immersivefarming.config.AstikorCartsConfig;
 import net.etylop.immersivefarming.entity.ai.goal.PullCartGoal;
 import net.etylop.immersivefarming.util.GoalAdder;
-import net.etylop.immersivefarming.world.AstikorWorld;
-import net.etylop.immersivefarming.world.SimpleAstikorWorld;
+import net.etylop.immersivefarming.world.IFWorld;
+import net.etylop.immersivefarming.world.SimpleIFWorld;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
@@ -38,7 +38,7 @@ public class CommonInitializer implements Initializer {
             }
         });
         mod.bus().<AttachCapabilitiesEvent<Level>, Level>addGenericListener(Level.class, e ->
-            e.addCapability(new ResourceLocation(ImmersiveFarming.MOD_ID, "astikor"), AstikorWorld.createProvider(SimpleAstikorWorld::new))
+            e.addCapability(new ResourceLocation(ImmersiveFarming.MOD_ID, "astikor"), IFWorld.createProvider(SimpleIFWorld::new))
         );
         GoalAdder.mobGoal(Mob.class)
             .add(1, PullCartGoal::new)
@@ -46,7 +46,7 @@ public class CommonInitializer implements Initializer {
             .register(mod.bus());
         mod.bus().<TickEvent.WorldTickEvent>addListener(e -> {
             if (e.phase == TickEvent.Phase.END) {
-                AstikorWorld.get(e.world).ifPresent(AstikorWorld::tick);
+                IFWorld.get(e.world).ifPresent(IFWorld::tick);
             }
         });
     }

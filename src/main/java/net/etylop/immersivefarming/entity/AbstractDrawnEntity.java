@@ -6,7 +6,7 @@ import net.etylop.immersivefarming.client.IFSounds;
 import net.etylop.immersivefarming.config.AstikorCartsConfig;
 import net.etylop.immersivefarming.network.clientbound.UpdateDrawnMessage;
 import net.etylop.immersivefarming.util.CartWheel;
-import net.etylop.immersivefarming.world.AstikorWorld;
+import net.etylop.immersivefarming.world.IFWorld;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -242,7 +242,7 @@ public abstract class AbstractDrawnEntity extends Entity implements IEntityAddit
                     ((AbstractDrawnEntity) entityIn).drawn = this;
                 }
                 this.pulling = entityIn;
-                AstikorWorld.get(this.level).ifPresent(w -> w.addPulling(this));
+                IFWorld.get(this.level).ifPresent(w -> w.addPulling(this));
 
             }
         } else {
@@ -261,7 +261,7 @@ public abstract class AbstractDrawnEntity extends Entity implements IEntityAddit
                 }
             }
             this.pulling = entityIn;
-            AstikorWorld.get(this.level).ifPresent(w -> w.addPulling(this));
+            IFWorld.get(this.level).ifPresent(w -> w.addPulling(this));
         }
     }
 

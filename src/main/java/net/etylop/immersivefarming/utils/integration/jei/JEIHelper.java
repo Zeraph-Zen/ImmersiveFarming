@@ -15,7 +15,7 @@ import net.etylop.immersivefarming.ImmersiveFarming;
 import net.etylop.immersivefarming.api.crafting.ComposterRecipe;
 import net.etylop.immersivefarming.api.crafting.IFCachedRecipeList;
 import net.etylop.immersivefarming.block.IFBlocks;
-import net.etylop.immersivefarming.gui.ComposterScreen;
+import net.etylop.immersivefarming.gui.screen.ComposterScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;

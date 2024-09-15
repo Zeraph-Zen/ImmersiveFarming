@@ -3,7 +3,7 @@ package net.etylop.immersivefarming.client;
 
 import net.etylop.immersivefarming.CommonInitializer;
 import net.etylop.immersivefarming.ImmersiveFarming;
-import net.etylop.immersivefarming.client.gui.screen.inventory.PlowScreen;
+import net.etylop.immersivefarming.gui.screen.PlowScreen;
 import net.etylop.immersivefarming.client.renderer.AstikorCartsModelLayers;
 import net.etylop.immersivefarming.client.renderer.entity.PlowRenderer;
 import net.etylop.immersivefarming.client.renderer.entity.model.PlowModel;
@@ -14,7 +14,7 @@ import net.etylop.immersivefarming.entity.IFEntities;
 import net.etylop.immersivefarming.gui.IFMenuTypes;
 import net.etylop.immersivefarming.network.serverbound.ActionKeyMessage;
 import net.etylop.immersivefarming.network.serverbound.ToggleSlowMessage;
-import net.etylop.immersivefarming.world.AstikorWorld;
+import net.etylop.immersivefarming.world.IFWorld;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -47,7 +47,7 @@ public final class ClientInitializer extends CommonInitializer {
                         ImmersiveFarming.CHANNEL.sendToServer(new ActionKeyMessage());
                     }
                     if (!mc.isPaused()) {
-                        AstikorWorld.get(world).ifPresent(AstikorWorld::tick);
+                        IFWorld.get(world).ifPresent(IFWorld::tick);
                     }
                 }
             }

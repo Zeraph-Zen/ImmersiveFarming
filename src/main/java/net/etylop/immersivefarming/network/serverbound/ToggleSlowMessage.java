@@ -4,7 +4,7 @@ package net.etylop.immersivefarming.network.serverbound;
 import net.etylop.immersivefarming.entity.AbstractDrawnEntity;
 import net.etylop.immersivefarming.network.Message;
 import net.etylop.immersivefarming.network.ServerMessageContext;
-import net.etylop.immersivefarming.world.AstikorWorld;
+import net.etylop.immersivefarming.world.IFWorld;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -28,6 +28,6 @@ public final class ToggleSlowMessage implements Message {
         final Entity ridden = player.getVehicle();
         if (ridden == null) return Optional.empty();
         if (ridden instanceof AbstractDrawnEntity) return Optional.of((AbstractDrawnEntity) ridden);
-        return AstikorWorld.get(ridden.level).resolve().flatMap(w -> w.getDrawn(ridden));
+        return IFWorld.get(ridden.level).resolve().flatMap(w -> w.getDrawn(ridden));
     }
 }

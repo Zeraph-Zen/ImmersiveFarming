@@ -1,4 +1,4 @@
-package net.etylop.immersivefarming.gui;
+package net.etylop.immersivefarming.gui.screen;
 
 import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
@@ -22,7 +22,7 @@ import net.minecraft.world.entity.player.Inventory;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class ComposterScreen extends IEContainerScreen<ComposterContainer>
+public final class ComposterScreen extends IEContainerScreen<ComposterContainer>
 {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(ImmersiveFarming.MOD_ID, "textures/gui/composter.png");
 

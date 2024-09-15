@@ -13,10 +13,10 @@
       "tag": "forge:rods/wooden"
     },
     "w": {
-      "item": "astikorcarts:wheel"
+      "item": "immersivefarming:wheel"
     }
   },
   "result": {
-    "item": "astikorcarts:plow"
+    "item": "immersivefarming:plow"
   }
 }

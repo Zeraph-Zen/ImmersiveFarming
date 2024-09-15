@@ -1,4 +1,4 @@
-package net.etylop.immersivefarming.client.gui.screen.inventory;
+package net.etylop.immersivefarming.gui.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;

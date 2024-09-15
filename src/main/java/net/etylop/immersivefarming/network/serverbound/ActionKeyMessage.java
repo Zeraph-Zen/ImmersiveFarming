@@ -5,7 +5,7 @@ import com.mojang.datafixers.util.Pair;
 import net.etylop.immersivefarming.entity.AbstractDrawnEntity;
 import net.etylop.immersivefarming.network.Message;
 import net.etylop.immersivefarming.network.ServerMessageContext;
-import net.etylop.immersivefarming.world.AstikorWorld;
+import net.etylop.immersivefarming.world.IFWorld;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -27,7 +27,7 @@ public final class ActionKeyMessage implements Message {
         final ServerPlayer player = ctx.getPlayer();
         final Entity pulling = MoreObjects.firstNonNull(player.getVehicle(), player);
         final Level world = player.level;
-        AstikorWorld.get(world).map(w -> w.getDrawn(pulling)).orElse(Optional.empty())
+        IFWorld.get(world).map(w -> w.getDrawn(pulling)).orElse(Optional.empty())
             .map(c -> Pair.of(c, (Entity) null))
             .or(() -> world.getEntitiesOfClass(AbstractDrawnEntity.class, pulling.getBoundingBox().inflate(2.0D), entity -> entity != pulling).stream()
                 .min(Comparator.comparing(pulling::distanceTo))
