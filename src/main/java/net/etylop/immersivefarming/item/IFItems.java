@@ -21,6 +21,11 @@ public class IFItems {
     public static final RegistryObject<CompostItem> COMPOST = ITEMS.register("compost",
             () -> new CompostItem(new Item.Properties().tab(IFCreativeTab.TAB)));
 
+    public static final RegistryObject<Item> WHEEL = ITEMS.register("wheel",
+            () -> new Item(new Item.Properties().tab(IFCreativeTab.TAB)));
+    public static final RegistryObject<Item> PLOW = ITEMS.register("plow",
+            () -> new CartItem(new Item.Properties().stacksTo(1).tab(IFCreativeTab.TAB)));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

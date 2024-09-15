@@ -12,6 +12,7 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import net.etylop.immersivefarming.ImmersiveFarming;
 import net.etylop.immersivefarming.api.crafting.ComposterRecipe;
 import net.etylop.immersivefarming.block.multiblocks.composter.ComposterBlockEntity;
+import net.etylop.immersivefarming.gui.container.ComposterContainer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;

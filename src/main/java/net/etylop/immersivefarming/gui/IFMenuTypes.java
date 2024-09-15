@@ -6,6 +6,8 @@ import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import net.etylop.immersivefarming.ImmersiveFarming;
 import net.etylop.immersivefarming.block.multiblocks.composter.ComposterBlockEntity;
 import net.etylop.immersivefarming.gui.IFMenuProvider.BEContainerIF;
+import net.etylop.immersivefarming.gui.container.ComposterContainer;
+import net.etylop.immersivefarming.gui.container.PlowContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -25,6 +27,9 @@ public class IFMenuTypes {
             DeferredRegister.create(ForgeRegistries.CONTAINERS, ImmersiveFarming.MOD_ID);
 
     public static final BEContainerIF<ComposterBlockEntity, ComposterContainer> COMPOSTER = makeMenu("composter", ComposterContainer::new);
+
+    public static final RegistryObject<MenuType<PlowContainer>> PLOW_CART = REGISTER.register("plow",
+            () -> IForgeMenuType.create(PlowContainer::new));
 
 
     public static void register(IEventBus eventBus) {

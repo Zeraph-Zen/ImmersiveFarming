@@ -6,7 +6,7 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package net.etylop.immersivefarming.gui;
+package net.etylop.immersivefarming.gui.container;
 
 import blusunrize.immersiveengineering.common.gui.IEBaseContainer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
