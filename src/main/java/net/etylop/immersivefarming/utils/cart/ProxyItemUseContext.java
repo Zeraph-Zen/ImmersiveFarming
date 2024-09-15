@@ -1,4 +1,4 @@
-package net.etylop.immersivefarming.util;
+package net.etylop.immersivefarming.utils.cart;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;

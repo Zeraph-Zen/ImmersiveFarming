@@ -1,4 +1,4 @@
-package net.etylop.immersivefarming.util;
+package net.etylop.immersivefarming.utils.cart;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.world.entity.Entity;

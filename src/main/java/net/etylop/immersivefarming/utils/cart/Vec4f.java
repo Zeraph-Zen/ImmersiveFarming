@@ -1,4 +1,4 @@
-package net.etylop.immersivefarming.util;
+package net.etylop.immersivefarming.utils.cart;
 
 public final class Vec4f {
 	private float x;

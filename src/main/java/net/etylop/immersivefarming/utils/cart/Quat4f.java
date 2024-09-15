@@ -1,4 +1,4 @@
-package net.etylop.immersivefarming.util;
+package net.etylop.immersivefarming.utils.cart;
 
 public final class Quat4f {
 	public static Quat4f UNIT = new Quat4f();

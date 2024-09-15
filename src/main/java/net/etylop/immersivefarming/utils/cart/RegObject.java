@@ -1,4 +1,4 @@
-package net.etylop.immersivefarming.util;
+package net.etylop.immersivefarming.utils.cart;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;

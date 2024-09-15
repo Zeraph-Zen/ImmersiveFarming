@@ -1,11 +1,11 @@
 package net.etylop.immersivefarming.entity;
 
 import com.google.common.collect.ImmutableList;
-import net.etylop.immersivefarming.config.AstikorCartsConfig;
+import net.etylop.immersivefarming.config.IFConfig;
 import net.etylop.immersivefarming.gui.container.PlowContainer;
 import net.etylop.immersivefarming.item.IFItems;
-import net.etylop.immersivefarming.util.CartItemStackHandler;
-import net.etylop.immersivefarming.util.ProxyItemUseContext;
+import net.etylop.immersivefarming.utils.cart.CartItemStackHandler;
+import net.etylop.immersivefarming.utils.cart.ProxyItemUseContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -51,8 +51,8 @@ public final class PlowEntity extends AbstractDrawnInventoryEntity {
     }
 
     @Override
-    protected AstikorCartsConfig.CartConfig getConfig() {
-        return AstikorCartsConfig.get().plow;
+    protected IFConfig.CartConfig getConfig() {
+        return IFConfig.get().plow;
     }
 
     @Override

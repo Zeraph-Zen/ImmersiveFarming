@@ -3,9 +3,9 @@ package net.etylop.immersivefarming.entity;
 import com.mojang.datafixers.util.Pair;
 import net.etylop.immersivefarming.ImmersiveFarming;
 import net.etylop.immersivefarming.client.IFSounds;
-import net.etylop.immersivefarming.config.AstikorCartsConfig;
+import net.etylop.immersivefarming.config.IFConfig;
 import net.etylop.immersivefarming.network.clientbound.UpdateDrawnMessage;
-import net.etylop.immersivefarming.util.CartWheel;
+import net.etylop.immersivefarming.utils.cart.CartWheel;
 import net.etylop.immersivefarming.world.IFWorld;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -382,13 +382,12 @@ public abstract class AbstractDrawnEntity extends Entity implements IEntityAddit
         if (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()) return false;
         final ArrayList<String> allowed = this.getConfig().pullAnimals.get();
         if (allowed.isEmpty()) {
-            return entity instanceof Player ||
-                entity instanceof Saddleable && !(entity instanceof ItemSteerable);
+            return entity instanceof Saddleable && !(entity instanceof ItemSteerable);
         }
         return allowed.contains(EntityType.getKey(entity.getType()).toString());
     }
 
-    protected abstract AstikorCartsConfig.CartConfig getConfig();
+    protected abstract IFConfig.CartConfig getConfig();
 
     @Override
     public boolean hurt(final DamageSource source, final float amount) {

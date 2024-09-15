@@ -1,7 +1,6 @@
 package net.etylop.immersivefarming.config;
 
 import net.jodah.typetools.TypeResolver;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ItemSteerable;
 import net.minecraft.world.entity.Saddleable;
@@ -17,7 +16,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public final class AstikorCartsConfig {
+public final class IFConfig {
     public static Common get() {
         return Holder.COMMON;
     }
@@ -39,14 +38,10 @@ public final class AstikorCartsConfig {
     }
 
     public static class Common {
-        public final CartConfig supplyCart;
-        public final CartConfig animalCart;
         public final CartConfig plow;
 
         Common(final ForgeConfigSpec.Builder builder) {
             builder.comment("Configuration for all carts and cart-like vehicles\n\nDefault pull_animals = " + referencePullAnimals()).push("carts");
-            this.supplyCart = new CartConfig(builder, "supply_cart", "The Supply Cart, a type of cart that stores items");
-            this.animalCart = new CartConfig(builder, "animal_cart", "The Animal Cart, a type of cart to haul other animals");
             this.plow = new CartConfig(builder, "plow", "The Plow, an animal pulled machine for tilling soil and creating paths");
             builder.pop();
         }
@@ -59,7 +54,6 @@ public final class AstikorCartsConfig {
                             ObfuscationReflectionHelper.getPrivateValue(EntityType.class, type, "f_20535_"),
                             "factory"
                         ).getClass());
-                        if (Entity.class.equals(entityClass)) return type == EntityType.PLAYER;
                         return Saddleable.class.isAssignableFrom(entityClass) &&
                             !ItemSteerable.class.isAssignableFrom(entityClass) &&
                             !Llama.class.isAssignableFrom(entityClass); // no horse-llamas
@@ -86,9 +80,9 @@ public final class AstikorCartsConfig {
                 )
                 .define("pull_animals", new ArrayList<>());
             this.slowSpeed = builder.comment("Slow speed modifier toggled by the sprint key")
-                .defineInRange("slow_speed", -0.65D, -1.0D, 0.0D);
+                .defineInRange("slow_speed", -0.4D, -1.0D, 0.0D);
             this.pullSpeed = builder.comment("Base speed modifier applied to animals (-0.5 = half normal speed)")
-                .defineInRange("pull_speed", 0.0D, -1.0D, 0.0D);
+                .defineInRange("pull_speed", -0.65D, -1.0D, 0.0D);
             builder.pop();
         }
     }

@@ -1,8 +1,8 @@
 package net.etylop.immersivefarming;
 
-import net.etylop.immersivefarming.config.AstikorCartsConfig;
+import net.etylop.immersivefarming.config.IFConfig;
 import net.etylop.immersivefarming.entity.ai.goal.PullCartGoal;
-import net.etylop.immersivefarming.util.GoalAdder;
+import net.etylop.immersivefarming.utils.cart.GoalAdder;
 import net.etylop.immersivefarming.world.IFWorld;
 import net.etylop.immersivefarming.world.SimpleIFWorld;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +30,7 @@ public class CommonInitializer implements Initializer {
             @Override
             public void accept(final Predicate<ResourceLocation> filter) {
                 if (this.run && filter.test(ForgeRegistries.ENTITIES.getRegistryName())) {
-                    container.addConfig(new ModConfig(ModConfig.Type.COMMON, AstikorCartsConfig.spec(), container));
+                    container.addConfig(new ModConfig(ModConfig.Type.COMMON, IFConfig.spec(), container));
                     this.run = false;
                     LogicalSidedProvider.WORKQUEUE.get(EffectiveSide.get())
                         .execute(() -> ObjectHolderRegistry.removeHandler(this));
@@ -38,7 +38,7 @@ public class CommonInitializer implements Initializer {
             }
         });
         mod.bus().<AttachCapabilitiesEvent<Level>, Level>addGenericListener(Level.class, e ->
-            e.addCapability(new ResourceLocation(ImmersiveFarming.MOD_ID, "astikor"), IFWorld.createProvider(SimpleIFWorld::new))
+            e.addCapability(new ResourceLocation(ImmersiveFarming.MOD_ID, "carts"), IFWorld.createProvider(SimpleIFWorld::new))
         );
         GoalAdder.mobGoal(Mob.class)
             .add(1, PullCartGoal::new)
