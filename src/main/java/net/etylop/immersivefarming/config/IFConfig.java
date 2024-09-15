@@ -80,9 +80,9 @@ public final class IFConfig {
                 )
                 .define("pull_animals", new ArrayList<>());
             this.slowSpeed = builder.comment("Slow speed modifier toggled by the sprint key")
-                .defineInRange("slow_speed", -0.4D, -1.0D, 0.0D);
+                .defineInRange("slow_speed", -0.0D, -1.0D, 0.0D);
             this.pullSpeed = builder.comment("Base speed modifier applied to animals (-0.5 = half normal speed)")
-                .defineInRange("pull_speed", -0.65D, -1.0D, 0.0D);
+                .defineInRange("pull_speed", -0.5D, -1.0D, 0.0D);
             builder.pop();
         }
     }

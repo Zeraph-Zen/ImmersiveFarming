@@ -17,6 +17,8 @@
   "item.immersivefarming.plow": "Plow",
   "item.immersivefarming.wheel": "Wheel",
   "entity.immersivefarming.plow": "Plow",
+  "item.immersivefarming.sower": "Sowing Machine",
+  "entity.immersivefarming.sower": "Sowing Machine",
   "key.categories.immersivefarming": "Immersive Farming",
   "key.immersivefarming.desc": "Action Key",
   "subtitles.immersivefarming.cart.attached": "Cart attaches",
