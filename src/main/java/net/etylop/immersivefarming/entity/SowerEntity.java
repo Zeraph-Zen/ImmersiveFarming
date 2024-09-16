@@ -176,7 +176,7 @@ public final class SowerEntity extends AbstractDrawnInventoryEntity {
 
     @Override
     public Item getCartItem() {
-        return IFItems.PLOW.get();
+        return IFItems.SOWER.get();
     }
 
     @Override
