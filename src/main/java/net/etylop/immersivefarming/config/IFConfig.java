@@ -39,10 +39,12 @@ public final class IFConfig {
 
     public static class Common {
         public final CartConfig plow;
+        public final CropConfig cropConfig;
 
         Common(final ForgeConfigSpec.Builder builder) {
+            this.cropConfig = new CropConfig(builder);
             builder.comment("Configuration for all carts and cart-like vehicles\n\nDefault pull_animals = " + referencePullAnimals()).push("carts");
-            this.plow = new CartConfig(builder, "plow", "The Plow, an animal pulled machine for tilling soil and creating paths");
+            this.plow = new CartConfig(builder, "plow", "The Plow, an animal pulled machine for tilling soil");
             builder.pop();
         }
 
@@ -84,6 +86,21 @@ public final class IFConfig {
             this.pullSpeed = builder.comment("Base speed modifier applied to animals (-0.5 = half normal speed)")
                 .defineInRange("pull_speed", -0.5D, -1.0D, 0.0D);
             builder.pop();
+        }
+    }
+
+    public static class CropConfig {
+        public final ForgeConfigSpec.DoubleValue start_contamination;
+        public final ForgeConfigSpec.DoubleValue proximity_contamination;
+        public final ForgeConfigSpec.DoubleValue lethality_contamination;
+
+        CropConfig(final ForgeConfigSpec.Builder builder) {
+            this.start_contamination = builder.comment("Probability for a crop to become sick during a random tick")
+                    .defineInRange("start_contamination", 0.0001D, 0D, 0.0D);
+            this.proximity_contamination = builder.comment("Probability for a crop to become sick during a random tick")
+                    .defineInRange("proximity_contamination", 0.1D, 0D, 0.0D);
+            this.lethality_contamination = builder.comment("Probability for a crop to become sick during a random tick")
+                    .defineInRange("lethality_contamination", 0.02D, 0D, 0.0D);
         }
     }
 }

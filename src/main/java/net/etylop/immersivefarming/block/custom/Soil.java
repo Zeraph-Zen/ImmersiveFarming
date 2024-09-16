@@ -2,6 +2,7 @@ package net.etylop.immersivefarming.block.custom;
 
 import net.etylop.immersivefarming.block.IFBlocks;
 import net.etylop.immersivefarming.block.entity.SprinklerBlockEntity;
+import net.etylop.immersivefarming.config.IFConfig;
 import net.etylop.immersivefarming.particle.IFParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -38,12 +39,14 @@ public class Soil extends FarmBlock {
     public static final int FERTILITY_MAX = 2;
     public static final IntegerProperty FERTILITY = IntegerProperty.create("fertility", 0, FERTILITY_MAX);
 
+    private static final IFConfig.CropConfig cropConfig = IFConfig.get().cropConfig;
+
     // Probability for a crop to become sick during a random tick
-    public static final float START_CONTAMINATION = 0.0001f;
+    public static final double START_CONTAMINATION = cropConfig.start_contamination.get();
     // Probability for a crop to contaminate an adjacent crop during a random tick
-    public static final float PROXIMITY_CONTAMINATION = 0.1f;
+    public static final double PROXIMITY_CONTAMINATION = cropConfig.proximity_contamination.get();
     // Probability for a crop to die when contaminated during a random tick
-    public static final float LETHALITY_CONTAMINATION = 0.03f;
+    public static final double LETHALITY_CONTAMINATION = cropConfig.lethality_contamination.get();
     public static final BooleanProperty CONTAMINATED = BooleanProperty.create("contaminated");
 
 
