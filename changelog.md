@@ -1,3 +1,15 @@
+##### Unreleased
+
+* Plowing machine
+  * Plow dirt much quicker using a plow and horse
+* Sowing machine
+  * Plant seeds and fertilizer quicker using a sowing machine and horse
+* Dead Crop (when crops die they become a Dead Crop block)
+* Config file
+  * Change cart speed
+  * Change probability of disease contamination
+
+
 ##### Version 1.18.2-0.2.1
 
 * Growth speed fix
@@ -17,6 +29,7 @@
 * Changed the sprinkler models
 * Engineer's manual integration
 * Reduced crop disease chance
+
 
 ##### Version 1.18.2-0.1
 
