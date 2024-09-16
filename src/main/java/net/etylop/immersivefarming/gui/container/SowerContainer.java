@@ -14,10 +14,14 @@ public final class SowerContainer extends CartContainer {
 
     public SowerContainer(final int id, final Inventory playerInv, final AbstractDrawnInventoryEntity cart) {
         super(IFMenuTypes.SOWER_CART.get(), id, cart);
-        this.addSlot(new SlotItemHandler(this.cartInv, 0, 57, 24));
-        this.addSlot(new SlotItemHandler(this.cartInv, 1, 80, 17));
-        this.addSlot(new SlotItemHandler(this.cartInv, 2, 103, 24));
-        this.addSlot(new SlotItemHandler(this.cartInv, 3, 0, 0));
+
+        for (int j = 0; j < 9; ++j) {
+            this.addSlot(new SlotItemHandler(this.cartInv, j, 8 + j * 18, 12));
+        }
+        for (int j = 0; j < 9; ++j) {
+            this.addSlot(new SlotItemHandler(this.cartInv, 9+j, 8 + j * 18, 47));
+        }
+
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {

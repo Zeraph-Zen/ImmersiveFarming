@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public final class PlowScreen extends AbstractContainerScreen<CartContainer> {
-    private static final ResourceLocation PLOW_GUI_TEXTURES = new ResourceLocation(ImmersiveFarming.MOD_ID, "textures/gui/container/plow.png");
+    private static final ResourceLocation PLOW_GUI_TEXTURES = new ResourceLocation(ImmersiveFarming.MOD_ID, "textures/gui/plow.png");
 
     public PlowScreen(final CartContainer screenContainer, final Inventory inv, final Component titleIn) {
         super(screenContainer, inv, titleIn);

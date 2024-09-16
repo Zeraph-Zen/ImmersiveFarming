@@ -31,17 +31,22 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkHooks;
 
+import java.util.ArrayList;
+
+
 public final class SowerEntity extends AbstractDrawnInventoryEntity {
-    private static final int SEED_COUNT = 2;
-    private static final int FERTILIZER_COUNT = 2;
+    private static final int SEED_COUNT = 9;
+    private static final int FERTILIZER_COUNT = 9;
     private static final double BLADEOFFSET = 1.7D;
     private static final EntityDataAccessor<Boolean> PLOWING = SynchedEntityData.defineId(SowerEntity.class, EntityDataSerializers.BOOLEAN);
 
-    private static final ImmutableList<EntityDataAccessor<ItemStack>> INVENTORY = ImmutableList.of(
-            SynchedEntityData.defineId(SowerEntity.class, EntityDataSerializers.ITEM_STACK),
-            SynchedEntityData.defineId(SowerEntity.class, EntityDataSerializers.ITEM_STACK),
-            SynchedEntityData.defineId(SowerEntity.class, EntityDataSerializers.ITEM_STACK),
-            SynchedEntityData.defineId(SowerEntity.class, EntityDataSerializers.ITEM_STACK));
+    static final ImmutableList<EntityDataAccessor<ItemStack>> INVENTORY;
+
+    static {
+        ArrayList<EntityDataAccessor<ItemStack>> INV = new ArrayList<>();
+        for (int i=0; i<SEED_COUNT+FERTILIZER_COUNT; i++) INV.add(SynchedEntityData.defineId(SowerEntity.class, EntityDataSerializers.ITEM_STACK));
+        INVENTORY = ImmutableList.copyOf(INV);
+    }
 
 
     public SowerEntity(final EntityType<? extends Entity> entityTypeIn, final Level worldIn) {
