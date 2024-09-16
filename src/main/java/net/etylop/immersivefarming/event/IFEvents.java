@@ -59,6 +59,9 @@ public class IFEvents {
 
             if (level.getBiome(event.getPos()).containsTag(Tags.Biomes.IS_COLD)) {
                 event.setResult(Event.Result.DENY);
+                if (Math.random()<.3) {
+                    level.setBlock(event.getPos(),IFBlocks.DEAD_CROP.get().defaultBlockState(), 2);
+                }
                 return;
             }
 
