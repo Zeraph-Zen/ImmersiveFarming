@@ -1,5 +1,6 @@
 package net.etylop.immersivefarming.block.custom;
 
+import net.etylop.immersivefarming.block.IFBlocks;
 import net.etylop.immersivefarming.block.entity.SprinklerBlockEntity;
 import net.etylop.immersivefarming.particle.IFParticles;
 import net.minecraft.core.BlockPos;
@@ -127,7 +128,7 @@ public class Soil extends FarmBlock {
             pLevel.setBlock(pPos, pState.setValue(CONTAMINATED, false), 2);
         }
         else if (isUnderCrops && contaminated && Math.random()<LETHALITY_CONTAMINATION) {
-            pLevel.setBlock(pPos.above(), Blocks.DEAD_BUSH.defaultBlockState(), 3);
+            pLevel.setBlock(pPos.above(), IFBlocks.DEAD_CROP.get().defaultBlockState(), 3);
             pLevel.setBlock(pPos, Blocks.DIRT.defaultBlockState(), 2);
         }
         else if (isUnderCrops && contaminated) {

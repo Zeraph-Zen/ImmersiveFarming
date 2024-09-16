@@ -2,6 +2,7 @@
   "block.immersivefarming.soil": "Soil",
   "block.immersivefarming.sprinkler": "Sprinkler",
   "block.immersivefarming.sprinkler_extended": "High Pressure Sprinkler",
+  "block.immersivefarming.dead_crop": "Dead Crop",
 
   "itemGroup.immersivefarmingtab": "Immersive Farming",
   "item.immersivefarming.treated_water_bucket": "Treated Water Bucket",

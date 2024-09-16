@@ -3,6 +3,7 @@ package net.etylop.immersivefarming.block;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalMultiblockBlock;
 import net.etylop.immersivefarming.ImmersiveFarming;
+import net.etylop.immersivefarming.block.custom.DeadCrop;
 import net.etylop.immersivefarming.block.custom.Soil;
 import net.etylop.immersivefarming.block.custom.SprinklerBlock;
 import net.etylop.immersivefarming.block.custom.SprinklerExtendedBlock;
@@ -36,7 +37,7 @@ public class IFBlocks {
 
     public static final RegistryObject<Soil> SOIL = registerBlock(
             "soil",
-            () -> new Soil(net.minecraft.world.level.block.state.BlockBehaviour.Properties.copy(Blocks.FARMLAND))
+            () -> new Soil(BlockBehaviour.Properties.copy(Blocks.FARMLAND))
     );
 
     public static final RegistryObject<SprinklerBlock> SPRINKLER = registerBlock(
@@ -52,6 +53,11 @@ public class IFBlocks {
     public static final RegistryObject<MetalMultiblockBlock<ComposterBlockEntity>> COMPOSTER = registerBlock(
             "composter",
             () -> new MetalMultiblockBlock<>(IFBlockEntities.COMPOSTER, METAL_NO_OCCLUSION)
+    );
+
+    public static final RegistryObject<DeadCrop> DEAD_CROP = registerBlock(
+            "dead_crop",
+            () -> new DeadCrop(BlockBehaviour.Properties.of(Material.PLANT).noCollission().instabreak().sound(SoundType.CROP))
     );
 
 

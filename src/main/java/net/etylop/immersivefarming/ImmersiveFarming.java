@@ -79,6 +79,7 @@ public class ImmersiveFarming {
         ItemBlockRenderTypes.setRenderLayer(IFFluids.TREATED_WATER_BLOCK.get(), RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(IFFluids.TREATED_WATER_FLUID.get(), RenderType.translucent());
         ItemBlockRenderTypes.setRenderLayer(IFFluids.TREATED_WATER_FLOWING.get(), RenderType.translucent());
+        ItemBlockRenderTypes.setRenderLayer(IFBlocks.DEAD_CROP.get(), RenderType.cutout());
     }
 
     private void setup(final FMLCommonSetupEvent event) {
