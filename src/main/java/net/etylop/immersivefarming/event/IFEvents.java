@@ -20,8 +20,11 @@ import net.minecraftforge.event.entity.player.BonemealEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.Optional;
 
 
 public class IFEvents {
@@ -52,10 +55,12 @@ public class IFEvents {
             event.setCanceled(true);
         }
 
-        @SubscribeEvent
+        @SubscribeEvent(priority = EventPriority.LOW)
         public static void onCropGrowth(BlockEvent.CropGrowEvent.Pre event) {
+            if (event.getResult() == Event.Result.DENY) return;
+
             LevelAccessor level = event.getWorld();
-            BlockState cropBlock =  level.getBlockState(event.getPos());
+            BlockState cropBlock = level.getBlockState(event.getPos());
 
             if (level.getBiome(event.getPos()).containsTag(Tags.Biomes.IS_COLD)) {
                 event.setResult(Event.Result.DENY);
@@ -81,14 +86,25 @@ public class IFEvents {
                         event.setResult(Event.Result.DENY);
                     }
                 }
-                if (cropBlock.getValue(CropBlock.AGE)==CropBlock.MAX_AGE-1 && !(event.getResult()==Event.Result.DENY)) {
-                    level.setBlock(event.getPos().below(), soilBlock.setValue(Soil.FERTILITY, 0), 2);
-                    CropSavedData cropData = getCropSavedData((Level) event.getWorld());
-                    if (cropData!=null) {
-                        cropData.insertCrop((Level) level, event.getPos());
-                        cropData.setDirty();
+
+                if (cropBlock.getBlock() instanceof CropBlock blockCropType) {
+
+                    Optional<Integer> ageOptional = cropBlock.getValues().entrySet().stream()
+                            .filter(entry -> "age".equals(entry.getKey().getName()) && entry.getValue() instanceof Integer)
+                            .map(entry -> (Integer) entry.getValue())
+                            .findFirst();
+
+                    int age = ageOptional.orElse(0);
+
+                    if (age >= blockCropType.getMaxAge() - 1 && event.getResult() != Event.Result.DENY) {
+                        CropSavedData cropData = getCropSavedData((Level) event.getWorld());
+                        if (cropData != null) {
+                            cropData.insertCrop((Level) level, event.getPos());
+                            cropData.setDirty();
+                        }
+                        level.setBlock(event.getPos().below(), soilBlock.setValue(Soil.FERTILITY, 0), 2);
+                        event.setResult(Event.Result.ALLOW);
                     }
-                    event.setResult(Event.Result.ALLOW);
                 }
                 return;
             }
@@ -98,20 +114,6 @@ public class IFEvents {
         private static boolean canCropGrow(Level level, BlockPos pos) {
             BlockState soil = level.getBlockState(pos.below());
             return (soil.getBlock() instanceof Soil) && soil.getBlock().isFertile(soil, level, pos) && level.canSeeSky(pos);
-        }
-
-
-        @SubscribeEvent
-        public static void onHarvestCrop(BlockEvent.BreakEvent event) {
-            BlockState block = event.getState();
-            if (!(block.getBlock() instanceof CropBlock))
-                return;
-
-            BlockState soil = event.getWorld().getBlockState(event.getPos().below());
-            if (!(soil.getBlock() instanceof Soil))
-                return;
-
-            soil.setValue(Soil.FERTILITY,0);
         }
 
         public static CropSavedData getCropSavedData(Level w)

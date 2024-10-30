@@ -1,3 +1,8 @@
+##### Version 1.18.2-0.2.2
+
+* Fixed crash when crops have a different maxAge
+
+
 ##### Version 1.18.2-0.2.1
 
 * Growth speed fix
