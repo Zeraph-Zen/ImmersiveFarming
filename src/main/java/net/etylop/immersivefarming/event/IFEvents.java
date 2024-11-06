@@ -59,12 +59,6 @@ public class IFEvents {
         }
 
 
-        private static void handleCropGrowth(BlockEvent.CropGrowEvent.Pre event, int age, int maxAge) {
-            BlockState cropBlock = event.getState();
-            LevelAccessor level = event.getWorld();
-
-        }
-
         @SubscribeEvent(priority = EventPriority.LOW)
         public static void onCropGrowth(BlockEvent.CropGrowEvent.Pre event) {
             if (event.getResult() == Event.Result.DENY) return;
@@ -97,34 +91,49 @@ public class IFEvents {
                         event.setResult(Event.Result.DENY);
                     }
                 }
-
-                Optional<Integer> ageOptional = cropBlock.getValues().entrySet().stream()
-                        .filter(entry -> "age".equals(entry.getKey().getName()) && entry.getValue() instanceof Integer)
-                        .map(entry -> (Integer) entry.getValue())
-                        .findFirst();
-
-                Optional<Integer> maxAgeOptional = cropBlock.getValues().entrySet().stream()
-                        .filter(entry -> "age".equals(entry.getKey().getName()) && entry.getKey() instanceof IntegerProperty)
-                        .map(entry -> Collections.max(((IntegerProperty) entry.getKey()).getPossibleValues()))
-                        .findFirst();
-
-                int age = ageOptional.orElse(0);
-                int maxAge= maxAgeOptional.orElse(10);
-
-                if (age >= maxAge - 1 && event.getResult() != Event.Result.DENY) {
-                    CropSavedData cropData = getCropSavedData((Level) event.getWorld());
-                    if (cropData != null) {
-                        cropData.insertCrop((Level) level, event.getPos());
-                        cropData.setDirty();
-                    }
-                    level.setBlock(event.getPos().below(), soilBlock.setValue(Soil.FERTILITY, 0), 2);
-                    event.setResult(Event.Result.ALLOW);
-                }
             }
-
         }
 
-        private static boolean canCropGrow(Level level, BlockPos pos) {
+        @SubscribeEvent
+        public static void onCropGrowthPost(BlockEvent.CropGrowEvent.Post event) {
+            BlockState cropBlock = event.getState();
+            LevelAccessor level = event.getWorld();
+            BlockState soilBlock = event.getWorld().getBlockState(event.getPos().below());
+
+            if (!(cropBlock.getBlock() instanceof CropBlock || cropBlock.getBlock() instanceof StemBlock)) {
+                return;
+            }
+
+            if (!(soilBlock.getBlock() instanceof Soil)) {
+                return;
+            }
+
+            Optional<Integer> ageOptional = cropBlock.getValues().entrySet().stream()
+                    .filter(entry -> "age".equals(entry.getKey().getName()) && entry.getValue() instanceof Integer)
+                    .map(entry -> (Integer) entry.getValue())
+                    .findFirst();
+
+            Optional<Integer> maxAgeOptional = cropBlock.getValues().entrySet().stream()
+                    .filter(entry -> "age".equals(entry.getKey().getName()) && entry.getKey() instanceof IntegerProperty)
+                    .map(entry -> Collections.max(((IntegerProperty) entry.getKey()).getPossibleValues()))
+                    .findFirst();
+
+            int age = ageOptional.orElse(0);
+            int maxAge= maxAgeOptional.orElse(10);
+
+            if (age == maxAge) {
+                CropSavedData cropData = getCropSavedData((Level) event.getWorld());
+                if (cropData != null) {
+                    cropData.insertCrop((Level) level, event.getPos());
+                    cropData.setDirty();
+                }
+                level.setBlock(event.getPos().below(), soilBlock.setValue(Soil.FERTILITY, 0), 2);
+                event.setResult(Event.Result.ALLOW);
+            }
+        }
+
+
+            private static boolean canCropGrow(Level level, BlockPos pos) {
             BlockState soil = level.getBlockState(pos.below());
             return (soil.getBlock() instanceof Soil) && soil.getBlock().isFertile(soil, level, pos) && level.canSeeSky(pos);
         }

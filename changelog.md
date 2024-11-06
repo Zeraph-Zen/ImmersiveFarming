@@ -1,3 +1,9 @@
+##### Version 1.18.2-0.2.3
+
+* Fixed default growth for non crops/stems
+
+
+
 ##### Version 1.18.2-0.2.2
 
 * Fixed crash when crops have a different maxAge
