@@ -11,10 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.CropBlock;
-import net.minecraft.world.level.block.GrassBlock;
-import net.minecraft.world.level.block.StemBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraftforge.common.Tags;
@@ -100,35 +97,39 @@ public class IFEvents {
             LevelAccessor level = event.getWorld();
             BlockState soilBlock = event.getWorld().getBlockState(event.getPos().below());
 
-            if (!(cropBlock.getBlock() instanceof CropBlock || cropBlock.getBlock() instanceof StemBlock)) {
-                return;
-            }
-
             if (!(soilBlock.getBlock() instanceof Soil)) {
                 return;
             }
 
-            Optional<Integer> ageOptional = cropBlock.getValues().entrySet().stream()
-                    .filter(entry -> "age".equals(entry.getKey().getName()) && entry.getValue() instanceof Integer)
-                    .map(entry -> (Integer) entry.getValue())
-                    .findFirst();
+            if (cropBlock.getBlock() instanceof CropBlock || cropBlock.getBlock() instanceof StemBlock) {
+                Optional<Integer> ageOptional = cropBlock.getValues().entrySet().stream()
+                        .filter(entry -> "age".equals(entry.getKey().getName()) && entry.getValue() instanceof Integer)
+                        .map(entry -> (Integer) entry.getValue())
+                        .findFirst();
 
-            Optional<Integer> maxAgeOptional = cropBlock.getValues().entrySet().stream()
-                    .filter(entry -> "age".equals(entry.getKey().getName()) && entry.getKey() instanceof IntegerProperty)
-                    .map(entry -> Collections.max(((IntegerProperty) entry.getKey()).getPossibleValues()))
-                    .findFirst();
+                Optional<Integer> maxAgeOptional = cropBlock.getValues().entrySet().stream()
+                        .filter(entry -> "age".equals(entry.getKey().getName()) && entry.getKey() instanceof IntegerProperty)
+                        .map(entry -> Collections.max(((IntegerProperty) entry.getKey()).getPossibleValues()))
+                        .findFirst();
 
-            int age = ageOptional.orElse(0);
-            int maxAge= maxAgeOptional.orElse(10);
+                int age = ageOptional.orElse(0);
+                int maxAge = maxAgeOptional.orElse(10);
 
-            if (age == maxAge) {
-                CropSavedData cropData = getCropSavedData((Level) event.getWorld());
-                if (cropData != null) {
-                    cropData.insertCrop((Level) level, event.getPos());
-                    cropData.setDirty();
+                if (age == maxAge) {
+                    CropSavedData cropData = getCropSavedData((Level) event.getWorld());
+                    if (cropData != null) {
+                        cropData.insertCrop((Level) level, event.getPos());
+                        cropData.setDirty();
+                    }
+                    level.setBlock(event.getPos().below(), soilBlock.setValue(Soil.FERTILITY, 0), 2);
+                    event.setResult(Event.Result.ALLOW);
                 }
-                level.setBlock(event.getPos().below(), soilBlock.setValue(Soil.FERTILITY, 0), 2);
-                event.setResult(Event.Result.ALLOW);
+            }
+
+            if (cropBlock.getBlock() instanceof AttachedStemBlock) {
+                if (Math.random() < 0) { // TODO add config
+                    level.setBlock(event.getPos(), Blocks.AIR.defaultBlockState(), 2);
+                }
             }
         }
 
