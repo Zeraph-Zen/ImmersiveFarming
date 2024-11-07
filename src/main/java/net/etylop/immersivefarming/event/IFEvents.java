@@ -3,6 +3,7 @@ package net.etylop.immersivefarming.event;
 import net.etylop.immersivefarming.ImmersiveFarming;
 import net.etylop.immersivefarming.block.IFBlocks;
 import net.etylop.immersivefarming.block.custom.Soil;
+import net.etylop.immersivefarming.config.IFConfig;
 import net.etylop.immersivefarming.utils.CropSavedData;
 import net.etylop.immersivefarming.utils.ModTags;
 import net.minecraft.core.BlockPos;
@@ -28,8 +29,10 @@ import java.util.Optional;
 
 
 public class IFEvents {
+
     @Mod.EventBusSubscriber(modid = ImmersiveFarming.MOD_ID)
     public static class ForgeEvents {
+        private static final double STEM_DEATH = IFConfig.get().cropConfig.stem_death.get();
 
         @SubscribeEvent
         public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
@@ -132,7 +135,7 @@ public class IFEvents {
             }
 
             if (cropBlock.getBlock() instanceof AttachedStemBlock) {
-                if (Math.random() < 0) { // TODO add config
+                if (Math.random() < STEM_DEATH) {
                     level.setBlock(event.getPos(), Blocks.AIR.defaultBlockState(), 2);
                 }
             }

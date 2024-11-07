@@ -5,9 +5,11 @@
 * Sowing machine
   * Plant seeds and fertilizer quicker using a sowing machine and horse
 * Dead Crop (when crops die they become a Dead Crop block)
+* Stems may die after giving a fruit (configurable)
 * Config file
   * Change cart speed
   * Change probability of disease contamination
+  * Change probability of stem death
 
 
 ##### Version 1.18.2-0.2.3

@@ -93,14 +93,17 @@ public final class IFConfig {
         public final ForgeConfigSpec.DoubleValue start_contamination;
         public final ForgeConfigSpec.DoubleValue proximity_contamination;
         public final ForgeConfigSpec.DoubleValue lethality_contamination;
+        public final ForgeConfigSpec.DoubleValue stem_death;
 
         CropConfig(final ForgeConfigSpec.Builder builder) {
             this.start_contamination = builder.comment("Probability for a crop to become sick during a random tick")
-                    .defineInRange("start_contamination", 0.0001D, 0D, 0.0D);
-            this.proximity_contamination = builder.comment("Probability for a crop to become sick during a random tick")
-                    .defineInRange("proximity_contamination", 0.1D, 0D, 0.0D);
-            this.lethality_contamination = builder.comment("Probability for a crop to become sick during a random tick")
-                    .defineInRange("lethality_contamination", 0.02D, 0D, 0.0D);
+                    .defineInRange("start_contamination", 0.0001D, 0D, 1.0D);
+            this.proximity_contamination = builder.comment("Probability for a crop to be contaminated by a neighbouring sick crop during a random tick")
+                    .defineInRange("proximity_contamination", 0.1D, 0D, 1.0D);
+            this.lethality_contamination = builder.comment("Probability for a sick crop to die during a random tick")
+                    .defineInRange("lethality_contamination", 0.02D, 0D, 1.0D);
+            this.stem_death = builder.comment("Probability for a steam to die after giving a fruit")
+                    .defineInRange("stem_death", 0.5D, 0D, 1.0D);
         }
     }
 }
