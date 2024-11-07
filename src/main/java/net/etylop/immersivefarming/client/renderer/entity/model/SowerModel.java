@@ -6,28 +6,24 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 
 public final class SowerModel extends CartModel<SowerEntity> {
-    private final ModelPart[] plowShaftUpper = new ModelPart[3];
-    private final ModelPart[] plowShaftLower = new ModelPart[3];
+    private final ModelPart plowShaftUpper;
+    private final ModelPart plowShaftLower;
 
     public SowerModel(final ModelPart root) {
         super(root);
         ModelPart parts = root.getChild("body").getChild("parts");
-        for (int i = 0; i < this.plowShaftUpper.length; i++) {
-            this.plowShaftUpper[i] = parts.getChild("plow_shaft_upper_" + i);
-            this.plowShaftLower[i] = this.plowShaftUpper[i].getChild("plow_shaft_lower_" + i);
-        }
+        this.plowShaftUpper = parts.getChild("plow_shaft_upper");
+        this.plowShaftLower = this.plowShaftUpper.getChild("plow_shaft_lower" );
     }
 
     public ModelPart getShaft(final int original) {
-        return this.plowShaftLower[original];
+        return this.plowShaftLower;
     }
 
     @Override
     public void setupAnim(final SowerEntity entity, final float delta, final float limbSwingAmount, final float ageInTicks, final float netHeadYaw, final float pitch) {
         super.setupAnim(entity, delta, limbSwingAmount, ageInTicks, netHeadYaw, pitch);
-        for (final ModelPart renderer : this.plowShaftUpper) {
-            renderer.xRot = (float) (entity.getPlowing() ? Math.PI / 4.0D - Math.toRadians(pitch) : Math.PI / 2.5D);
-        }
+        this.plowShaftUpper.xRot = (float) (entity.getPlowing() ? Math.PI / 4.0D - Math.toRadians(pitch) : Math.PI / 3D);
     }
 
     public static LayerDefinition createLayer() {
@@ -65,32 +61,31 @@ public final class SowerModel extends CartModel<SowerEntity> {
         shafts.addChild(shaft);
         shafts.addChild(shaftConnector);
 
-        final EasyMeshBuilder[] plowShaftUpper = new EasyMeshBuilder[3];
-        final EasyMeshBuilder[] plowShaftLower = new EasyMeshBuilder[3];
-        for (int i = 0; i < plowShaftUpper.length; i++) {
-            plowShaftUpper[i] = new EasyMeshBuilder("plow_shaft_upper_" + i, 56, 0);
-            plowShaftUpper[i].addBox(-1.0F, -2.0F, -2.0F, 2, 30, 2);
-            plowShaftUpper[i].setRotationPoint(-3.0F + 3 * i, -7.0F, 0.0F);
-            plowShaftUpper[i].yRot = -0.523599F + (float) Math.PI / 6.0F * i;
+        final EasyMeshBuilder plowShaftUpper;
+        final EasyMeshBuilder plowShaftLower;
 
-            plowShaftLower[i] = new EasyMeshBuilder("plow_shaft_lower_" + i, 42, 4);
-            plowShaftLower[i].addBox(-1.0F, -0.7F, -0.7F, 2, 10, 2);
-            plowShaftLower[i].setRotationPoint(0.0F, 28.0F, -1.0F);
-            plowShaftLower[i].xRot = (float) Math.PI / 4.0F;
-            plowShaftUpper[i].addChild(plowShaftLower[i]);
-        }
+        plowShaftUpper = new EasyMeshBuilder("plow_shaft_upper", 56, 0);
+        plowShaftUpper.addBox(-1.0F, -2.0F, -2.0F, 2, 30, 2);
+        plowShaftUpper.setRotationPoint(-3.0F + 3, -7.0F, 0.0F);
+        plowShaftUpper.yRot = -0.523599F + (float) Math.PI / 6.0F;
+
+        plowShaftLower = new EasyMeshBuilder("plow_shaft_lower", 42, 4);
+        plowShaftLower.addBox(-15.0F, -0.7F, -0.7F, 30, 8, 8);
+        plowShaftLower.setRotationPoint(0.0F, 28.0F, -1.0F);
+        plowShaftLower.xRot = (float) Math.PI / 4.0F;
+        plowShaftUpper.addChild(plowShaftLower);
 
         final EasyMeshBuilder plowHandle = new EasyMeshBuilder("plow_handle", 50, 4);
         plowHandle.addBox(-0.5F, 0.0F, -0.5F, 1, 18, 1);
         plowHandle.setRotationPoint(0.0F, 33.0F, 5.0F);
         plowHandle.xRot = (float) Math.PI / 2.0F;
-        plowShaftUpper[1].addChild(plowHandle);
+        plowShaftUpper.addChild(plowHandle);
 
         final EasyMeshBuilder plowHandleGrip = new EasyMeshBuilder("plow_handle_grip", 50, 23);
         plowHandleGrip.addBox(-0.5F, 0.0F, -1.0F, 1, 5, 1);
         plowHandleGrip.setRotationPoint(0.0F, 32.8F, 21.0F);
         plowHandleGrip.xRot = (float) Math.PI / 4.0F;
-        plowShaftUpper[1].addChild(plowHandleGrip);
+        plowShaftUpper.addChild(plowHandleGrip);
 
         final EasyMeshBuilder parts = new EasyMeshBuilder("parts");
         parts.setRotationPoint(0.0F, -5.0F, -1.0F);
@@ -98,9 +93,7 @@ public final class SowerModel extends CartModel<SowerEntity> {
         parts.addChild(triangle[0]);
         parts.addChild(triangle[1]);
         parts.addChild(triangle[2]);
-        parts.addChild(plowShaftUpper[0]);
-        parts.addChild(plowShaftUpper[1]);
-        parts.addChild(plowShaftUpper[2]);
+        parts.addChild(plowShaftUpper);
 
         final EasyMeshBuilder body = CartModel.createBody();
         body.addChild(axis);
