@@ -15,7 +15,7 @@ public final class PlowContainer extends CartContainer {
     public PlowContainer(final int id, final Inventory playerInv, final AbstractDrawnInventoryEntity cart) {
         super(IFMenuTypes.PLOW_CART.get(), id, cart);
         this.addSlot(new SlotItemHandler(this.cartInv, 0, 57, 24));
-        this.addSlot(new SlotItemHandler(this.cartInv, 1, 80, 17));
+        this.addSlot(new SlotItemHandler(this.cartInv, 1, 80, 24));
         this.addSlot(new SlotItemHandler(this.cartInv, 2, 103, 24));
 
         for (int i = 0; i < 3; ++i) {
