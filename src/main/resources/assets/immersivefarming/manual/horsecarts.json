@@ -1,0 +1,14 @@
+{
+  "plow":{
+    "type": "crafting",
+    "recipe": "immersivefarming:crafting/plow"
+  },
+  "sower": {
+    "type": "crafting",
+    "recipe": "immersivefarming:crafting/sower"
+  },
+  "wheel": {
+  "type": "crafting",
+  "recipe": "immersivefarming:crafting/wheel"
+  }
+}

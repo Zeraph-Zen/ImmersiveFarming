@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss",
+    "pcp",
+    "wpw"
+  ],
+  "key": {
+    "p": {
+      "tag": "forge:treated_wood"
+    },
+    "s": {
+      "tag": "forge:rods/treated_wood"
+    },
+    "w": {
+      "item": "immersivefarming:wheel"
+    },
+    "c": {
+      "item": "minecraft:chest"
+    }
+  },
+  "result": {
+    "item": "immersivefarming:sower"
+  }
+}

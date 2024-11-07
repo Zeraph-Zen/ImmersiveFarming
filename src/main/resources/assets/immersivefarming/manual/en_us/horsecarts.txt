@@ -1,0 +1,9 @@
+Horse Carts
+Horse power!
+
+Instead of doing all the work by yourself, you can use a horse to help you till dirt, plant and fertilize seeds. The first step is crafting wheels.
+<&wheel>
+After you can make a plow, which you can attach to a horse, load with some hoes and use to till dirt.
+<&plow>
+Finally, you can crafting a sowing machine, which will help you sow and fertilize seeds. The upper compartment is for seeds while the bottom is for fertilizer.
+<&sower>
