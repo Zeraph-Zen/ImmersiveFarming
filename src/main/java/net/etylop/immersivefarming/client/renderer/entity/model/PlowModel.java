@@ -107,6 +107,6 @@ public final class PlowModel extends CartModel<PlowEntity> {
         body.addChild(parts);
         body.build(def.getRoot());
 
-        return LayerDefinition.create(def, 64, 64);
+        return LayerDefinition.create(def, 128, 64);
     }
 }

@@ -69,23 +69,11 @@ public final class SowerModel extends CartModel<SowerEntity> {
         plowShaftUpper.setRotationPoint(-3.0F + 3, -7.0F, 0.0F);
         plowShaftUpper.yRot = -0.523599F + (float) Math.PI / 6.0F;
 
-        plowShaftLower = new EasyMeshBuilder("plow_shaft_lower", 42, 4);
-        plowShaftLower.addBox(-15.0F, -0.7F, -0.7F, 30, 8, 8);
+        plowShaftLower = new EasyMeshBuilder("plow_shaft_lower", 0, 32);
+        plowShaftLower.addBox(-17.0F, -0.7F, -0.7F, 34, 8, 8);
         plowShaftLower.setRotationPoint(0.0F, 28.0F, -1.0F);
         plowShaftLower.xRot = (float) Math.PI / 4.0F;
         plowShaftUpper.addChild(plowShaftLower);
-
-        final EasyMeshBuilder plowHandle = new EasyMeshBuilder("plow_handle", 50, 4);
-        plowHandle.addBox(-0.5F, 0.0F, -0.5F, 1, 18, 1);
-        plowHandle.setRotationPoint(0.0F, 33.0F, 5.0F);
-        plowHandle.xRot = (float) Math.PI / 2.0F;
-        plowShaftUpper.addChild(plowHandle);
-
-        final EasyMeshBuilder plowHandleGrip = new EasyMeshBuilder("plow_handle_grip", 50, 23);
-        plowHandleGrip.addBox(-0.5F, 0.0F, -1.0F, 1, 5, 1);
-        plowHandleGrip.setRotationPoint(0.0F, 32.8F, 21.0F);
-        plowHandleGrip.xRot = (float) Math.PI / 4.0F;
-        plowShaftUpper.addChild(plowHandleGrip);
 
         final EasyMeshBuilder parts = new EasyMeshBuilder("parts");
         parts.setRotationPoint(0.0F, -5.0F, -1.0F);
@@ -100,6 +88,6 @@ public final class SowerModel extends CartModel<SowerEntity> {
         body.addChild(parts);
         body.build(def.getRoot());
 
-        return LayerDefinition.create(def, 64, 64);
+        return LayerDefinition.create(def, 128, 64);
     }
 }

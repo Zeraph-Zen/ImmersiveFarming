@@ -3,17 +3,14 @@ package net.etylop.immersivefarming.client;
 
 import net.etylop.immersivefarming.CommonInitializer;
 import net.etylop.immersivefarming.ImmersiveFarming;
-import net.etylop.immersivefarming.client.renderer.entity.SowerRenderer;
-import net.etylop.immersivefarming.client.renderer.entity.model.SowerModel;
-import net.etylop.immersivefarming.gui.screen.PlowScreen;
 import net.etylop.immersivefarming.client.renderer.IFModelLayers;
 import net.etylop.immersivefarming.client.renderer.entity.PlowRenderer;
+import net.etylop.immersivefarming.client.renderer.entity.SowerRenderer;
 import net.etylop.immersivefarming.client.renderer.entity.model.PlowModel;
-import net.etylop.immersivefarming.client.renderer.texture.AssembledTexture;
-import net.etylop.immersivefarming.client.renderer.texture.AssembledTextureFactory;
-import net.etylop.immersivefarming.client.renderer.texture.Material;
+import net.etylop.immersivefarming.client.renderer.entity.model.SowerModel;
 import net.etylop.immersivefarming.entity.IFEntities;
 import net.etylop.immersivefarming.gui.IFMenuTypes;
+import net.etylop.immersivefarming.gui.screen.PlowScreen;
 import net.etylop.immersivefarming.gui.screen.SowerScreen;
 import net.etylop.immersivefarming.network.serverbound.ActionKeyMessage;
 import net.etylop.immersivefarming.network.serverbound.ToggleSlowMessage;
@@ -23,7 +20,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.ClientRegistry;
@@ -88,24 +84,5 @@ public final class ClientInitializer extends CommonInitializer {
             ForgeHooksClient.registerLayerDefinition(IFModelLayers.SOWER, SowerModel::createLayer);
 
         });
-        new AssembledTextureFactory()
-            .add(new ResourceLocation(ImmersiveFarming.MOD_ID, "textures/entity/plow.png"), new AssembledTexture(64, 64)
-                .add(new Material(new ResourceLocation("block/oak_planks"), 16)
-                    .fill(0, 0, 64, 32, Material.R90)
-                    .fill(0, 8, 42, 3, Material.R0, 0, 1)
-                    .fill(0, 27, 34, 3, Material.R0, 0, 2)
-                )
-                .add(new Material(new ResourceLocation("block/stripped_spruce_log"), 16)
-                    .fill(54, 54, 10, 10, Material.R0, 2, 0)
-                )
-                .add(new Material(new ResourceLocation("block/oak_log"), 16)
-                    .fill(0, 0, 54, 4, Material.R90)
-                    .fill(46, 60, 8, 4, Material.R90)
-                )
-                .add(new Material(new ResourceLocation("block/stone"), 16)
-                    .fill(62, 55, 2, 9)
-                )
-            )
-            .register(mod.modBus());
     }
 }
