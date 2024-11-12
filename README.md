@@ -11,13 +11,16 @@ Features are explained in the engineer's manual, but here is an overview:
 * Irrigation
   * Sprinklers! Sprinklers can be crafted in order to irrigate crops (6 block radius for the regular and 12 blocks for the high pressure one)
   * Water tiles only irrigate the adjacent farmland tiles
+* Carts
+  * Plow: to till land faster
+  * Sowing machine: to sow seeds and fertilize faster
+* Fertilization
+  * Compost can be made from the Industrial Composter multiblock
+  * Using compost on soil boosts crop growth
 * Farmland
   * Farmland can no longer be trampled by jumping on it
   * Bone meal can no longer be used on crops
   * Tilling dirt now requires several clicks (but better hoes speed up this process)
-* Fertilization
-  * Compost can be made from the Industrial Composter multiblock
-  * Using compost on soil boosts crop growth
 * Crop disease
   * Crops can become sick and will contaminate adjacent crops and eventually die
   * Using treated water in the sprinklers will prevent and cure diseases
@@ -31,3 +34,8 @@ This mod is still in its early stage of development so feel free to give any sug
 ## Modpack information
 
 No permissions are needed to use the mod, feel free to use it in your modpack !
+
+
+## Credits
+
+In order to make the carts, I used a chunks of code from AstikorCarts, and adapted it to Immersive Farming.
