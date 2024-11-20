@@ -38,4 +38,4 @@ No permissions are needed to use the mod, feel free to use it in your modpack !
 
 ## Credits
 
-In order to make the carts, I used a chunks of code from AstikorCarts, and adapted it to Immersive Farming.
+In order to make the carts, I used chunks of code from AstikorCarts, and adapted it to Immersive Farming.
